@@ -1,8 +1,12 @@
 import { motion } from 'framer-motion';
-import { initials, leadership } from '../data/content';
+import { initials, useContent } from '../cms/ContentContext';
 
 export default function Leadership() {
+  const { content } = useContent();
+  const leadership = content.leadership || [];
   const [convener, ...team] = leadership;
+
+  if (!convener) return null;
 
   return (
     <section className="section" id="leadership" style={{ background: 'var(--paper)' }}>

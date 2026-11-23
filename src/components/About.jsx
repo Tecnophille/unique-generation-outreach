@@ -1,7 +1,11 @@
 import { motion } from 'framer-motion';
-import { about } from '../data/content';
+import { Link } from 'react-router-dom';
+import { useContent } from '../cms/ContentContext';
 
 export default function About() {
+  const { content } = useContent();
+  const about = content.about;
+
   return (
     <section className="about section" id="about">
       <div className="wrap">
@@ -14,20 +18,20 @@ export default function About() {
         >
           <span className="label">{about.label}</span>
           <h2>{about.body}</h2>
-          <a className="btn btn--outline" href={about.cta.href}>
+          <Link className="btn btn--outline" to={about.cta.href || '/leadership'}>
             {about.cta.label}
-          </a>
+          </Link>
         </motion.div>
         <div className="about__gallery">
-          {about.images.map((src, i) => (
+          {(about.images || []).map((src, i) => (
             <motion.figure
-              key={src}
+              key={`${src}-${i}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
             >
-              <img src={src} alt="" />
+              <img src={src} alt="Community life in Nigeria" />
             </motion.figure>
           ))}
         </div>

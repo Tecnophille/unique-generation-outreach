@@ -1,8 +1,12 @@
 import { motion } from 'framer-motion';
-import { pillars } from '../data/content';
+import { Link } from 'react-router-dom';
+import { useContent } from '../cms/ContentContext';
 import { PillarGlyph } from './Icons';
 
 export default function Pillars() {
+  const { content } = useContent();
+  const pillars = content.pillars || [];
+
   return (
     <section className="section" id="pillars">
       <div className="wrap">
@@ -29,10 +33,10 @@ export default function Pillars() {
               </div>
               <h3>{item.title}</h3>
               <p>{item.text}</p>
-              <a className="link-more" href="#contact">
+              <Link className="link-more" to="/contact">
                 Learn more
                 <span className="link-more__arrow">↗</span>
-              </a>
+              </Link>
             </motion.article>
           ))}
         </div>

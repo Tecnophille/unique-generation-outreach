@@ -1,0 +1,495 @@
+{
+  "nav": [
+    {
+      "href": "/pillars",
+      "label": "Pillars"
+    },
+    {
+      "href": "/about",
+      "label": "About"
+    },
+    {
+      "href": "/gatherings",
+      "label": "Gatherings"
+    },
+    {
+      "href": "/reflections",
+      "label": "Reflections"
+    },
+    {
+      "href": "/leadership",
+      "label": "Leadership"
+    },
+    {
+      "href": "/faq",
+      "label": "FAQ"
+    },
+    {
+      "href": "/contact",
+      "label": "Contact"
+    }
+  ],
+  "faqs": [
+    {
+      "a": "Unique Generation Outreach is an initiative dedicated to promoting unity, empowering individuals, creating opportunities, and inspiring positive transformation across communities — rooted in faith, service, and purposeful leadership.",
+      "q": "What is Unique Generation Outreach?"
+    },
+    {
+      "a": "Leader Daniel Ajuruchukwu serves as Convener. He is supported by a leadership team spanning administration, events, creative direction, protocol, volunteering, information, and development advisory.",
+      "q": "Who leads the organisation?"
+    },
+    {
+      "a": "GHP is our flagship event series. Past and planned themes include Koinonia (2022), Kavod (2024), Shabach (2025), and Berakah (2026) — moments of fellowship, honour, praise, and blessing.",
+      "q": "What are the GHP gatherings?"
+    },
+    {
+      "a": "We welcome people ready to serve. Reach out through the contact section and our Volunteers Coordinator will help match you with opportunities that fit your gifts.",
+      "q": "How can I volunteer?"
+    },
+    {
+      "a": "Whether you want to attend a gathering, collaborate as an organisation, or support a programme, use the stay-in-touch section. We respond with care.",
+      "q": "How do I partner or get involved?"
+    }
+  ],
+  "hero": {
+    "badge": "Gathered for purpose and service",
+    "image": "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=2400&q=80",
+    "support": "Unique Generation Outreach promotes unity, creates opportunities, and inspires transformation across communities — through faith, service, and purposeful leadership.",
+    "headline": "A place to unite, empower, and walk in faith.",
+    "primaryCta": {
+      "href": "/pillars",
+      "label": "Our pillars"
+    },
+    "secondaryCta": {
+      "href": "/contact",
+      "label": "Get in touch"
+    },
+    "eyebrow": "Unique Generation"
+  },
+  "about": {
+    "cta": {
+      "href": "/about",
+      "label": "Read our full story"
+    },
+    "body": "We are a community shaped by faith, service, and daily life — gathering across seasons to empower one another and walk together in purpose.",
+    "label": "About",
+    "images": [
+      "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.pexels.com/photos/39308542/pexels-photo-39308542.jpeg?auto=compress&cs=tinysrgb&w=1200"
+    ]
+  },
+  "brand": {
+    "name": "Unique Generation Outreach",
+    "short": "UGO"
+  },
+  "pages": {
+    "faq": {
+      "cta": {
+        "href": "/contact",
+        "label": "Send a message"
+      },
+      "intro": "Clear responses about who we are, how GHP works, and how you can serve or partner.",
+      "label": "FAQ",
+      "story": "If your question is not listed, reach out. We would rather talk with you than leave you guessing.",
+      "title": "Answers before you ask",
+      "heroImage": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "storyTitle": "Still unsure?"
+    },
+    "about": {
+      "cta": {
+        "href": "/leadership",
+        "label": "Meet the people behind the mission"
+      },
+      "intro": "Unique Generation Outreach exists to raise a generation that serves with purpose — in Nigeria and across the diaspora.",
+      "label": "About",
+      "quote": {
+        "text": "Purposeful leadership. Selfless service. Strong family values. Lasting opportunity for present and future generations.",
+        "attribution": "Leader Daniel Ajuruchukwu, Convener"
+      },
+      "story": "Unique Generation Outreach is an initiative dedicated to promoting unity, empowering individuals, creating opportunities, and inspiring positive transformation across communities.\n\nWe believe people flourish when faith meets practical service — when leaders are formed, families are strengthened, and communities are given room to grow. Our work is not a one-day event; it is a long obedience in the same direction: purposeful leadership, selfless service, and lasting opportunity for present and future generations.\n\nFrom Port Harcourt to Lagos, Abuja to the United Kingdom, our team carries one heartbeat: that every person can discover their potential and contribute meaningfully to a better future.",
+      "title": "Our story of faith, unity, and opportunity",
+      "gallery": [
+        {
+          "src": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "caption": "Worship and community in Lagos"
+        },
+        {
+          "src": "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "caption": "Celebration and shared praise"
+        },
+        {
+          "src": "https://images.pexels.com/photos/39308542/pexels-photo-39308542.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "caption": "Everyday life and opportunity in Nigeria"
+        }
+      ],
+      "heroImage": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "milestones": [
+        {
+          "text": "A generation gathered for unity, empowerment, and community transformation.",
+          "year": "Vision"
+        },
+        {
+          "text": "Flagship gatherings that mark seasons of fellowship, honour, praise, and blessing.",
+          "year": "GHP"
+        },
+        {
+          "text": "A growing team stewarding programmes, volunteering, and partnership across cities.",
+          "year": "Today"
+        }
+      ],
+      "storyTitle": "Who we are"
+    },
+    "contact": {
+      "cta": {
+        "href": "/faq",
+        "label": "Read the FAQ first"
+      },
+      "intro": "Volunteer, partner, pray, or ask about gatherings — tell us what is on your heart.",
+      "label": "Contact",
+      "story": "Official email and phone will replace the placeholders below as soon as they are confirmed. Until then, use the form and the channels listed in the CMS contact fields.",
+      "title": "We are listening",
+      "channels": [
+        {
+          "text": "Questions about Unique Generation Outreach, programmes, or partnership.",
+          "title": "General enquiries"
+        },
+        {
+          "text": "Tell us your gifts — events, protocol, media, care, administration.",
+          "title": "Volunteering"
+        },
+        {
+          "text": "Ask about GHP dates, invitations, and how to participate.",
+          "title": "Gatherings"
+        }
+      ],
+      "heroImage": "https://images.pexels.com/photos/36086874/pexels-photo-36086874.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "storyTitle": "Ways to reach us"
+    },
+    "pillars": {
+      "cta": {
+        "href": "/contact",
+        "label": "Serve with us"
+      },
+      "intro": "These six pillars are not slogans — they are the working language of how Unique Generation Outreach plans, serves, and measures impact.",
+      "items": [
+        {
+          "text": "We build bridges across families, fellowships, and cities — choosing collective effort over isolation.",
+          "title": "Unity",
+          "detail": "Unity shows up in how we plan gatherings, resolve conflict, and welcome people from many backgrounds into one purpose."
+        },
+        {
+          "text": "We help people discover gifts, confidence, and calling.",
+          "title": "Empowerment",
+          "detail": "Through teaching, mentoring, and platforms to serve, we raise contributors — not spectators."
+        },
+        {
+          "text": "We create pathways for growth, enterprise, and meaningful contribution.",
+          "title": "Opportunities",
+          "detail": "Opportunity means access: to networks, skills, stages, and partnerships that move lives forward."
+        },
+        {
+          "text": "We pursue change that lasts in hearts, homes, and neighbourhoods.",
+          "title": "Transformation",
+          "detail": "Transformation is measured in renewed hope, stronger families, and communities that look more like the Kingdom."
+        },
+        {
+          "text": "We host moments that knit people together in faith and fellowship.",
+          "title": "Gatherings",
+          "detail": "GHP and public programmes are sacred spaces for encounter, honour, praise, and shared vision."
+        },
+        {
+          "text": "We foster a culture where service is honourable and joyful.",
+          "title": "Volunteering",
+          "detail": "Every volunteer assignment advances the mission — from protocol to creative production to care."
+        }
+      ],
+      "label": "Pillars",
+      "story": "Every programme, gathering, and partnership is filtered through these pillars. They help our coordinators, volunteers, and partners stay aligned — whether we are hosting GHP, mentoring leaders, or opening doors of opportunity.",
+      "title": "The commitments that carry our mission",
+      "heroImage": "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "storyTitle": "How we serve"
+    },
+    "gatherings": {
+      "cta": {
+        "href": "/contact",
+        "label": "Ask about the next gathering"
+      },
+      "intro": "Each GHP theme carries a spiritual emphasis for that season. These pages hold the story of those gatherings — not just event titles.",
+      "label": "Gatherings",
+      "story": "Gatherings are where Unique Generation Outreach becomes visible: worship, honour, teaching, creativity, and community in one room. GHP gives language to each season so people remember what God emphasised among us.",
+      "title": "GHP — seasons that mark our journey",
+      "events": [
+        {
+          "name": "Koinonia",
+          "year": "2022",
+          "image": "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "story": "Koinonia called us back to shared life — not attendance alone, but belonging. We learned again that the body thrives when no one walks alone.",
+          "theme": "Fellowship & belonging"
+        },
+        {
+          "name": "Kavod",
+          "year": "2024",
+          "image": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "story": "Kavod lifted our eyes to honour — honouring God, honouring one another, and restoring dignity in how we speak, serve, and lead.",
+          "theme": "Honour & reverence"
+        },
+        {
+          "name": "Shabach",
+          "year": "2025",
+          "image": "https://images.pexels.com/photos/39007513/pexels-photo-39007513.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "story": "Shabach made room for joyful praise — celebration as warfare, gratitude as witness, and creativity as an offering.",
+          "theme": "Praise & celebration"
+        },
+        {
+          "name": "Berakah",
+          "year": "2026",
+          "image": "https://images.pexels.com/photos/36086874/pexels-photo-36086874.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "story": "Berakah looks ahead to blessing that multiplies — opportunities that overflow into families, cities, and the next generation.",
+          "theme": "Blessing & increase"
+        }
+      ],
+      "heroImage": "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "storyTitle": "Why we gather"
+    },
+    "leadership": {
+      "cta": {
+        "href": "/contact",
+        "label": "Contact leadership"
+      },
+      "focus": [
+        {
+          "text": "The Convener sets direction rooted in faith, service, and family values.",
+          "title": "Spiritual vision"
+        },
+        {
+          "text": "Coordinators and directors handle structure, events, protocol, and communication.",
+          "title": "Operational care"
+        },
+        {
+          "text": "Volunteers and partners extend the mission into communities.",
+          "title": "Shared service"
+        }
+      ],
+      "intro": "A Convener and a cross-functional team — administration, events, creativity, protocol, volunteering, information, and development.",
+      "label": "Leadership",
+      "story": "Unique Generation Outreach is led with pastoral heart and operational clarity. Roles span cities in Nigeria and the diaspora so programmes are coordinated, communicated, and delivered with excellence.",
+      "title": "Stewards of the mission",
+      "heroImage": "https://images.pexels.com/photos/39308542/pexels-photo-39308542.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "storyTitle": "How leadership works here"
+    },
+    "reflections": {
+      "cta": {
+        "href": "/contact",
+        "label": "Share a testimony or request"
+      },
+      "intro": "Reflections for Unique Generation Outreach — longer than a homepage teaser, written to sit with you through the week.",
+      "label": "Reflections",
+      "story": "These reflections connect faith to ordinary courage: work, family, leadership, and community. Replace samples with official teachings anytime in the CMS.",
+      "title": "Word for the journey",
+      "articles": [
+        {
+          "body": "Fellowship is more than gathering in a hall. It is choosing one another in ordinary weeks — sharing burdens, celebrating victories, and refusing isolation. In a generation that can be connected yet lonely, Koinonia reminds us that belonging is holy work.\n\nAsk today: who am I walking with, and who might need me to walk with them?",
+          "date": "GHP · Koinonia",
+          "title": "Walking together when life is heavy"
+        },
+        {
+          "body": "Honour is not flattery. It is recognising the image of God in people — especially when culture teaches us to dismiss, compete, or diminish. Kavod calls leaders to speak life, correct with care, and build rooms where dignity is normal.\n\nWhere can you practise honour this week — at home, at work, or in ministry?",
+          "date": "GHP · Kavod",
+          "title": "Honour that restores dignity"
+        },
+        {
+          "body": "Blessing is meant to move through us. Skills, platforms, resources, and kindness are seeds. Berakah invites us to live open-handed — so opportunity does not stop with us, but multiplies into the next generation.\n\nWhat has been placed in your hands that should flow to someone else?",
+          "date": "GHP · Berakah",
+          "title": "Becoming a channel of blessing"
+        }
+      ],
+      "heroImage": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "storyTitle": "A space to listen"
+    }
+  },
+  "contact": {
+    "cta": "Reach out to us",
+    "body": "Have a question, a need, or something on your heart? We’re here to listen. Feel free to reach out — we’ll take the time to respond with care.",
+    "title": "Let’s stay in touch",
+    "skyImage": "https://images.pexels.com/photos/36086874/pexels-photo-36086874.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "newsletter": {
+      "body": "Subscribe to receive the latest updates when contact details are confirmed.",
+      "features": [
+        {
+          "text": "Receive news and reflections as they are published.",
+          "title": "News & Reflections"
+        },
+        {
+          "text": "Stay informed about gatherings and programmes.",
+          "title": "Community life"
+        }
+      ],
+      "titleAccent": "newsletter.",
+      "titleBefore": "Join our "
+    },
+    "placeholders": {
+      "email": "Contact email coming soon",
+      "phone": "Phone number coming soon"
+    }
+  },
+  "pillars": [
+    {
+      "icon": "heart",
+      "text": "Building communities through collective effort, shared purpose, and mutual support.",
+      "color": "#C45C4A",
+      "title": "Unity"
+    },
+    {
+      "icon": "spark",
+      "text": "Helping individuals discover their potential and step into purposeful leadership.",
+      "color": "#5B8FBF",
+      "title": "Empowerment"
+    },
+    {
+      "icon": "path",
+      "text": "Creating pathways for growth, enterprise, and meaningful contribution.",
+      "color": "#D4883A",
+      "title": "Opportunities"
+    },
+    {
+      "icon": "bloom",
+      "text": "Inspiring lasting positive change in families, neighbourhoods, and cities.",
+      "color": "#C9A227",
+      "title": "Transformation"
+    },
+    {
+      "icon": "people",
+      "text": "Hosting programmes and GHP events that bring people together in faith and fellowship.",
+      "color": "#7A5EA8",
+      "title": "Gatherings"
+    },
+    {
+      "icon": "hands",
+      "text": "Fostering a culture of service where every contribution advances the mission.",
+      "color": "#5A9A6A",
+      "title": "Volunteering"
+    }
+  ],
+  "updatedAt": "2026-11-23T13:41:04.014Z",
+  "gatherings": [
+    {
+      "tag": "GHP",
+      "name": "Koinonia",
+      "year": "2022",
+      "image": "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "theme": "Fellowship & belonging"
+    },
+    {
+      "tag": "GHP",
+      "name": "Kavod",
+      "year": "2024",
+      "image": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "theme": "Honour & reverence in community life"
+    },
+    {
+      "tag": "GHP",
+      "name": "Shabach",
+      "year": "2025",
+      "image": "https://images.pexels.com/photos/39007513/pexels-photo-39007513.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "theme": "Praise, celebration, and shared joy"
+    }
+  ],
+  "leadership": [
+    {
+      "bio": "Leader Daniel Ajuruchukwu is a clergyman, public speaker, entrepreneur, and visionary leader committed to faith, service, and community development. He serves as the Priest-in-Charge of Will of God Sabbath Mission and is the Convener of Unique Generation Outreach. Passionate about leadership, human development, and social impact, he is committed to building a society where individuals are empowered to discover their potential. A devoted family man, he believes in purposeful leadership, selfless service, strong family values, and creating lasting opportunities for present and future generations.",
+      "name": "Leader Daniel Ajuruchukwu",
+      "role": "Convener",
+      "titles": "Clergyman · Public Speaker · Entrepreneur · Priest-in-Charge, Will of God Sabbath Mission",
+      "featured": true,
+      "location": null
+    },
+    {
+      "bio": "A clergyman committed to faith, service, leadership, and community development. He contributes to the organisation’s administrative activities, supporting effective coordination, teamwork, and the smooth implementation of its initiatives.",
+      "name": "Oguaju Soromkelechi Victor",
+      "role": "Administrative Coordinator 1",
+      "titles": "Clergyman",
+      "location": "Port Harcourt, Rivers State, Nigeria"
+    },
+    {
+      "bio": "An entrepreneur with interest in business development, leadership, and creating opportunities. She supports the organisation’s administrative structure and coordination efforts, committed to teamwork and positive social impact.",
+      "name": "Sunday Hope Anulika",
+      "role": "Administrative Coordinator 2",
+      "titles": "Entrepreneur",
+      "location": "Abuja, Nigeria"
+    },
+    {
+      "bio": "A dynamic professional with a Master’s in Food Engineering. She strengthens administrative structure, coordinates communications, maintains records, and supports programme implementation.",
+      "name": "Ing. Cynthia Uloma Offor",
+      "role": "Secretary",
+      "titles": "Project Management Professional · R&D Specialist · Administrator",
+      "location": "Lagos, Nigeria"
+    },
+    {
+      "bio": "A student nurse and mental health practitioner passionate about healthcare and human development. He supports administrative and documentation activities alongside the Secretary.",
+      "name": "Oziomachukwu Amaefula",
+      "role": "Assistant Secretary",
+      "titles": "Student Nurse · Mental Health Practitioner",
+      "location": "United Kingdom"
+    },
+    {
+      "bio": "A music producer and musician who oversees stage presentations and event operations, bringing creative experience to programmes and public engagements.",
+      "name": "Ifeanyi Daniel",
+      "role": "Director of Stage Management & Events",
+      "titles": "Music Producer · Musician",
+      "location": "Lagos, Nigeria"
+    },
+    {
+      "bio": "A sound engineer contributing to creative direction — using technical and artistic expertise to enhance communication, storytelling, and audience engagement.",
+      "name": "Chibuike Henry Vincent",
+      "role": "Creative Director",
+      "titles": "Sound Engineer",
+      "location": "Lagos State, Nigeria"
+    },
+    {
+      "bio": "Coordinates official engagements, event arrangements, and protocol-related activities with professionalism and teamwork.",
+      "name": "Okafor Chukwunwem",
+      "role": "Director of Protocol",
+      "titles": "Solar Energy Entrepreneur",
+      "location": "Lagos, Nigeria"
+    },
+    {
+      "bio": "Supports volunteer engagement and coordination, fostering a culture of service that advances empowerment, unity, and community transformation.",
+      "name": "Dr. Cosmic Macduff",
+      "role": "Volunteers Coordinator",
+      "titles": "Entrepreneur · Author · Public Speaker · MD, Macversity Group",
+      "location": "Lagos, Nigeria"
+    },
+    {
+      "bio": "Supports information and communication activities — disseminating public awareness of programmes, objectives, and initiatives.",
+      "name": "Ojugbana Chukwuka Bobby",
+      "role": "Director of Information",
+      "titles": "Entrepreneur — Building Materials",
+      "location": "Lagos, Nigeria"
+    },
+    {
+      "bio": "Contributes professional expertise and strategic insight toward developmental goals. Leadership philosophy anchored in excellence, innovation, collaboration, and lasting impact.",
+      "name": "Engr. Dr. Odinaka Bruno Chinedu",
+      "role": "Special Adviser on Development",
+      "titles": "Engineer · Entrepreneur · MD/CEO, B-CIJVAL Engineering Services Ltd.",
+      "location": null
+    }
+  ],
+  "reflections": [
+    {
+      "date": "Sample · GHP",
+      "title": "Koinonia — walking together",
+      "excerpt": "Fellowship is more than gathering. It is choosing one another — sharing burdens, celebrating victories, and building a community where no one walks alone."
+    },
+    {
+      "date": "Sample · GHP",
+      "title": "Kavod — honour that lifts",
+      "excerpt": "True honour recognises the dignity placed in every person. When we lift others, we strengthen the fabric of our families and cities."
+    },
+    {
+      "date": "Sample · GHP",
+      "title": "Berakah — living as a blessing",
+      "excerpt": "Blessing is meant to move through us. Opportunity, service, and kindness become seeds of transformation for the next generation."
+    }
+  ]
+}

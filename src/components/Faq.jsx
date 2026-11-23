@@ -1,6 +1,9 @@
-import { faqs } from '../data/content';
+import { useContent } from '../cms/ContentContext';
 
 export default function Faq() {
+  const { content } = useContent();
+  const faqs = content.faqs || [];
+
   return (
     <section className="section" id="faq">
       <div className="wrap faq">

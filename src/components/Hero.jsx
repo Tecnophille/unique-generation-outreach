@@ -1,8 +1,12 @@
 import { motion } from 'framer-motion';
-import { hero } from '../data/content';
+import { Link } from 'react-router-dom';
+import { useContent } from '../cms/ContentContext';
 import { IconCross, IconHands } from './Icons';
 
 export default function Hero() {
+  const { content } = useContent();
+  const hero = content.hero;
+
   return (
     <section className="hero" id="top" aria-label="Hero">
       <div className="hero__media" aria-hidden="true">
@@ -42,18 +46,18 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: 0.34, ease: [0.22, 1, 0.36, 1] }}
         >
-          <a className="btn btn--primary" href={hero.primaryCta.href}>
+          <Link className="btn btn--primary" to={hero.primaryCta.href || '/pillars'}>
             {hero.primaryCta.label}
             <span className="btn__icon">
               <IconCross />
             </span>
-          </a>
-          <a className="btn btn--ghost" href={hero.secondaryCta.href}>
+          </Link>
+          <Link className="btn btn--ghost" to={hero.secondaryCta.href || '/contact'}>
             {hero.secondaryCta.label}
             <span className="btn__icon">
               <IconHands />
             </span>
-          </a>
+          </Link>
         </motion.div>
       </div>
     </section>

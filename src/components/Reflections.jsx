@@ -1,8 +1,12 @@
 import { motion } from 'framer-motion';
-import { reflections } from '../data/content';
+import { Link } from 'react-router-dom';
+import { useContent } from '../cms/ContentContext';
 import { IconBook, IconCal } from './Icons';
 
 export default function Reflections() {
+  const { content } = useContent();
+  const reflections = content.reflections || [];
+
   return (
     <section className="section" id="reflections">
       <div className="wrap reflections">
@@ -19,12 +23,12 @@ export default function Reflections() {
             Short reflections that connect faith to everyday life — sample pieces inspired by our
             GHP themes until official teachings are published.
           </p>
-          <a className="btn btn--outline" href="#contact">
+          <Link className="btn btn--outline" to="/reflections">
             Read more reflections
             <span className="btn__icon">
               <IconBook />
             </span>
-          </a>
+          </Link>
         </motion.div>
         <div className="reflection-cards">
           {reflections.map((r, i) => (
@@ -43,10 +47,10 @@ export default function Reflections() {
               </div>
               <h3>{r.title}</h3>
               <p>{r.excerpt}</p>
-              <a className="link-more" href="#contact">
+              <Link className="link-more" to="/reflections">
                 Read reflection
                 <span className="link-more__arrow">↗</span>
-              </a>
+              </Link>
             </motion.article>
           ))}
         </div>

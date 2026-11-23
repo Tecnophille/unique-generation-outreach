@@ -1,33 +1,52 @@
 import { useEffect, useState } from 'react';
-import { brand, nav } from '../data/content';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useContent } from '../cms/ContentContext';
 
 export default function Nav() {
+  const { content } = useContent();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const brand = content.brand;
+  const nav = content.nav || [];
+  const isHome = location.pathname === '/';
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 48);
+    const onScroll = () => setScrolled(!isHome || window.scrollY > 48);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [isHome, location.pathname]);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
 
   const close = () => setOpen(false);
+  const solid = !isHome || scrolled;
 
   return (
-    <header className={`nav${scrolled ? ' is-scrolled' : ''}`}>
+    <header className={`nav${solid ? ' is-scrolled' : ''}`}>
       <div className="wrap nav__inner">
-        <a className="nav__brand" href="#top" onClick={close}>
-          <span className="nav__mark" aria-hidden="true">
-            <span>UG</span>
-          </span>
-          {brand.short}
-        </a>
+        <Link className="nav__brand" to="/" onClick={close}>
+          <img
+            className="nav__logo"
+            src="/logo.png"
+            alt={brand.name}
+            width={2090}
+            height={527}
+          />
+        </Link>
         <nav aria-label="Primary">
           <ul className="nav__links">
             {nav.map((item) => (
               <li key={item.href}>
-                <a href={item.href}>{item.label}</a>
+                <NavLink
+                  to={item.href}
+                  className={({ isActive }) => (isActive ? 'is-active' : undefined)}
+                >
+                  {item.label}
+                </NavLink>
               </li>
             ))}
           </ul>
@@ -46,9 +65,9 @@ export default function Nav() {
       </div>
       <div className={`nav__mobile${open ? ' is-open' : ''}`}>
         {nav.map((item) => (
-          <a key={item.href} href={item.href} onClick={close}>
+          <NavLink key={item.href} to={item.href} onClick={close}>
             {item.label}
-          </a>
+          </NavLink>
         ))}
       </div>
     </header>
