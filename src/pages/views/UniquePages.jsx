@@ -424,7 +424,7 @@ function SiteEventsBlock() {
   );
 }
 
-function PageBlocks({ blocks }) {
+export function PageBlocks({ blocks }) {
   if (!blocks?.length) return null;
   return (
     <>

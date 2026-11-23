@@ -8,23 +8,41 @@ export function ContentProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const refresh = useCallback(async () => {
-    setLoading(true);
+  const refresh = useCallback(async ({ soft = false } = {}) => {
+    if (!soft) setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/content', { credentials: 'include' });
+      const res = await fetch('/api/content', {
+        credentials: 'include',
+        cache: 'no-store',
+      });
       if (!res.ok) throw new Error('Failed to load content');
       const data = await res.json();
       setContent(normalizeContent(data));
     } catch (err) {
       setError(err.message || 'Failed to load content');
     } finally {
-      setLoading(false);
+      if (!soft) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     refresh();
+  }, [refresh]);
+
+  // Pick up CMS saves when returning to a public tab without a full reload.
+  useEffect(() => {
+    function onVisible() {
+      if (document.visibilityState !== 'visible') return;
+      if (window.location.pathname.startsWith('/admin')) return;
+      refresh({ soft: true });
+    }
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', onVisible);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', onVisible);
+    };
   }, [refresh]);
 
   const saveContent = useCallback(async (next) => {

@@ -12,6 +12,8 @@ const router = Router();
 
 router.get('/content', async (_req, res, next) => {
   try {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
     res.json(await getContent());
   } catch (err) {
     next(err);
