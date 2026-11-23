@@ -90,7 +90,7 @@ function Login({ onSuccess }) {
           <div className="admin-login__logo-frame">
             <img
               className="admin-login__logo"
-              src="/logo-icon.png"
+              src="/logo-icon.png?v=3"
               alt="Unique Generation Outreach"
               width={88}
               height={88}
@@ -261,7 +261,7 @@ export default function AdminApp() {
     <div className="admin-shell">
       <aside className="admin-side">
         <div className="admin-side__brand">
-          <img src="/logo-icon.png" alt="" />
+          <img src="/logo-icon.png?v=3" alt="" />
           <div>
             <strong>UGO CMS</strong>
             <span>Content control centre</span>
