@@ -493,5 +493,24 @@
     }
   ],
   "events": [],
-  "videos": []
+  "videos": [],
+  "announcements": [],
+  "testimonials": [],
+  "partners": [],
+  "redirects": [],
+  "seo": {
+    "titleTemplate": "%s · Unique Generation Outreach",
+    "defaultDescription": "",
+    "ogImage": "/logo-icon.png"
+  },
+  "social": {
+    "facebook": "",
+    "instagram": "",
+    "youtube": "",
+    "twitter": ""
+  },
+  "footer": {
+    "blurb": "",
+    "copyright": ""
+  }
 }

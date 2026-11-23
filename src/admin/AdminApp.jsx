@@ -1,50 +1,39 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContent } from '../cms/ContentContext';
+import { Field, normalizeContent } from './fields';
+import Dashboard from './Dashboard';
 import PagesEditor from './PagesEditor';
 import EventsEditor from './EventsEditor';
 import VideosEditor from './VideosEditor';
-import RevisionsPanel from './RevisionsPanel';
+import MediaLibrary from './MediaLibrary';
+import HomepageEditor from './HomepageEditor';
+import TeamEditor from './TeamEditor';
+import FaqsEditor from './FaqsEditor';
+import AnnouncementsEditor from './AnnouncementsEditor';
+import TestimonialsEditor from './TestimonialsEditor';
+import PartnersEditor from './PartnersEditor';
+import SettingsEditor from './SettingsEditor';
 import MessagesPanel from './MessagesPanel';
 import './admin.css';
 
 const SECTIONS = [
   { id: 'overview', label: 'Dashboard', group: 'Start' },
-  { id: 'pages', label: 'Pages & content', group: 'Content' },
-  { id: 'events', label: 'Events', group: 'Content' },
-  { id: 'videos', label: 'YouTube', group: 'Content' },
+  { id: 'pages', label: 'Pages & builder', group: 'Content' },
+  { id: 'events', label: 'Events studio', group: 'Content' },
+  { id: 'videos', label: 'YouTube studio', group: 'Content' },
   { id: 'media', label: 'Media library', group: 'Content' },
-  { id: 'hero', label: 'Home · Hero', group: 'Homepage' },
-  { id: 'about', label: 'Home · About teaser', group: 'Homepage' },
-  { id: 'pillars', label: 'Home · Pillars teaser', group: 'Homepage' },
-  { id: 'gatherings', label: 'Home · Gatherings teaser', group: 'Homepage' },
-  { id: 'reflections', label: 'Home · Reflections teaser', group: 'Homepage' },
-  { id: 'leadership', label: 'Team directory', group: 'Shared data' },
-  { id: 'faqs', label: 'FAQ answers', group: 'Shared data' },
-  { id: 'contact', label: 'Contact panel', group: 'Shared data' },
-  { id: 'inbox', label: 'Inbox', group: 'Shared data' },
+  { id: 'announcements', label: 'Announcements', group: 'Content' },
+  { id: 'testimonials', label: 'Testimonials', group: 'Content' },
+  { id: 'partners', label: 'Partners', group: 'Content' },
+  { id: 'homepage', label: 'Homepage studio', group: 'Homepage' },
+  { id: 'leadership', label: 'Team directory', group: 'Directory' },
+  { id: 'faqs', label: 'FAQ answers', group: 'Directory' },
+  { id: 'contact', label: 'Contact panel', group: 'Directory' },
+  { id: 'inbox', label: 'Inbox', group: 'Directory' },
   { id: 'nav', label: 'Navigation', group: 'Site' },
+  { id: 'settings', label: 'Site settings', group: 'Site' },
 ];
-
-const PAGE_KEYS = [
-  { key: 'about', path: '/about' },
-  { key: 'pillars', path: '/pillars' },
-  { key: 'gatherings', path: '/gatherings' },
-  { key: 'reflections', path: '/reflections' },
-  { key: 'contact', path: '/contact' },
-  { key: 'leadership', path: '/leadership' },
-  { key: 'faq', path: '/faq' },
-];
-
-function Field({ label, htmlFor, children, hint }) {
-  return (
-    <div className="admin-field">
-      <label htmlFor={htmlFor}>{label}</label>
-      {children}
-      {hint ? <span className="admin-field__hint">{hint}</span> : null}
-    </div>
-  );
-}
 
 function Login({ onSuccess }) {
   const [email, setEmail] = useState('admin@ugo.local');
@@ -99,7 +88,7 @@ function Login({ onSuccess }) {
           <p className="admin-login__org">Unique Generation Outreach</p>
           <h1 id="admin-login-title">Content studio</h1>
           <p className="admin-login__lede">
-            Sign in to edit pages, media, and messages for the UGO site.
+            Sign in to manage pages, media, events, video, and the full UGO site.
           </p>
         </header>
 
@@ -133,7 +122,6 @@ function Login({ onSuccess }) {
               autoFocus
               required
               aria-invalid={Boolean(error) || undefined}
-              aria-describedby={error ? 'admin-login-error' : undefined}
             />
           </Field>
 
@@ -151,7 +139,6 @@ function Login({ onSuccess }) {
                 }}
                 required
                 aria-invalid={Boolean(error) || undefined}
-                aria-describedby={error ? 'admin-login-error' : undefined}
               />
               <button
                 type="button"
@@ -164,12 +151,6 @@ function Login({ onSuccess }) {
               </button>
             </div>
           </Field>
-
-          {error ? (
-            <p id="admin-login-error" className="visually-hidden">
-              {error}
-            </p>
-          ) : null}
 
           <button className="admin-btn primary admin-login__submit" type="submit" disabled={busy}>
             {busy ? 'Signing in…' : 'Sign in'}
@@ -189,10 +170,11 @@ export default function AdminApp() {
   const [authed, setAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
   const [section, setSection] = useState('overview');
+  const [navQuery, setNavQuery] = useState('');
   const [draft, setDraft] = useState(null);
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
-  const [uploads, setUploads] = useState([]);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetch('/api/session', { credentials: 'include' })
@@ -202,74 +184,76 @@ export default function AdminApp() {
   }, []);
 
   useEffect(() => {
-    if (content) setDraft(structuredClone(content));
+    if (content) setDraft(normalizeContent(structuredClone(content)));
   }, [content]);
-
-  async function loadUploads() {
-    const res = await fetch('/api/uploads', { credentials: 'include' });
-    if (res.ok) setUploads(await res.json());
-  }
-
-  useEffect(() => {
-    if (authed && section === 'media') loadUploads();
-  }, [authed, section]);
 
   const dirty = useMemo(() => {
     if (!draft || !content) return false;
-    return JSON.stringify(draft) !== JSON.stringify(content);
+    return JSON.stringify(draft) !== JSON.stringify(normalizeContent(content));
   }, [draft, content]);
 
-  async function save() {
+  const save = useCallback(async () => {
+    if (!draft) return;
     setStatus('');
     setError('');
+    setSaving(true);
     try {
       await saveContent(draft);
       setStatus('Saved successfully');
     } catch (err) {
       setError(err.message || 'Save failed');
+    } finally {
+      setSaving(false);
     }
-  }
+  }, [draft, saveContent]);
+
+  useEffect(() => {
+    function onKey(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        if (dirty && !saving) save();
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [dirty, saving, save]);
 
   async function logout() {
     await fetch('/api/logout', { method: 'POST', credentials: 'include' });
     setAuthed(false);
   }
 
-  async function uploadFile(file) {
-    const body = new FormData();
-    body.append('file', file);
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      credentials: 'include',
-      body,
-    });
-    if (!res.ok) throw new Error('Upload failed');
-    const data = await res.json();
-    await loadUploads();
-    return data.url;
-  }
+  const filteredSections = useMemo(() => {
+    const q = navQuery.trim().toLowerCase();
+    if (!q) return SECTIONS;
+    return SECTIONS.filter(
+      (s) => s.label.toLowerCase().includes(q) || s.group.toLowerCase().includes(q),
+    );
+  }, [navQuery]);
 
   if (checking || loading) return <div className="boot-screen">Loading CMS…</div>;
   if (!authed) return <Login onSuccess={() => setAuthed(true)} />;
   if (!draft) return <div className="boot-screen">No content loaded.</div>;
 
-  function updateHero(key, value) {
-    setDraft((d) => ({ ...d, hero: { ...d.hero, [key]: value } }));
-  }
-
   return (
-    <div className="admin-shell">
+    <div className="admin-shell admin-shell--studio">
       <aside className="admin-side">
         <div className="admin-side__brand">
           <img src="/logo-icon.png?v=3" alt="" />
           <div>
             <strong>UGO CMS</strong>
-            <span>Content control centre</span>
+            <span>Full content studio</span>
           </div>
         </div>
-        {SECTIONS.map((s, idx) => (
+        <input
+          className="admin-side__search"
+          placeholder="Search studio…"
+          value={navQuery}
+          onChange={(e) => setNavQuery(e.target.value)}
+        />
+        {filteredSections.map((s, idx) => (
           <div key={s.id}>
-            {idx === 0 || SECTIONS[idx - 1].group !== s.group ? (
+            {idx === 0 || filteredSections[idx - 1].group !== s.group ? (
               <div className="admin-side__group">{s.group}</div>
             ) : null}
             <button
@@ -292,640 +276,98 @@ export default function AdminApp() {
       </aside>
 
       <main className="admin-main">
-        <div className="admin-toolbar">
-          <button className="admin-btn primary" type="button" onClick={save} disabled={!dirty}>
-            Save changes
-          </button>
-          <button
-            className="admin-btn ghost"
-            type="button"
-            onClick={() => {
-              setDraft(structuredClone(content));
-              setStatus('Reverted unsaved edits');
-              setError('');
-            }}
-            disabled={!dirty}
-          >
-            Discard
-          </button>
-          <button className="admin-btn ghost" type="button" onClick={refresh}>
-            Reload
-          </button>
-          {dirty ? <span className="admin-status">Unsaved changes</span> : null}
-          {status ? <span className="admin-status ok">{status}</span> : null}
-          {error ? <span className="admin-status err">{error}</span> : null}
+        <div className="admin-toolbar admin-toolbar--sticky">
+          <div className="admin-toolbar__left">
+            <span className="admin-kicker">{SECTIONS.find((s) => s.id === section)?.group}</span>
+            <strong>{SECTIONS.find((s) => s.id === section)?.label}</strong>
+          </div>
+          <div className="admin-toolbar__right">
+            <button className="admin-btn primary" type="button" onClick={save} disabled={!dirty || saving}>
+              {saving ? 'Saving…' : 'Save changes'}
+            </button>
+            <button
+              className="admin-btn ghost"
+              type="button"
+              onClick={() => {
+                setDraft(normalizeContent(structuredClone(content)));
+                setStatus('Reverted unsaved edits');
+                setError('');
+              }}
+              disabled={!dirty}
+            >
+              Discard
+            </button>
+            <button className="admin-btn ghost" type="button" onClick={refresh}>
+              Reload
+            </button>
+            {dirty ? <span className="admin-status">Unsaved · Ctrl/⌘ S</span> : null}
+            {status ? <span className="admin-status ok">{status}</span> : null}
+            {error ? <span className="admin-status err">{error}</span> : null}
+          </div>
         </div>
 
         {section === 'overview' && (
-          <>
-            <h2>Dashboard</h2>
-            <p className="hint">
-              Homepage teasers and menu pages are separate. Edit <strong>Menu pages</strong> for
-              unique page content — not the same blocks as the homepage. Last saved:{' '}
-              {draft.updatedAt ? new Date(draft.updatedAt).toLocaleString() : '—'}
-            </p>
-            <div className="admin-stats">
-              <div className="admin-stat">
-                <strong>{PAGE_KEYS.length}</strong>
-                <span>Menu pages</span>
-              </div>
-              <div className="admin-stat">
-                <strong>{draft.leadership?.length || 0}</strong>
-                <span>Leaders</span>
-              </div>
-              <div className="admin-stat">
-                <strong>{draft.pages?.gatherings?.events?.length || 0}</strong>
-                <span>GHP stories</span>
-              </div>
-              <div className="admin-stat">
-                <strong>{draft.pages?.reflections?.articles?.length || 0}</strong>
-                <span>Full reflections</span>
-              </div>
-              <div className="admin-stat">
-                <strong>{draft.faqs?.length || 0}</strong>
-                <span>FAQ answers</span>
-              </div>
-            </div>
-            <div className="admin-card">
-              <h3 style={{ margin: '0 0 0.75rem' }}>Quick open</h3>
-              <div className="admin-quick">
-                {PAGE_KEYS.map((p) => (
-                  <a key={p.key} className="admin-quick__link" href={p.path} target="_blank" rel="noreferrer">
-                    <strong>{p.key}</strong>
-                    <span>{p.path}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-            <div className="admin-card">
-              <h3 style={{ margin: '0 0 0.5rem' }}>How content is organised</h3>
-              <ul className="admin-help">
-                <li>
-                  <strong>Menu pages</strong> — unique stories, galleries, event write-ups, and articles.
-                </li>
-                <li>
-                  <strong>Homepage teasers</strong> — shorter blocks that invite people into those pages.
-                </li>
-                <li>
-                  <strong>Shared data</strong> — team directory + FAQ answers used by their pages.
-                </li>
-                <li>
-                  <strong>Backend</strong> — Postgres/PGlite database, hashed admin auth, content revisions, media library.
-                </li>
-              </ul>
-            </div>
-            <RevisionsPanel
-              onRestored={(payload) => {
-                setDraft(structuredClone(payload));
-                setStatus('Revision restored');
-              }}
-            />
-          </>
+          <Dashboard
+            draft={draft}
+            setSection={setSection}
+            onRestored={(payload) => {
+              setDraft(normalizeContent(structuredClone(payload)));
+              setStatus('Revision restored');
+            }}
+          />
         )}
-
         {section === 'pages' && <PagesEditor draft={draft} setDraft={setDraft} />}
         {section === 'events' && <EventsEditor draft={draft} setDraft={setDraft} />}
         {section === 'videos' && <VideosEditor draft={draft} setDraft={setDraft} />}
+        {section === 'media' && (
+          <MediaLibrary onStatus={setStatus} onError={setError} />
+        )}
+        {section === 'announcements' && (
+          <AnnouncementsEditor draft={draft} setDraft={setDraft} />
+        )}
+        {section === 'testimonials' && (
+          <TestimonialsEditor draft={draft} setDraft={setDraft} />
+        )}
+        {section === 'partners' && <PartnersEditor draft={draft} setDraft={setDraft} />}
+        {section === 'homepage' && <HomepageEditor draft={draft} setDraft={setDraft} />}
+        {section === 'leadership' && <TeamEditor draft={draft} setDraft={setDraft} />}
+        {section === 'faqs' && <FaqsEditor draft={draft} setDraft={setDraft} />}
         {section === 'inbox' && <MessagesPanel />}
-
-        {section === 'hero' && (
-          <>
-            <h2>Hero</h2>
-            <p className="hint">Full-bleed first viewport copy and image.</p>
-            <div className="admin-card admin-grid">
-              <Field label="Badge">
-                <input value={draft.hero.badge} onChange={(e) => updateHero('badge', e.target.value)} />
-              </Field>
-              <Field label="Headline">
-                <input
-                  value={draft.hero.headline}
-                  onChange={(e) => updateHero('headline', e.target.value)}
-                />
-              </Field>
-              <Field label="Support text">
-                <textarea
-                  value={draft.hero.support}
-                  onChange={(e) => updateHero('support', e.target.value)}
-                />
-              </Field>
-              <Field label="Hero image URL">
-                <input value={draft.hero.image} onChange={(e) => updateHero('image', e.target.value)} />
-              </Field>
-              <img className="admin-thumb" src={draft.hero.image} alt="" />
-              <div className="admin-grid two">
-                <Field label="Primary CTA label">
-                  <input
-                    value={draft.hero.primaryCta.label}
-                    onChange={(e) =>
-                      setDraft((d) => ({
-                        ...d,
-                        hero: {
-                          ...d.hero,
-                          primaryCta: { ...d.hero.primaryCta, label: e.target.value },
-                        },
-                      }))
-                    }
-                  />
-                </Field>
-                <Field label="Primary CTA href">
-                  <input
-                    value={draft.hero.primaryCta.href}
-                    onChange={(e) =>
-                      setDraft((d) => ({
-                        ...d,
-                        hero: {
-                          ...d.hero,
-                          primaryCta: { ...d.hero.primaryCta, href: e.target.value },
-                        },
-                      }))
-                    }
-                  />
-                </Field>
-                <Field label="Secondary CTA label">
-                  <input
-                    value={draft.hero.secondaryCta.label}
-                    onChange={(e) =>
-                      setDraft((d) => ({
-                        ...d,
-                        hero: {
-                          ...d.hero,
-                          secondaryCta: { ...d.hero.secondaryCta, label: e.target.value },
-                        },
-                      }))
-                    }
-                  />
-                </Field>
-                <Field label="Secondary CTA href">
-                  <input
-                    value={draft.hero.secondaryCta.href}
-                    onChange={(e) =>
-                      setDraft((d) => ({
-                        ...d,
-                        hero: {
-                          ...d.hero,
-                          secondaryCta: { ...d.hero.secondaryCta, href: e.target.value },
-                        },
-                      }))
-                    }
-                  />
-                </Field>
-              </div>
-            </div>
-          </>
-        )}
-
-        {section === 'about' && (
-          <>
-            <h2>About</h2>
-            <div className="admin-card admin-grid">
-              <Field label="Label">
-                <input
-                  value={draft.about.label}
-                  onChange={(e) => setDraft((d) => ({ ...d, about: { ...d.about, label: e.target.value } }))}
-                />
-              </Field>
-              <Field label="Body">
-                <textarea
-                  value={draft.about.body}
-                  onChange={(e) => setDraft((d) => ({ ...d, about: { ...d.about, body: e.target.value } }))}
-                />
-              </Field>
-              <Field label="CTA label">
-                <input
-                  value={draft.about.cta.label}
-                  onChange={(e) =>
-                    setDraft((d) => ({
-                      ...d,
-                      about: { ...d.about, cta: { ...d.about.cta, label: e.target.value } },
-                    }))
-                  }
-                />
-              </Field>
-              {(draft.about.images || []).map((src, i) => (
-                <Field key={i} label={`Gallery image ${i + 1} (Nigerian imagery preferred)`}>
-                  <input
-                    value={src}
-                    onChange={(e) => {
-                      const images = [...draft.about.images];
-                      images[i] = e.target.value;
-                      setDraft((d) => ({ ...d, about: { ...d.about, images } }));
-                    }}
-                  />
-                  <img className="admin-thumb" src={src} alt="" />
-                </Field>
-              ))}
-            </div>
-          </>
-        )}
-
-        {section === 'pillars' && (
-          <>
-            <h2>Pillars</h2>
-            {(draft.pillars || []).map((p, i) => (
-              <div className="admin-card admin-grid" key={i}>
-                <div className="admin-grid two">
-                  <Field label="Title">
-                    <input
-                      value={p.title}
-                      onChange={(e) => {
-                        const pillars = [...draft.pillars];
-                        pillars[i] = { ...p, title: e.target.value };
-                        setDraft((d) => ({ ...d, pillars }));
-                      }}
-                    />
-                  </Field>
-                  <Field label="Color">
-                    <input
-                      value={p.color}
-                      onChange={(e) => {
-                        const pillars = [...draft.pillars];
-                        pillars[i] = { ...p, color: e.target.value };
-                        setDraft((d) => ({ ...d, pillars }));
-                      }}
-                    />
-                  </Field>
-                </div>
-                <Field label="Text">
-                  <textarea
-                    value={p.text}
-                    onChange={(e) => {
-                      const pillars = [...draft.pillars];
-                      pillars[i] = { ...p, text: e.target.value };
-                      setDraft((d) => ({ ...d, pillars }));
-                    }}
-                  />
-                </Field>
-              </div>
-            ))}
-          </>
-        )}
-
-        {section === 'gatherings' && (
-          <>
-            <h2>Gatherings</h2>
-            <p className="hint">GHP event cards — use Nigerian community imagery.</p>
-            {(draft.gatherings || []).map((g, i) => (
-              <div className="admin-card admin-grid" key={i}>
-                <div className="admin-grid two">
-                  <Field label="Year">
-                    <input
-                      value={g.year}
-                      onChange={(e) => {
-                        const gatherings = [...draft.gatherings];
-                        gatherings[i] = { ...g, year: e.target.value };
-                        setDraft((d) => ({ ...d, gatherings }));
-                      }}
-                    />
-                  </Field>
-                  <Field label="Name">
-                    <input
-                      value={g.name}
-                      onChange={(e) => {
-                        const gatherings = [...draft.gatherings];
-                        gatherings[i] = { ...g, name: e.target.value };
-                        setDraft((d) => ({ ...d, gatherings }));
-                      }}
-                    />
-                  </Field>
-                </div>
-                <Field label="Theme">
-                  <input
-                    value={g.theme}
-                    onChange={(e) => {
-                      const gatherings = [...draft.gatherings];
-                      gatherings[i] = { ...g, theme: e.target.value };
-                      setDraft((d) => ({ ...d, gatherings }));
-                    }}
-                  />
-                </Field>
-                <Field label="Image URL">
-                  <input
-                    value={g.image}
-                    onChange={(e) => {
-                      const gatherings = [...draft.gatherings];
-                      gatherings[i] = { ...g, image: e.target.value };
-                      setDraft((d) => ({ ...d, gatherings }));
-                    }}
-                  />
-                </Field>
-                <img className="admin-thumb" src={g.image} alt="" />
-                <button
-                  className="admin-btn danger"
-                  type="button"
-                  onClick={() =>
-                    setDraft((d) => ({
-                      ...d,
-                      gatherings: d.gatherings.filter((_, idx) => idx !== i),
-                    }))
-                  }
-                >
-                  Remove gathering
-                </button>
-              </div>
-            ))}
-            <button
-              className="admin-btn ghost"
-              type="button"
-              onClick={() =>
-                setDraft((d) => ({
-                  ...d,
-                  gatherings: [
-                    ...d.gatherings,
-                    {
-                      year: '2026',
-                      name: 'Berakah',
-                      theme: 'Blessing & increase',
-                      tag: 'GHP',
-                      image:
-                        'https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200',
-                    },
-                  ],
-                }))
-              }
-            >
-              Add gathering
-            </button>
-          </>
-        )}
-
-        {section === 'reflections' && (
-          <>
-            <h2>Reflections</h2>
-            {(draft.reflections || []).map((r, i) => (
-              <div className="admin-card admin-grid" key={i}>
-                <Field label="Date / label">
-                  <input
-                    value={r.date}
-                    onChange={(e) => {
-                      const reflections = [...draft.reflections];
-                      reflections[i] = { ...r, date: e.target.value };
-                      setDraft((d) => ({ ...d, reflections }));
-                    }}
-                  />
-                </Field>
-                <Field label="Title">
-                  <input
-                    value={r.title}
-                    onChange={(e) => {
-                      const reflections = [...draft.reflections];
-                      reflections[i] = { ...r, title: e.target.value };
-                      setDraft((d) => ({ ...d, reflections }));
-                    }}
-                  />
-                </Field>
-                <Field label="Excerpt">
-                  <textarea
-                    value={r.excerpt}
-                    onChange={(e) => {
-                      const reflections = [...draft.reflections];
-                      reflections[i] = { ...r, excerpt: e.target.value };
-                      setDraft((d) => ({ ...d, reflections }));
-                    }}
-                  />
-                </Field>
-                <button
-                  className="admin-btn danger"
-                  type="button"
-                  onClick={() =>
-                    setDraft((d) => ({
-                      ...d,
-                      reflections: d.reflections.filter((_, idx) => idx !== i),
-                    }))
-                  }
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-            <button
-              className="admin-btn ghost"
-              type="button"
-              onClick={() =>
-                setDraft((d) => ({
-                  ...d,
-                  reflections: [
-                    ...d.reflections,
-                    { date: 'New', title: 'New reflection', excerpt: '' },
-                  ],
-                }))
-              }
-            >
-              Add reflection
-            </button>
-          </>
-        )}
-
-        {section === 'leadership' && (
-          <>
-            <h2>Leadership</h2>
-            <p className="hint">First entry is featured as Convener.</p>
-            {(draft.leadership || []).map((person, i) => (
-              <div className="admin-card admin-grid" key={i}>
-                <div className="admin-grid two">
-                  <Field label="Name">
-                    <input
-                      value={person.name}
-                      onChange={(e) => {
-                        const leadership = [...draft.leadership];
-                        leadership[i] = { ...person, name: e.target.value };
-                        setDraft((d) => ({ ...d, leadership }));
-                      }}
-                    />
-                  </Field>
-                  <Field label="Role">
-                    <input
-                      value={person.role}
-                      onChange={(e) => {
-                        const leadership = [...draft.leadership];
-                        leadership[i] = { ...person, role: e.target.value };
-                        setDraft((d) => ({ ...d, leadership }));
-                      }}
-                    />
-                  </Field>
-                </div>
-                <Field label="Titles">
-                  <input
-                    value={person.titles || ''}
-                    onChange={(e) => {
-                      const leadership = [...draft.leadership];
-                      leadership[i] = { ...person, titles: e.target.value };
-                      setDraft((d) => ({ ...d, leadership }));
-                    }}
-                  />
-                </Field>
-                <Field label="Location">
-                  <input
-                    value={person.location || ''}
-                    onChange={(e) => {
-                      const leadership = [...draft.leadership];
-                      leadership[i] = { ...person, location: e.target.value || null };
-                      setDraft((d) => ({ ...d, leadership }));
-                    }}
-                  />
-                </Field>
-                <Field label="Bio">
-                  <textarea
-                    value={person.bio || ''}
-                    onChange={(e) => {
-                      const leadership = [...draft.leadership];
-                      leadership[i] = { ...person, bio: e.target.value };
-                      setDraft((d) => ({ ...d, leadership }));
-                    }}
-                  />
-                </Field>
-                {i > 0 ? (
-                  <button
-                    className="admin-btn danger"
-                    type="button"
-                    onClick={() =>
-                      setDraft((d) => ({
-                        ...d,
-                        leadership: d.leadership.filter((_, idx) => idx !== i),
-                      }))
-                    }
-                  >
-                    Remove person
-                  </button>
-                ) : null}
-              </div>
-            ))}
-            <button
-              className="admin-btn ghost"
-              type="button"
-              onClick={() =>
-                setDraft((d) => ({
-                  ...d,
-                  leadership: [
-                    ...d.leadership,
-                    {
-                      name: 'New team member',
-                      role: 'Role',
-                      titles: '',
-                      location: 'Nigeria',
-                      bio: '',
-                      featured: false,
-                    },
-                  ],
-                }))
-              }
-            >
-              Add team member
-            </button>
-          </>
-        )}
-
-        {section === 'faqs' && (
-          <>
-            <h2>FAQ</h2>
-            {(draft.faqs || []).map((item, i) => (
-              <div className="admin-card admin-grid" key={i}>
-                <Field label="Question">
-                  <input
-                    value={item.q}
-                    onChange={(e) => {
-                      const faqs = [...draft.faqs];
-                      faqs[i] = { ...item, q: e.target.value };
-                      setDraft((d) => ({ ...d, faqs }));
-                    }}
-                  />
-                </Field>
-                <Field label="Answer">
-                  <textarea
-                    value={item.a}
-                    onChange={(e) => {
-                      const faqs = [...draft.faqs];
-                      faqs[i] = { ...item, a: e.target.value };
-                      setDraft((d) => ({ ...d, faqs }));
-                    }}
-                  />
-                </Field>
-                <button
-                  className="admin-btn danger"
-                  type="button"
-                  onClick={() =>
-                    setDraft((d) => ({ ...d, faqs: d.faqs.filter((_, idx) => idx !== i) }))
-                  }
-                >
-                  Remove FAQ
-                </button>
-              </div>
-            ))}
-            <button
-              className="admin-btn ghost"
-              type="button"
-              onClick={() =>
-                setDraft((d) => ({
-                  ...d,
-                  faqs: [...d.faqs, { q: 'New question?', a: '' }],
-                }))
-              }
-            >
-              Add FAQ
-            </button>
-          </>
-        )}
+        {section === 'settings' && <SettingsEditor draft={draft} setDraft={setDraft} />}
 
         {section === 'contact' && (
           <>
-            <h2>Contact</h2>
+            <h2>Contact panel</h2>
             <div className="admin-card admin-grid">
+              <Field label="Eyebrow">
+                <input
+                  value={draft.contact?.eyebrow || ''}
+                  onChange={(e) =>
+                    setDraft((d) => ({
+                      ...d,
+                      contact: { ...d.contact, eyebrow: e.target.value },
+                    }))
+                  }
+                />
+              </Field>
               <Field label="Title">
                 <input
-                  value={draft.contact.title}
+                  value={draft.contact?.title || ''}
                   onChange={(e) =>
-                    setDraft((d) => ({ ...d, contact: { ...d.contact, title: e.target.value } }))
+                    setDraft((d) => ({
+                      ...d,
+                      contact: { ...d.contact, title: e.target.value },
+                    }))
                   }
                 />
               </Field>
               <Field label="Body">
                 <textarea
-                  value={draft.contact.body}
-                  onChange={(e) =>
-                    setDraft((d) => ({ ...d, contact: { ...d.contact, body: e.target.value } }))
-                  }
-                />
-              </Field>
-              <Field label="CTA label">
-                <input
-                  value={draft.contact.cta}
-                  onChange={(e) =>
-                    setDraft((d) => ({ ...d, contact: { ...d.contact, cta: e.target.value } }))
-                  }
-                />
-              </Field>
-              <Field label="Panel image URL">
-                <input
-                  value={draft.contact.skyImage}
-                  onChange={(e) =>
-                    setDraft((d) => ({ ...d, contact: { ...d.contact, skyImage: e.target.value } }))
-                  }
-                />
-              </Field>
-              <img className="admin-thumb" src={draft.contact.skyImage} alt="" />
-              <Field label="Email placeholder">
-                <input
-                  value={draft.contact.placeholders.email}
+                  value={draft.contact?.body || ''}
                   onChange={(e) =>
                     setDraft((d) => ({
                       ...d,
-                      contact: {
-                        ...d.contact,
-                        placeholders: { ...d.contact.placeholders, email: e.target.value },
-                      },
-                    }))
-                  }
-                />
-              </Field>
-              <Field label="Phone placeholder">
-                <input
-                  value={draft.contact.placeholders.phone}
-                  onChange={(e) =>
-                    setDraft((d) => ({
-                      ...d,
-                      contact: {
-                        ...d.contact,
-                        placeholders: { ...d.contact.placeholders, phone: e.target.value },
-                      },
+                      contact: { ...d.contact, body: e.target.value },
                     }))
                   }
                 />
@@ -937,7 +379,7 @@ export default function AdminApp() {
         {section === 'nav' && (
           <>
             <h2>Navigation</h2>
-            <p className="hint">Add, reorder labels, or remove menu links. New pages can auto-add a link.</p>
+            <p className="hint">Primary menu links. New pages can auto-add entries.</p>
             <button
               className="admin-btn primary"
               type="button"
@@ -986,66 +428,6 @@ export default function AdminApp() {
                 </button>
               </div>
             ))}
-          </>
-        )}
-
-        {section === 'media' && (
-          <>
-            <h2>Media library</h2>
-            <p className="hint">
-              Upload images for banners, events, and galleries. Copy a URL into any image field, or
-              use “Pick from library” on page editors.
-            </p>
-            <div className="admin-card">
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={async (e) => {
-                  const files = [...(e.target.files || [])];
-                  if (!files.length) return;
-                  try {
-                    const urls = [];
-                    for (const file of files) {
-                      urls.push(await uploadFile(file));
-                    }
-                    setStatus(`Uploaded ${urls.length} file(s)`);
-                    setError('');
-                  } catch (err) {
-                    setError(err.message || 'Upload failed');
-                  } finally {
-                    e.target.value = '';
-                  }
-                }}
-              />
-            </div>
-            <div className="admin-card admin-media-grid">
-              {uploads.length === 0 ? <p className="hint">No uploads yet.</p> : null}
-              {uploads.map((f) => (
-                <div className="admin-media-card" key={f.id || f.filename || f.url}>
-                  <img
-                    className="admin-thumb"
-                    src={f.url}
-                    alt={f.original_name || f.filename || 'Upload'}
-                  />
-                  <code title={f.url}>{f.url}</code>
-                  <button
-                    className="admin-btn ghost"
-                    type="button"
-                    onClick={async () => {
-                      try {
-                        await navigator.clipboard.writeText(f.url);
-                        setStatus('Copied image URL');
-                      } catch {
-                        setStatus(f.url);
-                      }
-                    }}
-                  >
-                    Copy URL
-                  </button>
-                </div>
-              ))}
-            </div>
           </>
         )}
       </main>

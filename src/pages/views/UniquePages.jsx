@@ -345,7 +345,7 @@ function GalleryBlock({ gallery }) {
 
 function SiteEventsBlock() {
   const { content } = useContent();
-  const events = content.events || [];
+  const events = (content.events || []).filter((e) => (e.status || 'published') === 'published');
   if (!events.length) {
     return (
       <section className="section">
@@ -366,6 +366,7 @@ function SiteEventsBlock() {
               </div>
             ) : null}
             <div className="uniq-event__body">
+              {ev.category ? <span className="tag">{ev.category}</span> : null}
               {ev.date ? <span className="tag">{ev.date}</span> : null}
               <h3>{ev.title}</h3>
               {ev.location ? <p className="uniq-event__theme">{ev.location}</p> : null}
@@ -385,6 +386,74 @@ function SiteEventsBlock() {
   );
 }
 
+function PageBlocks({ blocks }) {
+  if (!blocks?.length) return null;
+  return (
+    <>
+      {blocks.map((block) => {
+        if (block.type === 'richtext') {
+          return (
+            <StoryBlock
+              key={block.id}
+              title={block.title}
+              story={block.body}
+            />
+          );
+        }
+        if (block.type === 'quote') {
+          return <QuoteBlock key={block.id} quote={block} />;
+        }
+        if (block.type === 'gallery') {
+          return <GalleryBlock key={block.id} gallery={block.items} />;
+        }
+        if (block.type === 'video') {
+          return <VideosBlock key={block.id} videos={[block]} heading={block.title || 'Video'} />;
+        }
+        if (block.type === 'cta') {
+          return (
+            <section key={block.id} className="section section--tight">
+              <div className="wrap uniq-cta-block">
+                {block.title ? <h2>{block.title}</h2> : null}
+                {block.text ? <p>{block.text}</p> : null}
+                {block.label && block.href ? (
+                  <Link className="btn btn--solid" to={block.href}>
+                    {block.label}
+                  </Link>
+                ) : null}
+              </div>
+            </section>
+          );
+        }
+        if (block.type === 'stats') {
+          return (
+            <section key={block.id} className="section section--tight">
+              <div className="wrap uniq-stats">
+                {(block.items || []).map((item, i) => (
+                  <article key={i}>
+                    <strong>{item.value}</strong>
+                    <span>{item.label}</span>
+                  </article>
+                ))}
+              </div>
+            </section>
+          );
+        }
+        if (block.type === 'embed' && block.html) {
+          return (
+            <section key={block.id} className="section section--tight">
+              <div
+                className="wrap uniq-embed"
+                dangerouslySetInnerHTML={{ __html: block.html }}
+              />
+            </section>
+          );
+        }
+        return null;
+      })}
+    </>
+  );
+}
+
 /** Flexible layout for CMS-created pages and events/videos hubs. */
 export function CustomPageUnique({ page }) {
   const { content } = useContent();
@@ -394,6 +463,7 @@ export function CustomPageUnique({ page }) {
   return (
     <>
       <StoryBlock title={page.storyTitle} story={page.story} cta={page.cta} />
+      <PageBlocks blocks={page.blocks} />
       {page.useSiteEvents ? <SiteEventsBlock /> : null}
       {!page.useSiteEvents && (page.events || []).length ? (
         <GatheringsUnique

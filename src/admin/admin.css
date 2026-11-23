@@ -699,3 +699,128 @@
     grid-template-columns: 1fr;
   }
 }
+
+.admin-shell--studio {
+  grid-template-columns: 18.5rem 1fr;
+}
+
+.admin-side__search {
+  margin: 0 0.55rem 0.75rem;
+  width: calc(100% - 1.1rem);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  font: inherit;
+}
+
+.admin-side__search::placeholder {
+  color: rgba(249, 247, 245, 0.4);
+}
+
+.admin-toolbar--sticky {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  background: rgba(239, 234, 228, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(35, 31, 27, 0.08);
+  margin: -1.5rem -1.75rem 1.25rem;
+  padding: 0.85rem 1.75rem;
+}
+
+.admin-toolbar__left {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.admin-toolbar__right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.admin-kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #525fbd;
+  font-weight: 560;
+}
+
+.admin-hero-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: end;
+  padding: 1.35rem 1.4rem;
+  border-radius: 18px;
+  margin-bottom: 1rem;
+  background:
+    radial-gradient(ellipse 60% 80% at 100% 0%, rgba(82, 95, 189, 0.18), transparent 55%),
+    #fff;
+  border: 1px solid rgba(35, 31, 27, 0.1);
+}
+
+.admin-hero-panel h2 {
+  margin: 0.2rem 0 0.35rem;
+}
+
+.admin-hero-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-stats--wide {
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+}
+
+.admin-stat--btn {
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.admin-stat--btn:hover {
+  border-color: #525fbd;
+  transform: translateY(-1px);
+}
+
+.admin-search {
+  border: 1px solid rgba(35, 31, 27, 0.16);
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  font: inherit;
+  min-width: 12rem;
+  background: #fff;
+}
+
+.admin-check {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.92rem;
+  color: #231f1b;
+}
+
+.admin-block-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .admin-toolbar--sticky {
+    margin: -1rem -1rem 1rem;
+    padding: 0.75rem 1rem;
+  }
+}

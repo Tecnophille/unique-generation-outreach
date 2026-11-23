@@ -106,3 +106,34 @@ export async function listMedia() {
       };
     });
 }
+
+export async function deleteMedia(id) {
+  const rows = await sql(
+    `select id, filename, url from media_assets where id = $1 limit 1`,
+    [id],
+  );
+  const asset = rows[0];
+  if (!asset) {
+    const err = new Error('Media not found');
+    err.status = 404;
+    throw err;
+  }
+
+  if (config.useSupabaseStorage && asset.filename) {
+    const objectPath = `uploads/${asset.filename}`;
+    const endpoint = `${config.supabaseUrl}/storage/v1/object/${config.supabaseBucket}/${objectPath}`;
+    await fetch(endpoint, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${config.supabaseServiceKey}`,
+        apikey: config.supabaseServiceKey,
+      },
+    }).catch(() => null);
+  } else if (asset.filename) {
+    const full = path.join(config.uploadsDir, asset.filename);
+    if (fs.existsSync(full)) fs.unlinkSync(full);
+  }
+
+  await sql(`delete from media_assets where id = $1`, [id]);
+  return { ok: true, id };
+}

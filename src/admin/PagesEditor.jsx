@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import MediaPicker from './MediaPicker';
+import BlocksEditor from './BlocksEditor';
+import { Field, ListToolbar } from './fields';
 
 const CORE_PAGES = new Set([
   'about',
@@ -12,15 +14,6 @@ const CORE_PAGES = new Set([
   'events',
   'videos',
 ]);
-
-function Field({ label, children }) {
-  return (
-    <div className="admin-field">
-      <label>{label}</label>
-      {children}
-    </div>
-  );
-}
 
 function slugify(value) {
   return String(value || '')
@@ -88,17 +81,6 @@ function CommonFields({ page, patchPage }) {
   );
 }
 
-function ListToolbar({ onAdd, addLabel, children }) {
-  return (
-    <div className="admin-list-toolbar">
-      <button className="admin-btn ghost" type="button" onClick={onAdd}>
-        {addLabel}
-      </button>
-      {children}
-    </div>
-  );
-}
-
 export default function PagesEditor({ draft, setDraft }) {
   const pageKeys = useMemo(() => {
     const keys = Object.keys(draft.pages || {});
@@ -158,6 +140,9 @@ export default function PagesEditor({ draft, setDraft }) {
       events: [],
       videos: [],
       articles: [],
+      blocks: [],
+      status: 'published',
+      seo: { title: '', description: '' },
       custom: true,
     };
     setDraft((d) => {
@@ -323,7 +308,40 @@ export default function PagesEditor({ draft, setDraft }) {
           </div>
         </div>
 
+        <div className="admin-grid two">
+          <Field label="Publish status">
+            <select
+              value={page.status || 'published'}
+              onChange={(e) => patchPage({ status: e.target.value })}
+            >
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+            </select>
+          </Field>
+          <Field label="SEO title override">
+            <input
+              value={page.seo?.title || ''}
+              onChange={(e) =>
+                patchPage({ seo: { ...(page.seo || {}), title: e.target.value } })
+              }
+            />
+          </Field>
+        </div>
+        <Field label="SEO description">
+          <textarea
+            value={page.seo?.description || ''}
+            onChange={(e) =>
+              patchPage({ seo: { ...(page.seo || {}), description: e.target.value } })
+            }
+          />
+        </Field>
+
         <CommonFields page={page} patchPage={patchPage} />
+
+        <BlocksEditor
+          blocks={page.blocks || []}
+          onChange={(blocks) => patchPage({ blocks })}
+        />
 
         {active === 'about' && (
           <>

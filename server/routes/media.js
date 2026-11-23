@@ -2,7 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { authRequired } from '../middleware/auth.js';
 import { config } from '../config.js';
-import { ensureUploadsDir, listMedia, recordUpload } from '../services/mediaService.js';
+import { deleteMedia, ensureUploadsDir, listMedia, recordUpload } from '../services/mediaService.js';
 
 ensureUploadsDir();
 
@@ -46,6 +46,16 @@ router.post('/upload', authRequired, upload.single('file'), async (req, res, nex
     }
     const asset = await recordUpload(req.file, req.admin.id);
     res.status(201).json(asset);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete('/uploads/:id', authRequired, async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isFinite(id)) return res.status(400).json({ error: 'Invalid id' });
+    res.json(await deleteMedia(id));
   } catch (err) {
     next(err);
   }

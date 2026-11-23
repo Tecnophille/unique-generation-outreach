@@ -53,7 +53,7 @@ export default function SectionPage({ pageKey: pageKeyProp }) {
   }
 
   const page = content.pages?.[pageKey];
-  if (!page) {
+  if (!page || (page.status || 'published') === 'draft') {
     return (
       <SiteLayout>
         <div className="section wrap">

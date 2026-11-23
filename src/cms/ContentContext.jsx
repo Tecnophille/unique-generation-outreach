@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { normalizeContent } from './contentModel';
 
 const ContentContext = createContext(null);
 
@@ -14,8 +15,7 @@ export function ContentProvider({ children }) {
       const res = await fetch('/api/content', { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to load content');
       const data = await res.json();
-      if (!data.pages) data.pages = {};
-      setContent(data);
+      setContent(normalizeContent(data));
     } catch (err) {
       setError(err.message || 'Failed to load content');
     } finally {
@@ -39,7 +39,7 @@ export function ContentProvider({ children }) {
       throw new Error(data.error || 'Save failed');
     }
     const saved = await res.json();
-    setContent(saved);
+    setContent(normalizeContent(saved));
     return saved;
   }, []);
 

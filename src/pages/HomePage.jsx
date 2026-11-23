@@ -6,6 +6,11 @@ import Pillars from '../components/Pillars';
 import Gatherings from '../components/Gatherings';
 import Reflections from '../components/Reflections';
 import Contact from '../components/Contact';
+import {
+  FeaturedEventsStrip,
+  PartnersStrip,
+  TestimonialsStrip,
+} from '../components/SocialProof';
 
 export default function HomePage() {
   return (
@@ -24,12 +29,15 @@ export default function HomePage() {
           Read full GHP stories
         </Link>
       </div>
+      <FeaturedEventsStrip />
       <Reflections />
       <div className="wrap section-cta" style={{ paddingBottom: '0.5rem' }}>
         <Link className="btn btn--outline" to="/reflections">
           Read full reflections
         </Link>
       </div>
+      <TestimonialsStrip />
+      <PartnersStrip />
       <section className="section section--tight">
         <div className="wrap" style={{ textAlign: 'center' }}>
           <span className="label label--center">Go deeper</span>
