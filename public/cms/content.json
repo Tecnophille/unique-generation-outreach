@@ -53,7 +53,7 @@
   ],
   "hero": {
     "badge": "Gathered for purpose and service",
-    "image": "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=2400&q=80",
+    "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465423371-hero-hall.jpg",
     "support": "Unique Generation Outreach promotes unity, creates opportunities, and inspires transformation across communities — through faith, service, and purposeful leadership.",
     "headline": "A place to unite, empower, and walk in faith.",
     "primaryCta": {
@@ -74,9 +74,9 @@
     "body": "We are a community shaped by faith, service, and daily life — gathering across seasons to empower one another and walk together in purpose.",
     "label": "About",
     "images": [
-      "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/39308542/pexels-photo-39308542.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465414710-about-worship.jpg",
+      "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465410685-about-joy.jpg",
+      "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465413764-about-music.jpg"
     ]
   },
   "brand": {
@@ -93,7 +93,7 @@
       "label": "FAQ",
       "story": "If your question is not listed, reach out. We would rather talk with you than leave you guessing.",
       "title": "Answers before you ask",
-      "heroImage": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "heroImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465417283-community-white.jpg",
       "storyTitle": "Still unsure?"
     },
     "about": {
@@ -111,19 +111,19 @@
       "title": "Our story of faith, unity, and opportunity",
       "gallery": [
         {
-          "src": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
-          "caption": "Worship and community in Lagos"
+          "src": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465414710-about-worship.jpg",
+          "caption": "Worship and devotion at UGO gatherings"
         },
         {
-          "src": "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
-          "caption": "Celebration and shared praise"
+          "src": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465417283-community-white.jpg",
+          "caption": "Community gathered in unity"
         },
         {
-          "src": "https://images.pexels.com/photos/39308542/pexels-photo-39308542.jpeg?auto=compress&cs=tinysrgb&w=1200",
-          "caption": "Everyday life and opportunity in Nigeria"
+          "src": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465416031-bold-voice-leaders.jpg",
+          "caption": "Bold Voice TV · Unique Generation Outreach"
         }
       ],
-      "heroImage": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "heroImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465412880-about-leadership-line.jpg",
       "milestones": [
         {
           "text": "A generation gathered for unity, empowerment, and community transformation.",
@@ -163,7 +163,7 @@
           "title": "Gatherings"
         }
       ],
-      "heroImage": "https://images.pexels.com/photos/36086874/pexels-photo-36086874.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "heroImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465412880-about-leadership-line.jpg",
       "storyTitle": "Ways to reach us"
     },
     "pillars": {
@@ -207,7 +207,7 @@
       "label": "Pillars",
       "story": "Every programme, gathering, and partnership is filtered through these pillars. They help our coordinators, volunteers, and partners stay aligned — whether we are hosting GHP, mentoring leaders, or opening doors of opportunity.",
       "title": "The commitments that carry our mission",
-      "heroImage": "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "heroImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465413764-about-music.jpg",
       "storyTitle": "How we serve"
     },
     "gatherings": {
@@ -223,33 +223,33 @@
         {
           "name": "Koinonia",
           "year": "2022",
-          "image": "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465421180-ghp-koinonia.jpg",
           "story": "Koinonia called us back to shared life — not attendance alone, but belonging. We learned again that the body thrives when no one walks alone.",
           "theme": "Fellowship & belonging"
         },
         {
           "name": "Kavod",
           "year": "2024",
-          "image": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465420329-ghp-kavod.jpg",
           "story": "Kavod lifted our eyes to honour — honouring God, honouring one another, and restoring dignity in how we speak, serve, and lead.",
           "theme": "Honour & reverence"
         },
         {
           "name": "Shabach",
           "year": "2025",
-          "image": "https://images.pexels.com/photos/39007513/pexels-photo-39007513.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465422212-ghp-shabach.jpg",
           "story": "Shabach made room for joyful praise — celebration as warfare, gratitude as witness, and creativity as an offering.",
           "theme": "Praise & celebration"
         },
         {
           "name": "Berakah",
           "year": "2026",
-          "image": "https://images.pexels.com/photos/36086874/pexels-photo-36086874.jpeg?auto=compress&cs=tinysrgb&w=1200",
+          "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465419148-ghp-berakah.jpg",
           "story": "Berakah looks ahead to blessing that multiplies — opportunities that overflow into families, cities, and the next generation.",
           "theme": "Blessing & increase"
         }
       ],
-      "heroImage": "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "heroImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465423371-hero-hall.jpg",
       "storyTitle": "Why we gather"
     },
     "leadership": {
@@ -275,7 +275,7 @@
       "label": "Leadership",
       "story": "Unique Generation Outreach is led with pastoral heart and operational clarity. Roles span cities in Nigeria and the diaspora so programmes are coordinated, communicated, and delivered with excellence.",
       "title": "Stewards of the mission",
-      "heroImage": "https://images.pexels.com/photos/39308542/pexels-photo-39308542.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "heroImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465416031-bold-voice-leaders.jpg",
       "storyTitle": "How leadership works here"
     },
     "reflections": {
@@ -304,7 +304,7 @@
           "title": "Becoming a channel of blessing"
         }
       ],
-      "heroImage": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "heroImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465414710-about-worship.jpg",
       "storyTitle": "A space to listen"
     }
   },
@@ -312,7 +312,7 @@
     "cta": "Reach out to us",
     "body": "Have a question, a need, or something on your heart? We’re here to listen. Feel free to reach out — we’ll take the time to respond with care.",
     "title": "Let’s stay in touch",
-    "skyImage": "https://images.pexels.com/photos/36086874/pexels-photo-36086874.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "skyImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465423371-hero-hall.jpg",
     "newsletter": {
       "body": "Subscribe to receive the latest updates when contact details are confirmed.",
       "features": [
@@ -371,27 +371,27 @@
       "title": "Volunteering"
     }
   ],
-  "updatedAt": "2026-11-23T13:41:04.014Z",
+  "updatedAt": "2026-11-23T20:23:50.324Z",
   "gatherings": [
     {
       "tag": "GHP",
       "name": "Koinonia",
       "year": "2022",
-      "image": "https://images.pexels.com/photos/30550589/pexels-photo-30550589.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465421180-ghp-koinonia.jpg",
       "theme": "Fellowship & belonging"
     },
     {
       "tag": "GHP",
       "name": "Kavod",
       "year": "2024",
-      "image": "https://images.pexels.com/photos/38232286/pexels-photo-38232286.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465420329-ghp-kavod.jpg",
       "theme": "Honour & reverence in community life"
     },
     {
       "tag": "GHP",
       "name": "Shabach",
       "year": "2025",
-      "image": "https://images.pexels.com/photos/39007513/pexels-photo-39007513.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465422212-ghp-shabach.jpg",
       "theme": "Praise, celebration, and shared joy"
     }
   ],
@@ -402,70 +402,80 @@
       "role": "Convener",
       "titles": "Clergyman · Public Speaker · Entrepreneur · Priest-in-Charge, Will of God Sabbath Mission",
       "featured": true,
-      "location": null
+      "location": null,
+      "photo": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465418081-convener.jpg"
     },
     {
       "bio": "A clergyman committed to faith, service, leadership, and community development. He contributes to the organisation’s administrative activities, supporting effective coordination, teamwork, and the smooth implementation of its initiatives.",
       "name": "Oguaju Soromkelechi Victor",
       "role": "Administrative Coordinator 1",
       "titles": "Clergyman",
-      "location": "Port Harcourt, Rivers State, Nigeria"
+      "location": "Port Harcourt, Rivers State, Nigeria",
+      "photo": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465430546-team-sorom.jpg"
     },
     {
       "bio": "An entrepreneur with interest in business development, leadership, and creating opportunities. She supports the organisation’s administrative structure and coordination efforts, committed to teamwork and positive social impact.",
       "name": "Sunday Hope Anulika",
       "role": "Administrative Coordinator 2",
       "titles": "Entrepreneur",
-      "location": "Abuja, Nigeria"
+      "location": "Abuja, Nigeria",
+      "photo": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465427533-team-hope.jpg"
     },
     {
       "bio": "A dynamic professional with a Master’s in Food Engineering. She strengthens administrative structure, coordinates communications, maintains records, and supports programme implementation.",
       "name": "Ing. Cynthia Uloma Offor",
       "role": "Secretary",
       "titles": "Project Management Professional · R&D Specialist · Administrator",
-      "location": "Lagos, Nigeria"
+      "location": "Lagos, Nigeria",
+      "photo": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465426804-team-cynthia.jpg"
     },
     {
       "bio": "A student nurse and mental health practitioner passionate about healthcare and human development. He supports administrative and documentation activities alongside the Secretary.",
       "name": "Oziomachukwu Amaefula",
       "role": "Assistant Secretary",
       "titles": "Student Nurse · Mental Health Practitioner",
-      "location": "United Kingdom"
+      "location": "United Kingdom",
+      "photo": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465429837-team-ozioma.jpg"
     },
     {
       "bio": "A music producer and musician who oversees stage presentations and event operations, bringing creative experience to programmes and public engagements.",
       "name": "Ifeanyi Daniel",
       "role": "Director of Stage Management & Events",
       "titles": "Music Producer · Musician",
-      "location": "Lagos, Nigeria"
+      "location": "Lagos, Nigeria",
+      "photo": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465428389-team-ifeanyi.jpg"
     },
     {
       "bio": "A sound engineer contributing to creative direction — using technical and artistic expertise to enhance communication, storytelling, and audience engagement.",
       "name": "Chibuike Henry Vincent",
       "role": "Creative Director",
       "titles": "Sound Engineer",
-      "location": "Lagos State, Nigeria"
+      "location": "Lagos State, Nigeria",
+      "photo": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465425220-team-chibuike.jpg"
     },
     {
       "bio": "Coordinates official engagements, event arrangements, and protocol-related activities with professionalism and teamwork.",
       "name": "Okafor Chukwunwem",
       "role": "Director of Protocol",
       "titles": "Solar Energy Entrepreneur",
-      "location": "Lagos, Nigeria"
+      "location": "Lagos, Nigeria",
+      "photo": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465429186-team-okafor.jpg"
     },
     {
       "bio": "Supports volunteer engagement and coordination, fostering a culture of service that advances empowerment, unity, and community transformation.",
       "name": "Dr. Cosmic Macduff",
       "role": "Volunteers Coordinator",
       "titles": "Entrepreneur · Author · Public Speaker · MD, Macversity Group",
-      "location": "Lagos, Nigeria"
+      "location": "Lagos, Nigeria",
+      "photo": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465426054-team-cosmic.jpg"
     },
     {
       "bio": "Supports information and communication activities — disseminating public awareness of programmes, objectives, and initiatives.",
       "name": "Ojugbana Chukwuka Bobby",
       "role": "Director of Information",
       "titles": "Entrepreneur — Building Materials",
-      "location": "Lagos, Nigeria"
+      "location": "Lagos, Nigeria",
+      "photo": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465424458-team-bobby.jpg"
     },
     {
       "bio": "Contributes professional expertise and strategic insight toward developmental goals. Leadership philosophy anchored in excellence, innovation, collaboration, and lasting impact.",
@@ -501,7 +511,7 @@
   "seo": {
     "titleTemplate": "%s · Unique Generation Outreach",
     "defaultDescription": "",
-    "ogImage": "/logo-icon.png"
+    "ogImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465423371-hero-hall.jpg"
   },
   "social": {
     "facebook": "",
