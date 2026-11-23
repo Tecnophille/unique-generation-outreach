@@ -29,8 +29,8 @@ function isLivePage(page) {
 
 const router = Router();
 
-router.get('/robots', (_req, res) => {
-  const base = config.siteUrl || '';
+router.get('/robots', (req, res) => {
+  const base = (config.siteUrl || `${req.protocol}://${req.get('host')}` || '').replace(/\/$/, '');
   res
     .type('text/plain')
     .send(

@@ -37,8 +37,8 @@ async function boot() {
 
   const app = createApiApp();
 
-  app.get('/robots.txt', (_req, res) => {
-    const base = config.siteUrl || '';
+  app.get('/robots.txt', (req, res) => {
+    const base = (config.siteUrl || `${req.protocol}://${req.get('host')}` || '').replace(/\/$/, '');
     res.type('text/plain').send(
       ['User-agent: *', 'Allow: /', 'Disallow: /admin', 'Disallow: /api/', '', `Sitemap: ${base}/sitemap.xml`, ''].join(
         '\n',
