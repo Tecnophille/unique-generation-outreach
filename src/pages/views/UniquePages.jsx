@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { useContent, initials } from '../../cms/ContentContext';
+import { useContent } from '../../cms/ContentContext';
+import TeamAvatar from '../../components/TeamAvatar';
 
 function StoryBlock({ title, story, cta }) {
   if (!story && !title) return null;
@@ -171,23 +172,6 @@ export function ReflectionsUnique({ page }) {
         ) : null}
       </section>
     </>
-  );
-}
-
-function TeamAvatar({ person, large = false }) {
-  const photo = person?.photo || person?.image || '';
-  const className = large ? 'avatar avatar--lg' : 'avatar';
-  if (photo) {
-    return (
-      <div className={`${className} avatar--photo`}>
-        <img src={photo} alt={person.name || ''} />
-      </div>
-    );
-  }
-  return (
-    <div className={className} aria-hidden="true">
-      {initials(person?.name)}
-    </div>
   );
 }
 

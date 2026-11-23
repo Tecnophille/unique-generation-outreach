@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
-import { initials, useContent } from '../cms/ContentContext';
+import { useContent } from '../cms/ContentContext';
+import TeamAvatar from './TeamAvatar';
 
 export default function Leadership() {
   const { content } = useContent();
   const leadership = content.leadership || [];
   const [convener, ...team] = leadership;
+  const hasPhotos = leadership.some((p) => p.photo || p.image);
 
   if (!convener) return null;
 
@@ -27,9 +29,7 @@ export default function Leadership() {
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="avatar avatar--lg" aria-hidden="true">
-            {initials(convener.name)}
-          </div>
+          <TeamAvatar person={convener} large />
           <div>
             <div className="leader__role">{convener.role}</div>
             <h3>{convener.name}</h3>
@@ -48,9 +48,7 @@ export default function Leadership() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5, delay: (i % 3) * 0.05, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="avatar" aria-hidden="true">
-                {initials(person.name)}
-              </div>
+              <TeamAvatar person={person} />
               <div>
                 <div className="leader__role">{person.role}</div>
                 <h3>{person.name}</h3>
@@ -61,7 +59,9 @@ export default function Leadership() {
             </motion.article>
           ))}
         </div>
-        <p className="placeholder-note">Portrait placeholders — official headshots coming soon.</p>
+        {!hasPhotos ? (
+          <p className="placeholder-note">Add team photos from the CMS Team directory.</p>
+        ) : null}
       </div>
     </section>
   );
