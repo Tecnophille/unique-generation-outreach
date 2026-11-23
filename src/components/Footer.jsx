@@ -3,13 +3,16 @@ import { useContent } from '../cms/ContentContext';
 
 export default function Footer() {
   const { content } = useContent();
-  const { brand, nav, social, footer } = content;
+  const { brand, nav, social, footer, contact } = content;
   const socialLinks = [
     { key: 'facebook', label: 'Facebook' },
     { key: 'instagram', label: 'Instagram' },
     { key: 'youtube', label: 'YouTube' },
     { key: 'twitter', label: 'X / Twitter' },
   ].filter((s) => social?.[s.key]);
+  const email = (contact?.email || '').trim();
+  const phone = (contact?.phone || '').trim();
+  const tel = phone.replace(/[^\d+]/g, '');
 
   return (
     <footer className="footer">
@@ -28,6 +31,20 @@ export default function Footer() {
             <p style={{ color: 'var(--muted)', fontSize: '0.92rem', maxWidth: '18rem' }}>
               {footer?.blurb || 'Unity · Empowerment · Opportunities · Transformation'}
             </p>
+            {(email || phone) && (
+              <ul className="footer__contact">
+                {email ? (
+                  <li>
+                    <a href={`mailto:${email}`}>{email}</a>
+                  </li>
+                ) : null}
+                {phone ? (
+                  <li>
+                    <a href={tel ? `tel:${tel}` : undefined}>{phone}</a>
+                  </li>
+                ) : null}
+              </ul>
+            )}
           </div>
           <div>
             <h4>Follow us</h4>

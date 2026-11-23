@@ -27,6 +27,28 @@ export function normalizeContent(raw = {}) {
       copyright: '',
       ...(raw.footer || {}),
     },
+    contact: {
+      eyebrow: '',
+      title: '',
+      body: '',
+      cta: 'Reach out to us',
+      email: '',
+      phone: '',
+      skyImage: '',
+      ...(raw.contact || {}),
+      newsletter: {
+        titleBefore: 'Join our ',
+        titleAccent: 'newsletter.',
+        body: '',
+        features: [],
+        ...((raw.contact && raw.contact.newsletter) || {}),
+      },
+      placeholders: {
+        email: '',
+        phone: '',
+        ...((raw.contact && raw.contact.placeholders) || {}),
+      },
+    },
     pages: raw.pages || {},
     nav: Array.isArray(raw.nav) ? raw.nav : [],
   };

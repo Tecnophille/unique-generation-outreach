@@ -106,6 +106,10 @@ export default function SettingsEditor({ draft, setDraft }) {
             }
           />
         </Field>
+        <p className="hint" style={{ margin: 0 }}>
+          Public email and phone for the footer and contact panel are edited under{' '}
+          <strong>Contact panel</strong> in the studio sidebar.
+        </p>
       </div>
     </>
   );

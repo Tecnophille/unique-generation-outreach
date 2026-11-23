@@ -997,6 +997,33 @@ p {
   color: var(--muted-2);
 }
 
+.contact-placeholders a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.contact-placeholders a:hover {
+  color: var(--ink);
+}
+
+.footer__contact {
+  list-style: none;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.footer__contact a {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.footer__contact a:hover {
+  color: var(--ink);
+}
+
 /* —— Footer —— */
 .footer {
   padding-block: 3.5rem 2.5rem;

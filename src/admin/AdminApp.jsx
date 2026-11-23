@@ -484,7 +484,56 @@ export default function AdminApp() {
         {section === 'contact' && (
           <>
             <h2>Contact panel</h2>
+            <p className="hint">
+              Public contact details and the stay-in-touch panel. Email and phone appear as clickable
+              links on the site once set.
+            </p>
             <div className="admin-card admin-grid">
+              <h3 style={{ margin: 0 }}>Contact details</h3>
+              <div className="admin-grid two">
+                <Field label="Public email" hint="Used for the Reach out button and mailto links">
+                  <input
+                    type="email"
+                    inputMode="email"
+                    placeholder="hello@example.org"
+                    value={draft.contact?.email || ''}
+                    onChange={(e) =>
+                      setDraft((d) => ({
+                        ...d,
+                        contact: { ...d.contact, email: e.target.value },
+                      }))
+                    }
+                  />
+                </Field>
+                <Field label="Public phone" hint="Shown with a tap-to-call link">
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    placeholder="+234 …"
+                    value={draft.contact?.phone || ''}
+                    onChange={(e) =>
+                      setDraft((d) => ({
+                        ...d,
+                        contact: { ...d.contact, phone: e.target.value },
+                      }))
+                    }
+                  />
+                </Field>
+              </div>
+              <Field label="Button label">
+                <input
+                  value={draft.contact?.cta || ''}
+                  onChange={(e) =>
+                    setDraft((d) => ({
+                      ...d,
+                      contact: { ...d.contact, cta: e.target.value },
+                    }))
+                  }
+                />
+              </Field>
+            </div>
+            <div className="admin-card admin-grid">
+              <h3 style={{ margin: 0 }}>Panel copy</h3>
               <Field label="Eyebrow">
                 <input
                   value={draft.contact?.eyebrow || ''}
@@ -514,6 +563,73 @@ export default function AdminApp() {
                     setDraft((d) => ({
                       ...d,
                       contact: { ...d.contact, body: e.target.value },
+                    }))
+                  }
+                />
+              </Field>
+              <Field label="Panel image URL">
+                <input
+                  value={draft.contact?.skyImage || ''}
+                  onChange={(e) =>
+                    setDraft((d) => ({
+                      ...d,
+                      contact: { ...d.contact, skyImage: e.target.value },
+                    }))
+                  }
+                />
+              </Field>
+            </div>
+            <div className="admin-card admin-grid">
+              <h3 style={{ margin: 0 }}>Newsletter block</h3>
+              <div className="admin-grid two">
+                <Field label="Title before accent">
+                  <input
+                    value={draft.contact?.newsletter?.titleBefore || ''}
+                    onChange={(e) =>
+                      setDraft((d) => ({
+                        ...d,
+                        contact: {
+                          ...d.contact,
+                          newsletter: {
+                            ...(d.contact?.newsletter || {}),
+                            titleBefore: e.target.value,
+                          },
+                        },
+                      }))
+                    }
+                  />
+                </Field>
+                <Field label="Title accent">
+                  <input
+                    value={draft.contact?.newsletter?.titleAccent || ''}
+                    onChange={(e) =>
+                      setDraft((d) => ({
+                        ...d,
+                        contact: {
+                          ...d.contact,
+                          newsletter: {
+                            ...(d.contact?.newsletter || {}),
+                            titleAccent: e.target.value,
+                          },
+                        },
+                      }))
+                    }
+                  />
+                </Field>
+              </div>
+              <Field label="Newsletter body">
+                <textarea
+                  value={draft.contact?.newsletter?.body || ''}
+                  onChange={(e) =>
+                    setDraft((d) => ({
+                      ...d,
+                      contact: {
+                        ...d.contact,
+                        newsletter: {
+                          ...(d.contact?.newsletter || {}),
+                          body: e.target.value,
+                        },
+                      },
                     }))
                   }
                 />

@@ -3,6 +3,11 @@ import { motion } from 'framer-motion';
 import { useContent } from '../cms/ContentContext';
 import { IconMail, IconPeople } from './Icons';
 
+function telHref(phone) {
+  const digits = String(phone || '').replace(/[^\d+]/g, '');
+  return digits ? `tel:${digits}` : '';
+}
+
 export default function Contact() {
   const { content } = useContent();
   const { contact } = content;
@@ -10,6 +15,13 @@ export default function Contact() {
   const [formStatus, setFormStatus] = useState('');
   const [formError, setFormError] = useState('');
   const [busy, setBusy] = useState(false);
+
+  const contactEmail = (contact.email || '').trim();
+  const contactPhone = (contact.phone || '').trim();
+  const mailHref = contactEmail ? `mailto:${contactEmail}` : '';
+  const phoneHref = telHref(contactPhone);
+  const emailLabel = contactEmail || contact.placeholders?.email || 'Contact email coming soon';
+  const phoneLabel = contactPhone || contact.placeholders?.phone || 'Phone number coming soon';
 
   async function submitNewsletter(e) {
     e.preventDefault();
@@ -49,26 +61,45 @@ export default function Contact() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="contact-cta">
-            <img src={contact.skyImage} alt="" />
+            {contact.skyImage ? <img src={contact.skyImage} alt="" /> : null}
             <h2>{contact.title}</h2>
             <p>{contact.body}</p>
-            <a className="btn btn--primary" href="mailto:hello@uniquegeneration.outreach">
-              {contact.cta}
-              <span className="btn__icon">
-                <IconMail />
+            {mailHref ? (
+              <a className="btn btn--primary" href={mailHref}>
+                {contact.cta || 'Reach out to us'}
+                <span className="btn__icon">
+                  <IconMail />
+                </span>
+              </a>
+            ) : (
+              <span className="btn btn--primary" aria-disabled="true">
+                {contact.cta || 'Reach out to us'}
+                <span className="btn__icon">
+                  <IconMail />
+                </span>
               </span>
-            </a>
+            )}
             <p className="contact-placeholders">
-              {contact.placeholders.email} · {contact.placeholders.phone}
+              {mailHref ? (
+                <a href={mailHref}>{emailLabel}</a>
+              ) : (
+                <span>{emailLabel}</span>
+              )}
+              <span aria-hidden="true"> · </span>
+              {phoneHref ? (
+                <a href={phoneHref}>{phoneLabel}</a>
+              ) : (
+                <span>{phoneLabel}</span>
+              )}
             </p>
           </div>
           <div className="contact-news">
             <h3>
-              {contact.newsletter.titleBefore}
-              <em>{contact.newsletter.titleAccent}</em>
+              {contact.newsletter?.titleBefore}
+              <em>{contact.newsletter?.titleAccent}</em>
             </h3>
-            <p>{contact.newsletter.body}</p>
-            {contact.newsletter.features.map((f) => (
+            <p>{contact.newsletter?.body}</p>
+            {(contact.newsletter?.features || []).map((f) => (
               <div key={f.title} className="news-feature">
                 <div className="news-feature__icon" aria-hidden="true">
                   {f.title.includes('Community') ? <IconPeople /> : <IconMail />}

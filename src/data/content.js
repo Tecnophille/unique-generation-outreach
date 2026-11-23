@@ -220,6 +220,8 @@ export const contact = {
   title: 'Let’s stay in touch',
   body: 'Have a question, a need, or something on your heart? We’re here to listen. Feel free to reach out — we’ll take the time to respond with care.',
   cta: 'Reach out to us',
+  email: '',
+  phone: '',
   skyImage:
     'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=1600&q=80',
   newsletter: {
