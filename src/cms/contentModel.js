@@ -7,6 +7,7 @@ export function normalizeContent(raw = {}) {
     announcements: Array.isArray(raw.announcements) ? raw.announcements : [],
     testimonials: Array.isArray(raw.testimonials) ? raw.testimonials : [],
     partners: Array.isArray(raw.partners) ? raw.partners : [],
+    resources: Array.isArray(raw.resources) ? raw.resources : [],
     redirects: Array.isArray(raw.redirects) ? raw.redirects : [],
     seo: {
       titleTemplate: '%s · Unique Generation Outreach',

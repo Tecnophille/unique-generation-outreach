@@ -53,7 +53,14 @@ export default function SectionPage({ pageKey: pageKeyProp }) {
   }
 
   const page = content.pages?.[pageKey];
-  if (!page || (page.status || 'published') === 'draft') {
+  const status = page?.status || 'published';
+  const scheduledReady =
+    status === 'scheduled' &&
+    page?.publishAt &&
+    !Number.isNaN(Date.parse(page.publishAt)) &&
+    Date.parse(page.publishAt) <= Date.now();
+  const isLive = status === 'published' || scheduledReady;
+  if (!page || !isLive) {
     return (
       <SiteLayout>
         <div className="section wrap">

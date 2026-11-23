@@ -178,6 +178,41 @@ export default function PagesEditor({ draft, setDraft }) {
     setActive('about');
   }
 
+  function duplicatePage() {
+    const base = `${active}-copy`;
+    let key = base;
+    let n = 2;
+    while (draft.pages?.[key]) {
+      key = `${base}-${n++}`;
+    }
+    setDraft((d) => ({
+      ...d,
+      pages: {
+        ...(d.pages || {}),
+        [key]: {
+          ...structuredClone(page),
+          label: `${page.label || active} (copy)`,
+          title: `${page.title || active} (copy)`,
+          custom: true,
+          status: 'draft',
+        },
+      },
+    }));
+    setActive(key);
+  }
+
+  function publishAllDrafts() {
+    setDraft((d) => {
+      const pages = { ...(d.pages || {}) };
+      Object.keys(pages).forEach((k) => {
+        if ((pages[k].status || 'published') === 'draft') {
+          pages[k] = { ...pages[k], status: 'published' };
+        }
+      });
+      return { ...d, pages };
+    });
+  }
+
   function ensureEventsPage() {
     if (draft.pages?.events) {
       setActive('events');
@@ -261,6 +296,9 @@ export default function PagesEditor({ draft, setDraft }) {
             <button className="admin-btn primary" type="button" onClick={createPage}>
               Create page
             </button>
+            <button className="admin-btn ghost" type="button" onClick={publishAllDrafts}>
+              Publish all drafts
+            </button>
             <button className="admin-btn ghost" type="button" onClick={ensureEventsPage}>
               Open Events page
             </button>
@@ -300,6 +338,9 @@ export default function PagesEditor({ draft, setDraft }) {
             <a className="admin-btn ghost" href={path} target="_blank" rel="noreferrer">
               Preview ↗
             </a>
+            <button className="admin-btn ghost" type="button" onClick={duplicatePage}>
+              Duplicate
+            </button>
             {(page.custom || !CORE_PAGES.has(active)) && (
               <button className="admin-btn danger" type="button" onClick={deletePage}>
                 Delete page
@@ -316,8 +357,31 @@ export default function PagesEditor({ draft, setDraft }) {
             >
               <option value="published">Published</option>
               <option value="draft">Draft</option>
+              <option value="scheduled">Scheduled</option>
             </select>
           </Field>
+          <Field label="Go live at (optional)" hint="ISO date/time for scheduled pages">
+            <input
+              type="datetime-local"
+              value={page.publishAt || ''}
+              onChange={(e) => patchPage({ publishAt: e.target.value })}
+            />
+          </Field>
+        </div>
+        <Field label="Tags" hint="Comma-separated labels for internal organization">
+          <input
+            value={Array.isArray(page.tags) ? page.tags.join(', ') : page.tags || ''}
+            onChange={(e) =>
+              patchPage({
+                tags: e.target.value
+                  .split(',')
+                  .map((t) => t.trim())
+                  .filter(Boolean),
+              })
+            }
+          />
+        </Field>
+        <div className="admin-grid two">
           <Field label="SEO title override">
             <input
               value={page.seo?.title || ''}
@@ -326,15 +390,15 @@ export default function PagesEditor({ draft, setDraft }) {
               }
             />
           </Field>
+          <Field label="SEO description">
+            <textarea
+              value={page.seo?.description || ''}
+              onChange={(e) =>
+                patchPage({ seo: { ...(page.seo || {}), description: e.target.value } })
+              }
+            />
+          </Field>
         </div>
-        <Field label="SEO description">
-          <textarea
-            value={page.seo?.description || ''}
-            onChange={(e) =>
-              patchPage({ seo: { ...(page.seo || {}), description: e.target.value } })
-            }
-          />
-        </Field>
 
         <CommonFields page={page} patchPage={patchPage} />
 

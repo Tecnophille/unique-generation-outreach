@@ -824,3 +824,42 @@
     padding: 0.75rem 1rem;
   }
 }
+
+.admin-search--wide {
+  width: min(100%, 36rem);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.admin-finder-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.admin-finder-hit {
+  display: grid;
+  gap: 0.25rem;
+  text-align: left;
+  border: 1px solid rgba(35, 31, 27, 0.1);
+  background: #fff;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  font: inherit;
+}
+
+.admin-finder-hit:hover,
+.admin-finder-hit:focus-visible {
+  border-color: #525fbd;
+  outline: none;
+}
+
+.admin-finder-hit code {
+  font-size: 0.75rem;
+  color: #525fbd;
+}
+
+.admin-finder-hit span {
+  color: #615c57;
+  font-size: 0.9rem;
+}

@@ -454,6 +454,43 @@ function PageBlocks({ blocks }) {
   );
 }
 
+function SiteResourcesBlock() {
+  const { content } = useContent();
+  const resources = content.resources || [];
+  if (!resources.length) {
+    return (
+      <section className="section">
+        <div className="wrap">
+          <p className="hint">No resources published yet.</p>
+        </div>
+      </section>
+    );
+  }
+  return (
+    <section className="section">
+      <div className="wrap uniq-resources">
+        {resources.map((r) => (
+          <article key={r.id || r.title} className="uniq-resource">
+            {r.cover ? <img src={r.cover} alt="" /> : null}
+            <div>
+              {r.category ? <span className="tag">{r.category}</span> : null}
+              <h3>{r.title}</h3>
+              {r.description ? <p>{r.description}</p> : null}
+              {r.url ? (
+                <p>
+                  <a className="btn btn--solid" href={r.url} target="_blank" rel="noreferrer">
+                    Open / download
+                  </a>
+                </p>
+              ) : null}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 /** Flexible layout for CMS-created pages and events/videos hubs. */
 export function CustomPageUnique({ page }) {
   const { content } = useContent();
@@ -465,6 +502,7 @@ export function CustomPageUnique({ page }) {
       <StoryBlock title={page.storyTitle} story={page.story} cta={page.cta} />
       <PageBlocks blocks={page.blocks} />
       {page.useSiteEvents ? <SiteEventsBlock /> : null}
+      {page.useSiteResources ? <SiteResourcesBlock /> : null}
       {!page.useSiteEvents && (page.events || []).length ? (
         <GatheringsUnique
           page={{ ...page, storyTitle: '', story: '', cta: null, videos: [] }}

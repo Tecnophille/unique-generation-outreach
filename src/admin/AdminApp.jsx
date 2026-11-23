@@ -15,13 +15,19 @@ import TestimonialsEditor from './TestimonialsEditor';
 import PartnersEditor from './PartnersEditor';
 import SettingsEditor from './SettingsEditor';
 import MessagesPanel from './MessagesPanel';
+import RedirectsEditor from './RedirectsEditor';
+import ResourcesEditor from './ResourcesEditor';
+import BackupEditor from './BackupEditor';
+import Finder from './Finder';
 import './admin.css';
 
 const SECTIONS = [
   { id: 'overview', label: 'Dashboard', group: 'Start' },
+  { id: 'finder', label: 'Content finder', group: 'Start' },
   { id: 'pages', label: 'Pages & builder', group: 'Content' },
   { id: 'events', label: 'Events studio', group: 'Content' },
   { id: 'videos', label: 'YouTube studio', group: 'Content' },
+  { id: 'resources', label: 'Resources', group: 'Content' },
   { id: 'media', label: 'Media library', group: 'Content' },
   { id: 'announcements', label: 'Announcements', group: 'Content' },
   { id: 'testimonials', label: 'Testimonials', group: 'Content' },
@@ -32,8 +38,12 @@ const SECTIONS = [
   { id: 'contact', label: 'Contact panel', group: 'Directory' },
   { id: 'inbox', label: 'Inbox', group: 'Directory' },
   { id: 'nav', label: 'Navigation', group: 'Site' },
+  { id: 'redirects', label: 'Redirects', group: 'Site' },
   { id: 'settings', label: 'Site settings', group: 'Site' },
+  { id: 'backup', label: 'Backup & restore', group: 'Site' },
 ];
+
+const LOCAL_DRAFT_KEY = 'ugo-cms-local-draft';
 
 function Login({ onSuccess }) {
   const [email, setEmail] = useState('admin@ugo.local');
@@ -184,13 +194,45 @@ export default function AdminApp() {
   }, []);
 
   useEffect(() => {
-    if (content) setDraft(normalizeContent(structuredClone(content)));
+    if (!content) return;
+    try {
+      const raw = localStorage.getItem(LOCAL_DRAFT_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.draft && parsed?.savedAt) {
+          const serverUpdated = content.updatedAt ? Date.parse(content.updatedAt) : 0;
+          if (Date.parse(parsed.savedAt) > serverUpdated) {
+            setDraft(normalizeContent(parsed.draft));
+            setStatus('Restored local unsaved draft');
+            return;
+          }
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+    setDraft(normalizeContent(structuredClone(content)));
   }, [content]);
 
   const dirty = useMemo(() => {
     if (!draft || !content) return false;
     return JSON.stringify(draft) !== JSON.stringify(normalizeContent(content));
   }, [draft, content]);
+
+  useEffect(() => {
+    if (!draft || !dirty) return;
+    const t = setTimeout(() => {
+      try {
+        localStorage.setItem(
+          LOCAL_DRAFT_KEY,
+          JSON.stringify({ savedAt: new Date().toISOString(), draft }),
+        );
+      } catch {
+        /* ignore quota */
+      }
+    }, 800);
+    return () => clearTimeout(t);
+  }, [draft, dirty]);
 
   const save = useCallback(async () => {
     if (!draft) return;
@@ -199,6 +241,7 @@ export default function AdminApp() {
     setSaving(true);
     try {
       await saveContent(draft);
+      localStorage.removeItem(LOCAL_DRAFT_KEY);
       setStatus('Saved successfully');
     } catch (err) {
       setError(err.message || 'Save failed');
@@ -316,9 +359,11 @@ export default function AdminApp() {
             }}
           />
         )}
+        {section === 'finder' && <Finder draft={draft} setSection={setSection} />}
         {section === 'pages' && <PagesEditor draft={draft} setDraft={setDraft} />}
         {section === 'events' && <EventsEditor draft={draft} setDraft={setDraft} />}
         {section === 'videos' && <VideosEditor draft={draft} setDraft={setDraft} />}
+        {section === 'resources' && <ResourcesEditor draft={draft} setDraft={setDraft} />}
         {section === 'media' && (
           <MediaLibrary onStatus={setStatus} onError={setError} />
         )}
@@ -333,7 +378,16 @@ export default function AdminApp() {
         {section === 'leadership' && <TeamEditor draft={draft} setDraft={setDraft} />}
         {section === 'faqs' && <FaqsEditor draft={draft} setDraft={setDraft} />}
         {section === 'inbox' && <MessagesPanel />}
+        {section === 'redirects' && <RedirectsEditor draft={draft} setDraft={setDraft} />}
         {section === 'settings' && <SettingsEditor draft={draft} setDraft={setDraft} />}
+        {section === 'backup' && (
+          <BackupEditor
+            draft={draft}
+            setDraft={setDraft}
+            onStatus={setStatus}
+            onError={setError}
+          />
+        )}
 
         {section === 'contact' && (
           <>

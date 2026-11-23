@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ContentProvider } from './cms/ContentContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import DocumentMeta from './components/DocumentMeta';
+import RedirectHandler from './components/RedirectHandler';
 import HomePage from './pages/HomePage';
 import SectionPage from './pages/SectionPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -15,6 +16,7 @@ export default function App() {
       <ContentProvider>
         <BrowserRouter>
           <DocumentMeta />
+          <RedirectHandler />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<SectionPage pageKey="about" />} />
@@ -26,6 +28,7 @@ export default function App() {
             <Route path="/faq" element={<SectionPage pageKey="faq" />} />
             <Route path="/events" element={<SectionPage pageKey="events" />} />
             <Route path="/videos" element={<SectionPage pageKey="videos" />} />
+            <Route path="/resources" element={<SectionPage pageKey="resources" />} />
             <Route
               path="/admin/*"
               element={
