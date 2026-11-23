@@ -11,16 +11,6 @@ const VIDEOS_HUB_DEFAULT = {
   custom: true,
 };
 
-/** Built-in routes that show the YouTube studio library unless explicitly turned off. */
-export const BUILTIN_SITE_VIDEO_PAGES = new Set([
-  'videos',
-  'gatherings',
-  'about',
-  'pillars',
-  'reflections',
-  'leadership',
-]);
-
 export function ensureVideosHub(content = {}) {
   const pages = { ...(content.pages || {}) };
   if (!pages.videos) {
@@ -33,11 +23,14 @@ export function ensureVideosHub(content = {}) {
     };
   }
 
-  // Opt built-in pages into the studio library when the flag was never set.
-  for (const key of BUILTIN_SITE_VIDEO_PAGES) {
-    if (!pages[key] || key === 'videos') continue;
-    if (pages[key].useSiteVideos === undefined) {
-      pages[key] = { ...pages[key], useSiteVideos: true };
+  // One-time placement fix: studio library belongs on /videos unless a page opts in.
+  // Older auto-opt flags on built-ins made YouTube appear bolted onto every page.
+  if (!content.videoPlacementV2) {
+    for (const key of Object.keys(pages)) {
+      if (key === 'videos' || !pages[key] || typeof pages[key] !== 'object') continue;
+      if (pages[key].useSiteVideos) {
+        pages[key] = { ...pages[key], useSiteVideos: false };
+      }
     }
   }
 
@@ -46,7 +39,7 @@ export function ensureVideosHub(content = {}) {
     nav.push({ label: 'Videos', href: '/videos' });
   }
 
-  return { ...content, pages, nav };
+  return { ...content, pages, nav, videoPlacementV2: true };
 }
 
 export function normalizeContent(raw = {}) {

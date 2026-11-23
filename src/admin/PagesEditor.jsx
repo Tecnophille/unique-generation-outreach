@@ -763,8 +763,8 @@ export default function PagesEditor({ draft, setDraft }) {
           Include YouTube studio videos on this page
         </label>
         <p className="hint">
-          Optional embeds for this route. Site-wide videos from the YouTube studio appear when the
-          box above is checked (always on for /videos).
+          Optional embeds for this route only. Check the box above to also pull in the YouTube
+          studio library (always on for /videos). Leave it off so studio clips stay on /videos.
         </p>
         {(page.videos || []).map((v, i) => (
           <div className="admin-list-item admin-grid" key={i}>
