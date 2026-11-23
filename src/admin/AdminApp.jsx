@@ -24,26 +24,192 @@ import BootScreen from '../components/BootScreen';
 import './admin.css';
 
 const SECTIONS = [
-  { id: 'overview', label: 'Dashboard', group: 'Start' },
-  { id: 'finder', label: 'Content finder', group: 'Start' },
-  { id: 'pages', label: 'Pages & builder', group: 'Content' },
-  { id: 'events', label: 'Events studio', group: 'Content' },
-  { id: 'videos', label: 'YouTube studio', group: 'Content' },
-  { id: 'resources', label: 'Resources', group: 'Content' },
-  { id: 'media', label: 'Media library', group: 'Content' },
-  { id: 'announcements', label: 'Announcements', group: 'Content' },
-  { id: 'testimonials', label: 'Testimonials', group: 'Content' },
-  { id: 'partners', label: 'Partners', group: 'Content' },
-  { id: 'homepage', label: 'Homepage studio', group: 'Homepage' },
-  { id: 'leadership', label: 'Team directory', group: 'Directory' },
-  { id: 'faqs', label: 'FAQ answers', group: 'Directory' },
-  { id: 'contact', label: 'Contact panel', group: 'Directory' },
-  { id: 'inbox', label: 'Inbox', group: 'Directory' },
-  { id: 'nav', label: 'Navigation', group: 'Site' },
-  { id: 'redirects', label: 'Redirects', group: 'Site' },
-  { id: 'settings', label: 'Site settings', group: 'Site' },
-  { id: 'backup', label: 'Backup & restore', group: 'Site' },
+  { id: 'overview', label: 'Dashboard', group: 'Start', icon: 'home' },
+  { id: 'finder', label: 'Content finder', group: 'Start', icon: 'search' },
+  { id: 'pages', label: 'Pages & builder', group: 'Content', icon: 'pages' },
+  { id: 'events', label: 'Events studio', group: 'Content', icon: 'calendar' },
+  { id: 'videos', label: 'YouTube studio', group: 'Content', icon: 'video' },
+  { id: 'resources', label: 'Resources', group: 'Content', icon: 'file' },
+  { id: 'media', label: 'Media library', group: 'Content', icon: 'image' },
+  { id: 'announcements', label: 'Announcements', group: 'Content', icon: 'megaphone' },
+  { id: 'testimonials', label: 'Testimonials', group: 'Content', icon: 'quote' },
+  { id: 'partners', label: 'Partners', group: 'Content', icon: 'handshake' },
+  { id: 'homepage', label: 'Homepage studio', group: 'Homepage', icon: 'spark' },
+  { id: 'leadership', label: 'Team directory', group: 'Directory', icon: 'users' },
+  { id: 'faqs', label: 'FAQ answers', group: 'Directory', icon: 'help' },
+  { id: 'contact', label: 'Contact panel', group: 'Directory', icon: 'mail' },
+  { id: 'inbox', label: 'Inbox', group: 'Directory', icon: 'inbox' },
+  { id: 'nav', label: 'Navigation', group: 'Site', icon: 'menu' },
+  { id: 'redirects', label: 'Redirects', group: 'Site', icon: 'redirect' },
+  { id: 'settings', label: 'Site settings', group: 'Site', icon: 'settings' },
+  { id: 'backup', label: 'Backup & restore', group: 'Site', icon: 'backup' },
 ];
+
+function NavIcon({ name }) {
+  const common = {
+    width: 18,
+    height: 18,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.8,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    'aria-hidden': true,
+    focusable: 'false',
+  };
+  switch (name) {
+    case 'home':
+      return (
+        <svg {...common}>
+          <path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z" />
+        </svg>
+      );
+    case 'search':
+      return (
+        <svg {...common}>
+          <circle cx="11" cy="11" r="6.5" />
+          <path d="m16 16 4 4" />
+        </svg>
+      );
+    case 'pages':
+      return (
+        <svg {...common}>
+          <path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+          <path d="M14 3v5h5" />
+        </svg>
+      );
+    case 'calendar':
+      return (
+        <svg {...common}>
+          <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+          <path d="M8 3.5V7M16 3.5V7M3.5 10h17" />
+        </svg>
+      );
+    case 'video':
+      return (
+        <svg {...common}>
+          <rect x="3" y="6" width="13" height="12" rx="2" />
+          <path d="m16 10 5-3v10l-5-3v-4Z" />
+        </svg>
+      );
+    case 'file':
+      return (
+        <svg {...common}>
+          <path d="M8 4h6l4 4v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z" />
+          <path d="M14 4v4h4M9 13h6M9 17h4" />
+        </svg>
+      );
+    case 'image':
+      return (
+        <svg {...common}>
+          <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+          <circle cx="9" cy="10" r="1.6" />
+          <path d="m3.5 15.5 5-4 3.5 3 2.5-2 5.5 5" />
+        </svg>
+      );
+    case 'megaphone':
+      return (
+        <svg {...common}>
+          <path d="M4 14v-4l12-5v14L4 14Z" />
+          <path d="M8 14.5V19l3-1.5" />
+        </svg>
+      );
+    case 'quote':
+      return (
+        <svg {...common}>
+          <path d="M8 17H5.5A2.5 2.5 0 0 1 3 14.5V12h5v5ZM19 17h-2.5A2.5 2.5 0 0 1 14 14.5V12h5v5Z" />
+          <path d="M3 12V9.5A4.5 4.5 0 0 1 7.5 5H8M14 12V9.5A4.5 4.5 0 0 1 18.5 5H19" />
+        </svg>
+      );
+    case 'handshake':
+      return (
+        <svg {...common}>
+          <path d="M8 12 5.5 9.5 3 12l3 3 2.5-2.5ZM16 12l2.5-2.5L21 12l-3 3-2-2" />
+          <path d="m8.5 14.5 2 2a2 2 0 0 0 2.8 0l3.2-3.2" />
+        </svg>
+      );
+    case 'spark':
+      return (
+        <svg {...common}>
+          <path d="M12 3v4M12 17v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M3 12h4M17 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" />
+        </svg>
+      );
+    case 'users':
+      return (
+        <svg {...common}>
+          <circle cx="9" cy="8" r="3" />
+          <path d="M3.5 19a5.5 5.5 0 0 1 11 0" />
+          <circle cx="17" cy="9" r="2.4" />
+          <path d="M15 19a4.2 4.2 0 0 1 5.5-4" />
+        </svg>
+      );
+    case 'help':
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.8.4-1.5 1-1.5 2" />
+          <path d="M12 17h.01" />
+        </svg>
+      );
+    case 'mail':
+      return (
+        <svg {...common}>
+          <rect x="3" y="5.5" width="18" height="13" rx="2" />
+          <path d="m3.5 7.5 8.5 6 8.5-6" />
+        </svg>
+      );
+    case 'inbox':
+      return (
+        <svg {...common}>
+          <path d="M4 13h4l2 3h4l2-3h4v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5Z" />
+          <path d="M4 13 7 5h10l3 8" />
+        </svg>
+      );
+    case 'menu':
+      return (
+        <svg {...common}>
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      );
+    case 'redirect':
+      return (
+        <svg {...common}>
+          <path d="M7 7h10v10" />
+          <path d="M7 17 17 7" />
+        </svg>
+      );
+    case 'settings':
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="3.2" />
+          <path d="M12 3.5v2.2M12 18.3v2.2M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M3.5 12h2.2M18.3 12h2.2M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6" />
+        </svg>
+      );
+    case 'backup':
+      return (
+        <svg {...common}>
+          <path d="M12 5v9" />
+          <path d="m8.5 10.5 3.5 3.5 3.5-3.5" />
+          <path d="M5 17.5h14" />
+        </svg>
+      );
+    case 'logout':
+      return (
+        <svg {...common}>
+          <path d="M10 12h10" />
+          <path d="m16 8 4 4-4 4" />
+          <path d="M13 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7" />
+        </svg>
+      );
+    default:
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="7" />
+        </svg>
+      );
+  }
+}
 
 const LOCAL_DRAFT_KEY = 'ugo-cms-local-draft';
 
@@ -409,7 +575,11 @@ export default function AdminApp() {
                 className={section === s.id ? 'is-active' : ''}
                 onClick={() => goSection(s.id)}
                 title={s.label}
+                aria-label={s.label}
               >
+                <span className="admin-side__icon">
+                  <NavIcon name={s.icon} />
+                </span>
                 <span className="admin-side__label">{s.label}</span>
                 {s.id === 'inbox' && unread > 0 ? (
                   <span className="admin-side__badge">{unread}</span>
@@ -433,15 +603,26 @@ export default function AdminApp() {
                 return next;
               });
             }}
-            title="Collapse sidebar (Ctrl/⌘ \\)"
+            title={sideCollapsed ? 'Expand sidebar (Ctrl/⌘ \\)' : 'Collapse sidebar (Ctrl/⌘ \\)'}
+            aria-label={sideCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-pressed={sideCollapsed}
           >
-            {sideCollapsed ? 'Expand' : 'Collapse'}
+            <span className="admin-side__collapse-icon" aria-hidden="true">
+              {sideCollapsed ? '»' : '«'}
+            </span>
+            <span className="admin-side__collapse-text">{sideCollapsed ? 'Expand' : 'Collapse'}</span>
           </button>
           <Link to="/" target="_blank" rel="noreferrer">
-            Open website ↗
+            <span className="admin-side__icon" aria-hidden="true">
+              <NavIcon name="redirect" />
+            </span>
+            <span className="admin-side__label">Open website</span>
           </Link>
           <button type="button" onClick={logout}>
-            Sign out
+            <span className="admin-side__icon" aria-hidden="true">
+              <NavIcon name="logout" />
+            </span>
+            <span className="admin-side__label">Sign out</span>
           </button>
         </div>
       </aside>
