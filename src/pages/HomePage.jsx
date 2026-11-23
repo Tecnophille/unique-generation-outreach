@@ -11,8 +11,12 @@ import {
   PartnersStrip,
   TestimonialsStrip,
 } from '../components/SocialProof';
+import { useContent } from '../cms/ContentContext';
+import { PageBlocks } from './views/UniquePages';
 
 export default function HomePage() {
+  const { content } = useContent();
+
   return (
     <SiteLayout>
       <Hero />
@@ -38,6 +42,7 @@ export default function HomePage() {
       </div>
       <TestimonialsStrip />
       <PartnersStrip />
+      <PageBlocks blocks={content?.homeBlocks} />
       <section className="section section--tight">
         <div className="wrap" style={{ textAlign: 'center' }}>
           <span className="label label--center">Go deeper</span>

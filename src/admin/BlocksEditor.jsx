@@ -60,7 +60,7 @@ export default function BlocksEditor({ blocks = [], onChange }) {
         <div>
           <h3 style={{ margin: 0 }}>Page blocks</h3>
           <p className="hint" style={{ margin: '0.25rem 0 0' }}>
-            Stack flexible sections under the page story. Reorder freely.
+            Stack flexible sections (homepage or menu pages). Reorder freely.
           </p>
         </div>
       </div>

@@ -45,7 +45,7 @@ export default function Dashboard({ draft, setSection, onRestored }) {
     { id: 'videos', label: 'YouTube library', hint: 'Embeds across the site' },
     { id: 'resources', label: 'Resources', hint: 'Downloads & guides' },
     { id: 'media', label: 'Media library', hint: 'Upload & reuse images' },
-    { id: 'homepage', label: 'Homepage studio', hint: 'Hero + teasers in one place' },
+    { id: 'homepage', label: 'Homepage studio', hint: 'Hero, teasers, and extra blocks' },
     { id: 'backup', label: 'Backup & restore', hint: 'Export / import JSON' },
     { id: 'settings', label: 'Site settings', hint: 'Brand, SEO, social, footer' },
   ];
