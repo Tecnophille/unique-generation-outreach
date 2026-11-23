@@ -47,7 +47,11 @@ export default function CommandPalette({ open, onClose, sections, onSelect, unre
           }}
         />
         <div className="admin-cmdk__list">
-          {items.length === 0 ? <p className="hint">No matches.</p> : null}
+          {items.length === 0 ? (
+            <p className="hint" style={{ padding: '0.75rem 0.85rem' }}>
+              No studio sections match that jump.
+            </p>
+          ) : null}
           {items.map((s) => (
             <button
               key={s.id}

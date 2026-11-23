@@ -1,11 +1,19 @@
 import { Field } from './fields';
 import MediaPicker from './MediaPicker';
+import EmptyState from './EmptyState';
 
 export default function TeamEditor({ draft, setDraft }) {
   const team = draft.leadership || [];
 
   function setTeam(next) {
     setDraft((d) => ({ ...d, leadership: next }));
+  }
+
+  function add() {
+    setTeam([
+      ...team,
+      { name: '', role: '', titles: '', location: '', bio: '', photo: '' },
+    ]);
   }
 
   function update(i, patch) {
@@ -28,18 +36,18 @@ export default function TeamEditor({ draft, setDraft }) {
       <p className="hint">
         First person is featured as Convener. Upload photos, reorder with ↑ ↓, then Save.
       </p>
-      <button
-        className="admin-btn primary"
-        type="button"
-        onClick={() =>
-          setTeam([
-            ...team,
-            { name: '', role: '', titles: '', location: '', bio: '', photo: '' },
-          ])
-        }
-      >
+      <button className="admin-btn primary" type="button" onClick={add}>
         Add person
       </button>
+      {team.length === 0 ? (
+        <EmptyState
+          icon="media"
+          title="Team directory is empty"
+          body="Add leaders and volunteers. The first person is featured as Convener on the leadership page."
+          actionLabel="Add person"
+          onAction={add}
+        />
+      ) : null}
       {team.map((person, i) => (
         <div className="admin-card admin-grid" key={i}>
           <div className="admin-page-head">

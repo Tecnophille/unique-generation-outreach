@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import EmptyState from './EmptyState';
 
 export default function MediaLibrary({ onStatus, onError }) {
   const [uploads, setUploads] = useState([]);
@@ -96,7 +97,22 @@ export default function MediaLibrary({ onStatus, onError }) {
         </span>
       </div>
       <div className="admin-media-grid">
-        {filtered.length === 0 ? <p className="hint">No media matched.</p> : null}
+        {uploads.length === 0 ? (
+          <EmptyState
+            icon="media"
+            title="Media library is empty"
+            body="Upload images here, then reuse them for team photos, events, heroes, and partners."
+          />
+        ) : null}
+        {uploads.length > 0 && filtered.length === 0 ? (
+          <EmptyState
+            icon="search"
+            title="No media matched"
+            body="Try another filename, or clear the search to see everything in the library."
+            actionLabel="Clear search"
+            onAction={() => setQ('')}
+          />
+        ) : null}
         {filtered.map((f) => (
           <div className="admin-media-card" key={f.id || f.url}>
             <img

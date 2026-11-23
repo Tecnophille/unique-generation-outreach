@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import EmptyState from './EmptyState';
 
 function walk(value, path, hits, needle) {
   if (hits.length > 80) return;
@@ -61,8 +62,21 @@ export default function Finder({ draft, setSection }) {
         autoFocus
       />
       <div className="admin-finder-list">
+        {q.trim().length === 0 ? (
+          <EmptyState
+            icon="search"
+            title="Search the whole CMS draft"
+            body="Type at least two characters to find pages, events, FAQs, team bios, and more — then jump straight to that studio."
+          />
+        ) : null}
         {q.trim().length >= 2 && hits.length === 0 ? (
-          <p className="hint">No matches.</p>
+          <EmptyState
+            icon="search"
+            title="No matches"
+            body="Nothing in the current draft matched that phrase. Try a shorter word or a page title."
+            actionLabel="Clear search"
+            onAction={() => setQ('')}
+          />
         ) : null}
         {hits.map((hit) => (
           <button

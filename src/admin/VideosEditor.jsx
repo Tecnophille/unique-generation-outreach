@@ -1,3 +1,5 @@
+import EmptyState from './EmptyState';
+
 function Field({ label, children, hint }) {
   return (
     <div className="admin-field">
@@ -47,7 +49,15 @@ export default function VideosEditor({ draft, setDraft }) {
           Add YouTube link
         </button>
       </div>
-      {videos.length === 0 ? <p className="hint">No videos yet.</p> : null}
+      {videos.length === 0 ? (
+        <EmptyState
+          icon="list"
+          title="No YouTube links yet"
+          body="Add a video to publish on /videos and reuse across custom pages."
+          actionLabel="Add YouTube link"
+          onAction={() => setVideos([emptyVideo(), ...videos])}
+        />
+      ) : null}
       {videos.map((v, i) => {
         const id = youtubeId(v.url);
         return (

@@ -1,4 +1,5 @@
 import { Field, uid } from './fields';
+import EmptyState from './EmptyState';
 
 export default function AnnouncementsEditor({ draft, setDraft }) {
   const items = draft.announcements || [];
@@ -7,29 +8,35 @@ export default function AnnouncementsEditor({ draft, setDraft }) {
     setDraft((d) => ({ ...d, announcements: next }));
   }
 
+  function add() {
+    setItems([
+      {
+        id: uid('ann'),
+        text: '',
+        href: '',
+        enabled: true,
+        tone: 'accent',
+      },
+      ...items,
+    ]);
+  }
+
   return (
     <>
       <h2>Announcements</h2>
       <p className="hint">Site-wide banner messages shown above the navigation when enabled.</p>
-      <button
-        className="admin-btn primary"
-        type="button"
-        onClick={() =>
-          setItems([
-            {
-              id: uid('ann'),
-              text: '',
-              href: '',
-              enabled: true,
-              tone: 'accent',
-            },
-            ...items,
-          ])
-        }
-      >
+      <button className="admin-btn primary" type="button" onClick={add}>
         New announcement
       </button>
-      {items.length === 0 ? <p className="hint">No announcements yet.</p> : null}
+      {items.length === 0 ? (
+        <EmptyState
+          icon="inbox"
+          title="No announcements yet"
+          body="Add a short banner for campaigns, gatherings, or urgent updates. Only enabled ones show on the public site."
+          actionLabel="New announcement"
+          onAction={add}
+        />
+      ) : null}
       {items.map((item, i) => (
         <div className="admin-card admin-grid" key={item.id || i}>
           <div className="admin-page-head">

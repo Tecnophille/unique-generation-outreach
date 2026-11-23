@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Field, uid } from './fields';
 import MediaPicker from './MediaPicker';
+import EmptyState from './EmptyState';
 
 const emptyEvent = () => ({
   id: uid('ev'),
@@ -93,7 +94,24 @@ export default function EventsEditor({ draft, setDraft }) {
         </button>
       </div>
 
-      {visible.length === 0 ? <p className="hint">No events in this filter.</p> : null}
+      {events.length === 0 ? (
+        <EmptyState
+          icon="list"
+          title="No events yet"
+          body="Create gatherings, outreaches, and featured dates. Featured items can surface on the homepage."
+          actionLabel="New event"
+          onAction={() => setEvents([emptyEvent(), ...events])}
+        />
+      ) : null}
+      {events.length > 0 && visible.length === 0 ? (
+        <EmptyState
+          icon="search"
+          title={`No ${filter} events`}
+          body="Try another filter, or switch back to All to see every event in the studio."
+          actionLabel="Show all"
+          onAction={() => setFilter('all')}
+        />
+      ) : null}
       {visible.map(({ ev, i }) => (
         <div className="admin-card admin-grid" key={ev.id || i}>
           <div className="admin-page-head">

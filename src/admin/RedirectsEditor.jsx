@@ -1,10 +1,15 @@
 import { Field, uid } from './fields';
+import EmptyState from './EmptyState';
 
 export default function RedirectsEditor({ draft, setDraft }) {
   const items = draft.redirects || [];
 
   function setItems(next) {
     setDraft((d) => ({ ...d, redirects: next }));
+  }
+
+  function add() {
+    setItems([{ id: uid('redir'), from: '', to: '', enabled: true }, ...items]);
   }
 
   return (
@@ -14,16 +19,18 @@ export default function RedirectsEditor({ draft, setDraft }) {
         Map old paths to new ones (SPA client redirects). Example: <code>/old</code> →{' '}
         <code>/about</code>.
       </p>
-      <button
-        className="admin-btn primary"
-        type="button"
-        onClick={() =>
-          setItems([{ id: uid('redir'), from: '', to: '', enabled: true }, ...items])
-        }
-      >
+      <button className="admin-btn primary" type="button" onClick={add}>
         Add redirect
       </button>
-      {items.length === 0 ? <p className="hint">No redirects yet.</p> : null}
+      {items.length === 0 ? (
+        <EmptyState
+          icon="list"
+          title="No redirects yet"
+          body="Use these when a path changes so old bookmarks still land on the right page."
+          actionLabel="Add redirect"
+          onAction={add}
+        />
+      ) : null}
       {items.map((item, i) => (
         <div className="admin-card admin-grid two" key={item.id || i}>
           <Field label="From path">

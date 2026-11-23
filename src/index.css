@@ -1319,6 +1319,30 @@ p {
   margin-top: 1.75rem;
 }
 
+.site-empty {
+  max-width: 36rem;
+  padding: 2.25rem 0 1rem;
+}
+
+.site-empty h2 {
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.03em;
+}
+
+.site-empty p {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  margin: 0 0 1.35rem;
+}
+
+.site-empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
 .uniq-heading {
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   margin-bottom: 1.65rem;

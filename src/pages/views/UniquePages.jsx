@@ -289,9 +289,30 @@ function youtubeId(url) {
   return m?.[1] || '';
 }
 
-function VideosBlock({ videos, heading = 'Videos' }) {
+function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
   const list = (videos || []).filter((v) => youtubeId(v.url));
-  if (!list.length) return null;
+  if (!list.length) {
+    if (!showEmpty) return null;
+    return (
+      <section className="section">
+        <div className="wrap site-empty">
+          <h2>Videos coming soon</h2>
+          <p>
+            We’re gathering messages and moments from Unique Generation Outreach. Subscribe on the
+            contact page to hear when new videos go live.
+          </p>
+          <div className="site-empty__actions">
+            <Link className="btn btn--solid" to="/contact">
+              Stay in touch
+            </Link>
+            <Link className="btn btn--outline" to="/reflections">
+              Read reflections
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="section">
       <div className="wrap">
@@ -346,8 +367,20 @@ function SiteEventsBlock() {
   if (!events.length) {
     return (
       <section className="section">
-        <div className="wrap">
-          <p className="hint">No events published yet.</p>
+        <div className="wrap site-empty">
+          <h2>Events are coming soon</h2>
+          <p>
+            We’re preparing the next gatherings and outreaches. Check back shortly, or reach out if
+            you’d like to partner with Unique Generation Outreach.
+          </p>
+          <div className="site-empty__actions">
+            <Link className="btn btn--solid" to="/contact">
+              Contact us
+            </Link>
+            <Link className="btn btn--outline" to="/gatherings">
+              Read gathering stories
+            </Link>
+          </div>
         </div>
       </section>
     );
@@ -457,8 +490,20 @@ function SiteResourcesBlock() {
   if (!resources.length) {
     return (
       <section className="section">
-        <div className="wrap">
-          <p className="hint">No resources published yet.</p>
+        <div className="wrap site-empty">
+          <h2>Resources are on the way</h2>
+          <p>
+            Guides and downloads will appear here as they’re published. Meanwhile, explore the
+            mission story or get in touch.
+          </p>
+          <div className="site-empty__actions">
+            <Link className="btn btn--solid" to="/about">
+              Our story
+            </Link>
+            <Link className="btn btn--outline" to="/contact">
+              Contact us
+            </Link>
+          </div>
         </div>
       </section>
     );
@@ -512,6 +557,7 @@ export function CustomPageUnique({ page }) {
       <VideosBlock
         videos={pageVideos}
         heading={page.useSiteVideos ? 'On YouTube' : 'Videos'}
+        showEmpty={Boolean(page.useSiteVideos)}
       />
       {page.cta?.label && page.cta?.href && !page.story ? (
         <div className="wrap page-extras__cta" style={{ paddingBottom: '3rem' }}>

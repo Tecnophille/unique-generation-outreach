@@ -1,5 +1,6 @@
 import { Field, uid } from './fields';
 import MediaPicker from './MediaPicker';
+import EmptyState from './EmptyState';
 
 export default function TestimonialsEditor({ draft, setDraft }) {
   const items = draft.testimonials || [];
@@ -8,22 +9,29 @@ export default function TestimonialsEditor({ draft, setDraft }) {
     setDraft((d) => ({ ...d, testimonials: next }));
   }
 
+  function add() {
+    setItems([
+      { id: uid('tst'), quote: '', name: '', role: '', image: '', featured: true },
+      ...items,
+    ]);
+  }
+
   return (
     <>
       <h2>Testimonials</h2>
       <p className="hint">Quotes from partners, members, and friends of the mission.</p>
-      <button
-        className="admin-btn primary"
-        type="button"
-        onClick={() =>
-          setItems([
-            { id: uid('tst'), quote: '', name: '', role: '', image: '', featured: true },
-            ...items,
-          ])
-        }
-      >
+      <button className="admin-btn primary" type="button" onClick={add}>
         Add testimonial
       </button>
+      {items.length === 0 ? (
+        <EmptyState
+          icon="list"
+          title="No testimonials yet"
+          body="Featured quotes can appear on the homepage. Add a name, role, and optional photo."
+          actionLabel="Add testimonial"
+          onAction={add}
+        />
+      ) : null}
       {items.map((item, i) => (
         <div className="admin-card admin-grid" key={item.id || i}>
           <div className="admin-page-head">

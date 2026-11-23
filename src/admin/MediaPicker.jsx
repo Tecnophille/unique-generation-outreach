@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import EmptyState from './EmptyState';
 
 export default function MediaPicker({ onPick, label = 'Pick from library' }) {
   const [open, setOpen] = useState(false);
@@ -54,7 +55,13 @@ export default function MediaPicker({ onPick, label = 'Pick from library' }) {
             />
           </label>
           <div className="admin-media-picker__grid">
-            {uploads.length === 0 ? <p className="hint">No uploads yet.</p> : null}
+            {uploads.length === 0 ? (
+              <EmptyState
+                icon="media"
+                title="No uploads yet"
+                body="Upload an image above, then click it to use it here."
+              />
+            ) : null}
             {uploads.map((f) => (
               <button
                 key={f.id || f.url}

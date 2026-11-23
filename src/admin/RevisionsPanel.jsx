@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import EmptyState from './EmptyState';
 
 export default function RevisionsPanel({ onRestored }) {
   const [items, setItems] = useState([]);
@@ -49,7 +50,15 @@ export default function RevisionsPanel({ onRestored }) {
       <p className="hint">Every save creates a revision in the database. Restore if you need to roll back.</p>
       {error ? <p className="admin-status err">{error}</p> : null}
       <div className="admin-grid">
-        {items.length === 0 ? <p className="hint">No revisions yet.</p> : null}
+        {items.length === 0 ? (
+          <EmptyState
+            icon="list"
+            title="No revisions yet"
+            body="Each Save in the studio creates a restore point here. Make a change and save to start the history."
+            actionLabel="Refresh"
+            onAction={load}
+          />
+        ) : null}
         {items.map((item) => (
           <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', alignItems: 'center' }}>
             <div>

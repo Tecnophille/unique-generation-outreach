@@ -1,11 +1,27 @@
 import { Field, uid } from './fields';
 import MediaPicker from './MediaPicker';
+import EmptyState from './EmptyState';
 
 export default function ResourcesEditor({ draft, setDraft }) {
   const items = draft.resources || [];
 
   function setItems(next) {
     setDraft((d) => ({ ...d, resources: next }));
+  }
+
+  function add() {
+    setItems([
+      {
+        id: uid('res'),
+        title: '',
+        description: '',
+        url: '',
+        cover: '',
+        category: 'Guide',
+        featured: false,
+      },
+      ...items,
+    ]);
   }
 
   return (
@@ -16,24 +32,7 @@ export default function ResourcesEditor({ draft, setDraft }) {
         library; file URLs can be external or uploaded hosts.
       </p>
       <div className="admin-toolbar" style={{ position: 'static', background: 'transparent' }}>
-        <button
-          className="admin-btn primary"
-          type="button"
-          onClick={() =>
-            setItems([
-              {
-                id: uid('res'),
-                title: '',
-                description: '',
-                url: '',
-                cover: '',
-                category: 'Guide',
-                featured: false,
-              },
-              ...items,
-            ])
-          }
-        >
+        <button className="admin-btn primary" type="button" onClick={add}>
           Add resource
         </button>
         <button
@@ -63,6 +62,15 @@ export default function ResourcesEditor({ draft, setDraft }) {
           Ensure /resources page
         </button>
       </div>
+      {items.length === 0 ? (
+        <EmptyState
+          icon="list"
+          title="No resources yet"
+          body="Add guides, flyers, or download links for the Resources page."
+          actionLabel="Add resource"
+          onAction={add}
+        />
+      ) : null}
       {items.map((item, i) => (
         <div className="admin-card admin-grid" key={item.id || i}>
           <div className="admin-page-head">

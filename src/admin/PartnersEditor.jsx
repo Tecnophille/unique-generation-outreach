@@ -1,5 +1,6 @@
 import { Field, uid } from './fields';
 import MediaPicker from './MediaPicker';
+import EmptyState from './EmptyState';
 
 export default function PartnersEditor({ draft, setDraft }) {
   const items = draft.partners || [];
@@ -8,19 +9,26 @@ export default function PartnersEditor({ draft, setDraft }) {
     setDraft((d) => ({ ...d, partners: next }));
   }
 
+  function add() {
+    setItems([{ id: uid('ptr'), name: '', url: '', logo: '', blurb: '' }, ...items]);
+  }
+
   return (
     <>
       <h2>Partners & sponsors</h2>
       <p className="hint">Logos and links for organizations walking with UGO.</p>
-      <button
-        className="admin-btn primary"
-        type="button"
-        onClick={() =>
-          setItems([{ id: uid('ptr'), name: '', url: '', logo: '', blurb: '' }, ...items])
-        }
-      >
+      <button className="admin-btn primary" type="button" onClick={add}>
         Add partner
       </button>
+      {items.length === 0 ? (
+        <EmptyState
+          icon="media"
+          title="No partners yet"
+          body="Add organizations with a logo and link. They can show in the homepage partners strip."
+          actionLabel="Add partner"
+          onAction={add}
+        />
+      ) : null}
       {items.map((item, i) => (
         <div className="admin-card admin-grid" key={item.id || i}>
           <div className="admin-page-head">

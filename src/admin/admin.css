@@ -912,6 +912,62 @@
   box-shadow: 0 0 0 1px rgba(82, 95, 189, 0.12);
 }
 
+.admin-empty {
+  display: grid;
+  justify-items: start;
+  gap: 0.65rem;
+  margin: 0.35rem 0 1.25rem;
+  padding: 1.6rem 1.5rem;
+  border: 1px dashed rgba(35, 31, 27, 0.18);
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse 55% 70% at 0% 0%, rgba(82, 95, 189, 0.1), transparent 55%),
+    #fff;
+  max-width: 40rem;
+}
+
+.admin-empty__icon {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(82, 95, 189, 0.1);
+  color: #525fbd;
+}
+
+.admin-empty h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.admin-empty p {
+  margin: 0;
+  color: #615c57;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  max-width: 34rem;
+}
+
+.admin-empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.admin-media-picker__panel .admin-empty,
+.admin-media-grid .admin-empty {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+.admin-media-picker__panel .admin-empty {
+  padding: 1.1rem 1rem;
+}
+
 .admin-shell--collapsed {
   grid-template-columns: 4.25rem 1fr;
 }

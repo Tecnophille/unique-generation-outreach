@@ -1,20 +1,29 @@
 import { useEffect, useMemo, useState } from 'react';
+import EmptyState from './EmptyState';
 
 export default function MessagesPanel() {
   const [items, setItems] = useState([]);
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [q, setQ] = useState('');
 
   async function load() {
     setError('');
-    const res = await fetch('/api/contact/messages?limit=100', { credentials: 'include' });
-    if (!res.ok) {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/contact/messages?limit=100', { credentials: 'include' });
+      if (!res.ok) {
+        setError('Could not load inbox');
+        return;
+      }
+      setItems(await res.json());
+    } catch {
       setError('Could not load inbox');
-      return;
+    } finally {
+      setLoading(false);
     }
-    setItems(await res.json());
   }
 
   useEffect(() => {
@@ -67,17 +76,20 @@ export default function MessagesPanel() {
   }
 
   const unread = items.filter((i) => i.status === 'new').length;
+  const searching = q.trim().length > 0;
 
   return (
     <>
       <h2>Inbox</h2>
       <p className="hint">
-        Messages from the public contact form. {unread ? `${unread} unread.` : 'All caught up.'}
+        Messages from the public contact and newsletter forms. Reply opens your email app — nothing
+        is sent from the CMS itself.
+        {unread ? ` ${unread} unread.` : items.length ? ' All caught up.' : ''}
       </p>
       {error ? <p className="admin-status err">{error}</p> : null}
       <div className="admin-toolbar" style={{ position: 'static', background: 'transparent' }}>
-        <button className="admin-btn ghost" type="button" onClick={load}>
-          Refresh
+        <button className="admin-btn ghost" type="button" onClick={load} disabled={loading}>
+          {loading ? 'Refreshing…' : 'Refresh'}
         </button>
         <div className="admin-page-tabs" style={{ margin: 0 }}>
           {['all', 'new', 'read'].map((f) => (
@@ -96,15 +108,50 @@ export default function MessagesPanel() {
           placeholder="Search inbox…"
           value={q}
           onChange={(e) => setQ(e.target.value)}
+          disabled={!items.length && !loading}
         />
       </div>
+
+      {loading ? <p className="hint">Loading inbox…</p> : null}
+
+      {!loading && items.length === 0 ? (
+        <EmptyState
+          icon="inbox"
+          title="Inbox is empty"
+          body="When someone submits the contact or newsletter form on the public site, their message will show up here with name, email, and notes."
+          actionLabel="Open public contact page"
+          onAction={() => window.open('/contact', '_blank', 'noopener,noreferrer')}
+          secondaryLabel="Refresh"
+          onSecondary={load}
+        />
+      ) : null}
+
+      {!loading && items.length > 0 && visible.length === 0 ? (
+        <EmptyState
+          icon="search"
+          title={searching ? 'No matches for that search' : `No ${filter} messages`}
+          body={
+            searching
+              ? 'Try a different name, email, or subject — or clear the search to see everything.'
+              : filter === 'new'
+                ? 'You’re caught up. Switch to All or Read to browse older messages.'
+                : 'Nothing marked read yet. New messages stay here until you mark them.'
+          }
+          actionLabel={searching ? 'Clear search' : 'Show all'}
+          onAction={() => {
+            setQ('');
+            setFilter('all');
+          }}
+        />
+      ) : null}
+
       <div className="admin-grid">
-        {visible.length === 0 ? <p className="hint">No messages in this view.</p> : null}
         {visible.map((item) => (
           <div className={`admin-card${item.status === 'new' ? ' admin-card--accent' : ''}`} key={item.id}>
             <div className="admin-page-head">
               <strong>
                 #{item.id} · {item.status}
+                {item.source ? ` · ${item.source}` : ''}
               </strong>
               <span className="hint" style={{ margin: 0 }}>
                 {item.created_at ? new Date(item.created_at).toLocaleString() : ''}
