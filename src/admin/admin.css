@@ -863,3 +863,32 @@
   color: #615c57;
   font-size: 0.9rem;
 }
+
+.admin-team-photo {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (min-width: 720px) {
+  .admin-team-photo {
+    grid-template-columns: 7rem 1fr;
+  }
+}
+
+.admin-team-photo__preview,
+.admin-team-photo__placeholder {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 1px solid rgba(35, 31, 27, 0.1);
+  background: #f3f0ec;
+}
+
+.admin-team-photo__placeholder {
+  display: grid;
+  place-items: center;
+  color: #8a847d;
+  font-size: 0.82rem;
+}

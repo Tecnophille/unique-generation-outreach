@@ -174,6 +174,23 @@ export function ReflectionsUnique({ page }) {
   );
 }
 
+function TeamAvatar({ person, large = false }) {
+  const photo = person?.photo || person?.image || '';
+  const className = large ? 'avatar avatar--lg' : 'avatar';
+  if (photo) {
+    return (
+      <div className={`${className} avatar--photo`}>
+        <img src={photo} alt={person.name || ''} />
+      </div>
+    );
+  }
+  return (
+    <div className={className} aria-hidden="true">
+      {initials(person?.name)}
+    </div>
+  );
+}
+
 export function LeadershipUnique({ page }) {
   const { content } = useContent();
   const team = content.leadership || [];
@@ -199,9 +216,7 @@ export function LeadershipUnique({ page }) {
           <h2 className="uniq-heading">The team</h2>
           {convener ? (
             <article className="leader leader-featured" style={{ marginTop: '1.5rem' }}>
-              <div className="avatar avatar--lg" aria-hidden="true">
-                {initials(convener.name)}
-              </div>
+              <TeamAvatar person={convener} large />
               <div>
                 <div className="leader__role">{convener.role}</div>
                 <h3>{convener.name}</h3>
@@ -213,9 +228,7 @@ export function LeadershipUnique({ page }) {
           <div className="team-grid" style={{ marginTop: '1.5rem' }}>
             {rest.map((person) => (
               <article key={person.name} className="leader team-card">
-                <div className="avatar" aria-hidden="true">
-                  {initials(person.name)}
-                </div>
+                <TeamAvatar person={person} />
                 <div>
                   <div className="leader__role">{person.role}</div>
                   <h3>{person.name}</h3>
