@@ -18,6 +18,7 @@ import MessagesPanel from './MessagesPanel';
 import RedirectsEditor from './RedirectsEditor';
 import ResourcesEditor from './ResourcesEditor';
 import BackupEditor from './BackupEditor';
+import NavEditor from './NavEditor';
 import Finder from './Finder';
 import CommandPalette from './CommandPalette';
 import BootScreen from '../components/BootScreen';
@@ -883,86 +884,7 @@ export default function AdminApp() {
           </>
         )}
 
-        {section === 'nav' && (
-          <>
-            <h2>Navigation</h2>
-            <p className="hint">Primary menu links. Reorder with ↑ ↓. New pages can auto-add entries.</p>
-            <button
-              className="admin-btn primary"
-              type="button"
-              onClick={() =>
-                setDraft((d) => ({
-                  ...d,
-                  nav: [...(d.nav || []), { label: 'New link', href: '/' }],
-                }))
-              }
-            >
-              Add nav item
-            </button>
-            {(draft.nav || []).map((item, i) => (
-              <div className="admin-card admin-grid two" key={i}>
-                <Field label="Label">
-                  <input
-                    value={item.label}
-                    onChange={(e) => {
-                      const nav = [...draft.nav];
-                      nav[i] = { ...item, label: e.target.value };
-                      setDraft((d) => ({ ...d, nav }));
-                    }}
-                  />
-                </Field>
-                <Field label="Href">
-                  <input
-                    value={item.href}
-                    onChange={(e) => {
-                      const nav = [...draft.nav];
-                      nav[i] = { ...item, href: e.target.value };
-                      setDraft((d) => ({ ...d, nav }));
-                    }}
-                  />
-                </Field>
-                <div className="admin-inline-actions">
-                  <button
-                    className="admin-btn ghost"
-                    type="button"
-                    onClick={() => {
-                      if (i === 0) return;
-                      const nav = [...draft.nav];
-                      [nav[i - 1], nav[i]] = [nav[i], nav[i - 1]];
-                      setDraft((d) => ({ ...d, nav }));
-                    }}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    className="admin-btn ghost"
-                    type="button"
-                    onClick={() => {
-                      if (i >= draft.nav.length - 1) return;
-                      const nav = [...draft.nav];
-                      [nav[i + 1], nav[i]] = [nav[i], nav[i + 1]];
-                      setDraft((d) => ({ ...d, nav }));
-                    }}
-                  >
-                    ↓
-                  </button>
-                  <button
-                    className="admin-btn ghost"
-                    type="button"
-                    onClick={() =>
-                      setDraft((d) => ({
-                        ...d,
-                        nav: (d.nav || []).filter((_, idx) => idx !== i),
-                      }))
-                    }
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            ))}
-          </>
-        )}
+        {section === 'nav' && <NavEditor draft={draft} setDraft={setDraft} />}
       </main>
     </div>
   );

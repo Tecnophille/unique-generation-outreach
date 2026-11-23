@@ -40,9 +40,10 @@ export default function Nav() {
         <nav aria-label="Primary">
           <ul className="nav__links">
             {nav.map((item) => (
-              <li key={item.href}>
+              <li key={`${item.href}-${item.label}`}>
                 <NavLink
-                  to={item.href}
+                  to={item.href || '/'}
+                  end={item.href === '/' || item.href === ''}
                   className={({ isActive }) => (isActive ? 'is-active' : undefined)}
                 >
                   {item.label}
@@ -65,7 +66,12 @@ export default function Nav() {
       </div>
       <div className={`nav__mobile${open ? ' is-open' : ''}`}>
         {nav.map((item) => (
-          <NavLink key={item.href} to={item.href} onClick={close}>
+          <NavLink
+            key={`${item.href}-${item.label}`}
+            to={item.href || '/'}
+            end={item.href === '/' || item.href === ''}
+            onClick={close}
+          >
             {item.label}
           </NavLink>
         ))}

@@ -34,12 +34,26 @@ export function ensureVideosHub(content = {}) {
     }
   }
 
+  return { ...content, pages, videoPlacementV2: true };
+}
+
+/** Ensure Home sits before Pillars, and Videos is present — without clobbering custom order. */
+export function ensureNavDefaults(content = {}) {
   const nav = Array.isArray(content.nav) ? [...content.nav] : [];
+
+  const hasHome = nav.some((n) => n?.href === '/' || n?.href === '');
+  if (!hasHome) {
+    const home = { label: 'Home', href: '/' };
+    const pillarsIdx = nav.findIndex((n) => n?.href === '/pillars');
+    if (pillarsIdx >= 0) nav.splice(pillarsIdx, 0, home);
+    else nav.unshift(home);
+  }
+
   if (!nav.some((n) => n?.href === '/videos')) {
     nav.push({ label: 'Videos', href: '/videos' });
   }
 
-  return { ...content, pages, nav, videoPlacementV2: true };
+  return { ...content, nav };
 }
 
 export function normalizeContent(raw = {}) {
@@ -97,7 +111,7 @@ export function normalizeContent(raw = {}) {
     pages: raw.pages || {},
     nav: Array.isArray(raw.nav) ? raw.nav : [],
   };
-  return ensureVideosHub(base);
+  return ensureNavDefaults(ensureVideosHub(base));
 }
 
 export function uid(prefix = 'id') {

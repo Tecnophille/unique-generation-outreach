@@ -665,6 +665,51 @@
   align-items: center;
 }
 
+.admin-nav-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.admin-nav-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.admin-nav-item__index {
+  flex: 0 0 1.75rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-top: 1.85rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #efece8;
+  color: #615c57;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.admin-nav-item__actions {
+  width: 100%;
+}
+
+.admin-nav-item__actions .admin-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (min-width: 900px) {
+  .admin-nav-item__actions {
+    width: auto;
+    margin-top: 1.6rem;
+  }
+}
+
 .admin-list-toolbar {
   display: flex;
   flex-wrap: wrap;
