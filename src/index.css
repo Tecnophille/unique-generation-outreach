@@ -1674,9 +1674,6 @@ p {
   }
 }
 
-.page-blocks__stack--video-single .uniq-heading {
-  margin-bottom: 1rem;
-}
 
 .uniq-video h3 {
   margin: 0.85rem 0 0.35rem;
@@ -1880,57 +1877,51 @@ p {
   background: #1c1916;
 }
 
-/* CMS page / homepage blocks — one band, same rhythm as built-in sections */
+/* CMS page / homepage blocks — same centered column as StoryBlock (.wrap + max-width) */
 .page-blocks {
   width: 100%;
-  max-width: 100%;
-  overflow-x: clip;
+  box-sizing: border-box;
 }
 
-.page-blocks__stack {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1.75rem, 3.5vw, 2.75rem);
-  max-width: 100%;
-}
-
-.page-blocks__item {
+.page-blocks__section {
   width: 100%;
-  max-width: 100%;
-  min-width: 0;
+  box-sizing: border-box;
+  padding-block: clamp(1.25rem, 2.5vw, 2rem);
 }
 
-.page-blocks__item--prose {
+.page-blocks__section--quote {
+  padding-block: clamp(1.75rem, 3vw, 2.5rem);
+  border-block: 1px solid var(--line);
+  background: var(--paper);
+}
+
+/* Match .uniq-story__inner: wrap width + 44rem max on the SAME node so it centers */
+.page-blocks__column {
   max-width: 44rem;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-.page-blocks__item--prose .uniq-heading {
+.page-blocks__column .uniq-heading {
   margin-bottom: 1rem;
 }
 
-.page-blocks__item--prose p {
+.page-blocks__prose {
   color: var(--ink-soft);
   font-size: 1.08rem;
   line-height: 1.75;
   margin: 0 0 1rem;
 }
 
-.page-blocks__item--prose p:last-child {
+.page-blocks__prose:last-child {
   margin-bottom: 0;
 }
 
-.page-blocks__item--quote {
-  padding: clamp(1.35rem, 2.5vw, 1.85rem) 0;
-  border-block: 1px solid var(--line);
-  background: transparent;
-}
-
-.page-blocks__item--quote blockquote {
+.page-blocks__quote {
   margin: 0;
-  max-width: 40rem;
 }
 
-.page-blocks__item--quote p {
+.page-blocks__quote p {
   font-family: var(--font);
   font-size: clamp(1.35rem, 2.6vw, 1.75rem);
   line-height: 1.45;
@@ -1939,23 +1930,19 @@ p {
   margin: 0 0 1rem;
 }
 
-.page-blocks__item--quote cite {
+.page-blocks__quote cite {
   color: var(--muted);
   font-style: normal;
   font-size: 0.95rem;
 }
 
-.page-blocks__item--video {
-  max-width: min(100%, 44rem);
+.page-blocks__section .uniq-cta-block {
+  margin-inline: 0;
+  max-width: none;
 }
 
-.page-blocks__item--video .uniq-heading {
-  margin-bottom: 1rem;
-}
-
-.page-shell__body > .page-blocks:first-child,
-.page-shell__body > .page-blocks.section:first-child {
-  padding-top: clamp(2.5rem, 5vw, 3.75rem);
+.page-shell__body > .page-blocks:first-child {
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
 }
 
 .uniq-resources {
