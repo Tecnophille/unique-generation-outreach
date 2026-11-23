@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Field } from './fields';
 import MediaPicker from './MediaPicker';
+import BlocksEditor from './BlocksEditor';
 
 const TABS = [
   { id: 'hero', label: 'Hero' },
@@ -8,6 +9,7 @@ const TABS = [
   { id: 'pillars', label: 'Pillars' },
   { id: 'gatherings', label: 'Gatherings' },
   { id: 'reflections', label: 'Reflections' },
+  { id: 'blocks', label: 'Extra blocks' },
 ];
 
 export default function HomepageEditor({ draft, setDraft }) {
@@ -16,7 +18,10 @@ export default function HomepageEditor({ draft, setDraft }) {
   return (
     <>
       <h2>Homepage studio</h2>
-      <p className="hint">Edit every public homepage block in one place. Menu pages stay separate.</p>
+      <p className="hint">
+        Edit hero and teasers here. Use Extra blocks for the same flexible sections as menu pages
+        (rich text, quote, gallery, YouTube, CTA, stats, embed).
+      </p>
       <div className="admin-page-tabs">
         {TABS.map((t) => (
           <button
@@ -365,6 +370,13 @@ export default function HomepageEditor({ draft, setDraft }) {
             Add reflection teaser
           </button>
         </>
+      )}
+
+      {tab === 'blocks' && (
+        <BlocksEditor
+          blocks={draft.homeBlocks || []}
+          onChange={(homeBlocks) => setDraft((d) => ({ ...d, homeBlocks }))}
+        />
       )}
     </>
   );

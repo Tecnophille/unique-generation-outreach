@@ -55,6 +55,7 @@ export function normalizeContent(raw = {}) {
     brand: raw.brand || { name: 'Unique Generation Outreach', short: 'UGO' },
     events: Array.isArray(raw.events) ? raw.events : [],
     videos: Array.isArray(raw.videos) ? raw.videos : [],
+    homeBlocks: Array.isArray(raw.homeBlocks) ? raw.homeBlocks : [],
     announcements: Array.isArray(raw.announcements) ? raw.announcements : [],
     testimonials: Array.isArray(raw.testimonials) ? raw.testimonials : [],
     partners: Array.isArray(raw.partners) ? raw.partners : [],
