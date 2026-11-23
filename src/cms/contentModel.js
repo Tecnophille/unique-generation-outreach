@@ -56,6 +56,15 @@ export function ensureNavDefaults(content = {}) {
   return { ...content, nav };
 }
 
+/** Homepage Reflections visual — PDF worship still when unset. */
+export const DEFAULT_REFLECTIONS_IMAGE =
+  'https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465414710-about-worship.jpg';
+
+export function ensureReflectionsImage(content = {}) {
+  if (content.reflectionsImage) return content;
+  return { ...content, reflectionsImage: DEFAULT_REFLECTIONS_IMAGE };
+}
+
 export function normalizeContent(raw = {}) {
   const base = {
     ...raw,
@@ -63,6 +72,7 @@ export function normalizeContent(raw = {}) {
     events: Array.isArray(raw.events) ? raw.events : [],
     videos: Array.isArray(raw.videos) ? raw.videos : [],
     homeBlocks: Array.isArray(raw.homeBlocks) ? raw.homeBlocks : [],
+    reflectionsImage: raw.reflectionsImage || '',
     announcements: Array.isArray(raw.announcements) ? raw.announcements : [],
     testimonials: Array.isArray(raw.testimonials) ? raw.testimonials : [],
     partners: Array.isArray(raw.partners) ? raw.partners : [],
@@ -111,7 +121,7 @@ export function normalizeContent(raw = {}) {
     pages: raw.pages || {},
     nav: Array.isArray(raw.nav) ? raw.nav : [],
   };
-  return ensureNavDefaults(ensureVideosHub(base));
+  return ensureReflectionsImage(ensureNavDefaults(ensureVideosHub(base)));
 }
 
 export function uid(prefix = 'id') {

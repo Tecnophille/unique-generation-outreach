@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Field } from './fields';
 import MediaPicker from './MediaPicker';
 import BlocksEditor from './BlocksEditor';
+import { DEFAULT_REFLECTIONS_IMAGE } from '../cms/contentModel';
 
 const TABS = [
   { id: 'hero', label: 'Hero' },
@@ -311,6 +312,25 @@ export default function HomepageEditor({ draft, setDraft }) {
 
       {tab === 'reflections' && (
         <>
+          <div className="admin-card admin-grid">
+            <Field label="Section image (fills space under the intro)">
+              <input
+                value={draft.reflectionsImage || ''}
+                onChange={(e) => setDraft((d) => ({ ...d, reflectionsImage: e.target.value }))}
+                placeholder={DEFAULT_REFLECTIONS_IMAGE}
+              />
+            </Field>
+            <MediaPicker
+              onPick={(url) => setDraft((d) => ({ ...d, reflectionsImage: url }))}
+            />
+            {(draft.reflectionsImage || DEFAULT_REFLECTIONS_IMAGE) ? (
+              <img
+                className="admin-thumb"
+                src={draft.reflectionsImage || DEFAULT_REFLECTIONS_IMAGE}
+                alt=""
+              />
+            ) : null}
+          </div>
           {(draft.reflections || []).map((r, i) => (
             <div className="admin-card admin-grid" key={i}>
               <Field label="Date / label">

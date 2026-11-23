@@ -1,7 +1,11 @@
 import fs from 'fs';
 import { sql } from '../db/index.js';
 import { config } from '../config.js';
-import { ensureNavDefaults, ensureVideosHub } from '../../src/cms/contentModel.js';
+import {
+  ensureNavDefaults,
+  ensureReflectionsImage,
+  ensureVideosHub,
+} from '../../src/cms/contentModel.js';
 
 function toJsonb(value) {
   return typeof value === 'string' ? value : JSON.stringify(value);
@@ -28,7 +32,7 @@ function pathDir(filePath) {
 export async function ensureContent() {
   const rows = await sql('select id from site_content where id = 1');
   if (rows.length) return getContent();
-  const seed = ensureNavDefaults(ensureVideosHub(readSeed()));
+  const seed = ensureReflectionsImage(ensureNavDefaults(ensureVideosHub(readSeed())));
   seed.updatedAt = new Date().toISOString();
   await sql(
     `insert into site_content (id, payload, updated_at) values (1, $1::jsonb, now())`,
@@ -61,7 +65,7 @@ export async function getContent() {
   const payload = normalizePayload(rows[0].payload);
   if (!payload || typeof payload !== 'object') return ensureContent();
   if (!payload.pages) payload.pages = {};
-  return ensureNavDefaults(ensureVideosHub(payload));
+  return ensureReflectionsImage(ensureNavDefaults(ensureVideosHub(payload)));
 }
 
 export async function saveContent(payload, adminId = null, note = 'CMS save') {

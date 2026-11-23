@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useContent } from '../cms/ContentContext';
+import { DEFAULT_REFLECTIONS_IMAGE } from '../cms/contentModel';
 import { IconBook, IconCal } from './Icons';
 
 export default function Reflections() {
   const { content } = useContent();
   const reflections = content.reflections || [];
+  const image = content.reflectionsImage || DEFAULT_REFLECTIONS_IMAGE;
 
   return (
     <section className="section" id="reflections">
@@ -29,6 +31,11 @@ export default function Reflections() {
               <IconBook />
             </span>
           </Link>
+          {image ? (
+            <figure className="reflections__media">
+              <img src={image} alt="Worship and the Word at Unique Generation Outreach" />
+            </figure>
+          ) : null}
         </motion.div>
         <div className="reflection-cards">
           {reflections.map((r, i) => (
