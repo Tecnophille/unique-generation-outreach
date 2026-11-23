@@ -2,20 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import express from 'express';
 import { createApiApp } from './app.js';
-import { config, root, validateConfig } from './config.js';
+import { config, root } from './config.js';
 import { dbMode } from './db/index.js';
-import { ensureAdmin, cleanupSessions } from './services/authService.js';
-import { ensureContent } from './services/contentService.js';
-import { ensureUploadsDir } from './services/mediaService.js';
+import { ensureReady } from './boot.js';
 
 async function boot() {
-  const warnings = validateConfig();
-  for (const warning of warnings) console.warn(`[config] ${warning}`);
-
-  ensureUploadsDir();
-  await ensureAdmin();
-  await ensureContent();
-  await cleanupSessions();
+  await ensureReady();
 
   const app = createApiApp();
 
@@ -73,6 +65,7 @@ async function boot() {
   const server = app.listen(config.port, config.host, () => {
     console.log(`UGO API + site on http://${config.host}:${config.port}`);
     console.log(`Mode: ${config.nodeEnv} · DB: ${dbMode()}`);
+    if (config.useSupabaseStorage) console.log(`Media: Supabase Storage (${config.supabaseBucket})`);
     console.log(`Admin: /admin · ${config.defaultAdmin.email}`);
   });
 

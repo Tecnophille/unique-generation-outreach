@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { describeDbTarget, resolveDatabaseUrl } from './db/connection.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const root = path.resolve(__dirname, '..');
@@ -20,23 +21,39 @@ const siteUrl = (process.env.SITE_URL || process.env.APP_ORIGIN || '').replace(/
 
 const adminPasswordFromEnv = Boolean(process.env.CMS_ADMIN_PASSWORD?.trim());
 const defaultPassword = process.env.CMS_ADMIN_PASSWORD?.trim() || 'ugoadmin2026';
+const databaseUrl = resolveDatabaseUrl();
+const supabaseUrl = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || '';
+const supabaseBucket = process.env.SUPABASE_STORAGE_BUCKET?.trim() || 'ugo-media';
+const useSupabaseStorage = Boolean(supabaseUrl && supabaseServiceKey);
+const onVercel = process.env.VERCEL === '1' || Boolean(process.env.VERCEL_ENV);
 
 export const config = {
   nodeEnv,
-  isProd,
-  port: Number(process.env.PORT || (isProd ? 8080 : 5173)),
+  isProd: isProd || onVercel,
+  onVercel,
+  port: Number(process.env.PORT || (isProd || onVercel ? 8080 : 5173)),
   host: process.env.HOST || '0.0.0.0',
-  databaseUrl: process.env.DATABASE_URL?.trim() || '',
+  databaseUrl,
+  dbTarget: describeDbTarget(databaseUrl),
+  supabaseUrl,
+  supabaseServiceKey,
+  supabaseBucket,
+  useSupabaseStorage,
   siteUrl,
   corsOrigins,
-  trustProxy: process.env.TRUST_PROXY === '1' || process.env.TRUST_PROXY === 'true' || isProd,
+  trustProxy:
+    process.env.TRUST_PROXY === '1' ||
+    process.env.TRUST_PROXY === 'true' ||
+    isProd ||
+    onVercel,
   cookieSecure:
     process.env.COOKIE_SECURE === '1' ||
     process.env.COOKIE_SECURE === 'true' ||
-    (isProd && process.env.COOKIE_SECURE !== '0'),
+    ((isProd || onVercel) && process.env.COOKIE_SECURE !== '0'),
   contentSeedPath: path.join(root, 'public/cms/content.json'),
   contentMirrorPath: path.join(root, 'public/cms/content.json'),
-  uploadsDir: path.join(root, 'public/uploads'),
+  uploadsDir: onVercel ? '/tmp/ugo-uploads' : path.join(root, 'public/uploads'),
   distDir: path.join(root, 'dist'),
   pgliteDataDir: path.join(root, 'data/pglite'),
   sessionDays: Number(process.env.SESSION_DAYS || 7),
@@ -55,8 +72,15 @@ export function validateConfig() {
       'CMS_ADMIN_PASSWORD is unset — using the local default. Set this secret before going public.',
     );
   }
-  if (config.isProd && !config.databaseUrl) {
-    warnings.push('DATABASE_URL is unset — using on-disk PGlite (fine for local prod smoke tests).');
+  if ((config.isProd || config.onVercel) && !config.databaseUrl) {
+    warnings.push(
+      'No Supabase Postgres URL set — using on-disk PGlite. Set CMS_DATABASE_URL (URI from Supabase → Database → Connection string).',
+    );
+  }
+  if (config.onVercel && !config.useSupabaseStorage) {
+    warnings.push(
+      'SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY unset — CMS image uploads will fail on Vercel (ephemeral disk). Create a public Storage bucket (default: ugo-media).',
+    );
   }
   if (config.isProd && config.corsOrigins.length === 0 && !config.siteUrl) {
     warnings.push(

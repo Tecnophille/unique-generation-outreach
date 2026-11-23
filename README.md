@@ -1,76 +1,54 @@
 # Unique Generation Outreach
 
-Production-ready marketing site + CMS for Unique Generation Outreach (Vite + React + Express + Postgres/PGlite).
+Marketing site + CMS for Unique Generation Outreach.
 
-## Quick start (development)
+**Production target:** [Vercel](https://vercel.com) (site + API) + [Supabase](https://supabase.com) (Postgres + Storage).
+
+## Quick start (local)
 
 ```bash
 npm install
-cp .env.example .env   # optional
 npm run dev
 ```
 
 - Site: http://127.0.0.1:5173/
-- CMS: http://127.0.0.1:5173/admin  
-  Default login: `admin@ugo.local` / `ugoadmin2026`
+- CMS: http://127.0.0.1:5173/admin — `admin@ugo.local` / `ugoadmin2026`
+- Without a DB URL, content uses on-disk **PGlite**
 
-## Production
+## Deploy: Vercel + Supabase
 
-```bash
-npm ci
-npm run build
-CMS_ADMIN_PASSWORD='your-long-secret' NODE_ENV=production npm start
-```
+Full guide: [`docs/vercel-supabase.md`](./docs/vercel-supabase.md)
 
-Production defaults to port `8080`. Health checks:
+Summary:
 
-- `GET /api/health`
-- `GET /api/ready`
-
-### Docker
+1. Create a Supabase project → set `CMS_DATABASE_URL` (+ direct URI for migrate).
+2. Create public Storage bucket `ugo-media` → set `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`.
+3. `npm run migrate` against the direct URI.
+4. Import this repo in Vercel, add the env vars, deploy.
 
 ```bash
-export CMS_ADMIN_PASSWORD='your-long-secret'
-docker compose up --build
+npm run vercel-build   # used by Vercel (build + migrate)
 ```
-
-App: http://localhost:8080 · Postgres included.
-
-### Environment
-
-See `.env.example`. Important variables:
-
-| Variable | Purpose |
-|----------|---------|
-| `DATABASE_URL` | Postgres connection (PGlite used when unset) |
-| `CMS_ADMIN_PASSWORD` | Admin password (rotated on boot when set) |
-| `CMS_ADMIN_EMAIL` | Admin email |
-| `SITE_URL` / `CORS_ORIGIN` | Public origin(s) |
-| `COOKIE_SECURE` | Set `1` behind HTTPS |
-| `TRUST_PROXY` | Set `1` behind a reverse proxy |
-
-### Cursor publish
-
-`cursor-app.json` requests a managed Postgres database. Bind secret `CMS_ADMIN_PASSWORD` before going public. Migrations in `migrations/` run during build when `DATABASE_URL` is present.
-
-## Architecture
-
-```
-server/          Express API (auth, content, pages, media, contact)
-migrations/      SQL schema
-src/             React site + /admin CMS
-public/cms/      Content seed / mirror JSON
-public/uploads/  Media uploads
-```
-
-Backend details: `server/README.md` · CMS guide in the project store docs.
 
 ## Scripts
 
 | Script | Action |
 |--------|--------|
-| `npm run dev` | API + Vite middleware |
-| `npm run build` | Vite production build + migrate |
-| `npm start` | Serve `dist/` + API (`NODE_ENV=production`) |
-| `npm run migrate` | Apply SQL migrations (Postgres) |
-| `npm run lint` | Oxlint |
+| `npm run dev` | Local API + Vite |
+| `npm run build` | Vite production bundle |
+| `npm run vercel-build` | Build + migrate (CI / Vercel) |
+| `npm start` | Serve `dist/` + API (Docker / VM) |
+| `npm run migrate` | Apply `migrations/*.sql` |
+| `npm run supabase:bucket` | Create public Storage bucket |
+
+## Architecture
+
+```
+api/index.js     Vercel serverless Express entry
+server/          API (auth, content, pages, media, contact)
+migrations/      Postgres schema (Supabase)
+src/             React site + /admin CMS
+public/cms/      Content seed JSON
+```
+
+Env template: `.env.example`

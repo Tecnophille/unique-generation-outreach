@@ -1,19 +1,24 @@
 import { readdir, readFile } from 'node:fs/promises';
 import pg from 'pg';
+import {
+  describeDbTarget,
+  pgClientConfig,
+  resolveDatabaseUrl,
+} from '../server/db/connection.js';
 
-const url = process.env.DATABASE_URL?.trim() ?? '';
+const url = resolveDatabaseUrl({ forMigrate: true });
 const files = (await readdir('migrations').catch(() => []))
   .filter((f) => f.endsWith('.sql'))
   .sort();
 
 if (url === '' || files.length === 0) {
-  console.log('migrate: nothing to do');
+  console.log('migrate: nothing to do (no database URL or no migration files)');
   process.exit(0);
 }
 
-const client = new pg.Client({
-  connectionString: process.env.DATABASE_URL_UNPOOLED?.trim() || url,
-});
+console.log(`migrate: target=${describeDbTarget(url)}`);
+
+const client = new pg.Client(pgClientConfig(url));
 await client.connect();
 try {
   await client.query("set lock_timeout = '60s'");
@@ -35,6 +40,9 @@ try {
       await client.query('rollback');
       throw error;
     }
+  }
+  if (files.every((f) => done.has(f))) {
+    console.log('migrate: already up to date');
   }
 } finally {
   await client.end();

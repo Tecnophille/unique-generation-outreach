@@ -12,7 +12,9 @@ router.get('/health', async (_req, res, next) => {
       ok: true,
       service: 'ugo-cms-api',
       env: config.nodeEnv,
+      vercel: config.onVercel,
       db: dbMode(),
+      storage: config.useSupabaseStorage ? 'supabase' : 'local',
       uptimeSec: Math.round((Date.now() - startedAt) / 1000),
       time: new Date().toISOString(),
     });

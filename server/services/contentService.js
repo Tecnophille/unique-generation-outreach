@@ -11,6 +11,7 @@ function readSeed() {
 }
 
 function mirrorToDisk(payload) {
+  if (config.onVercel) return;
   try {
     fs.mkdirSync(pathDir(config.contentMirrorPath), { recursive: true });
     fs.writeFileSync(config.contentMirrorPath, JSON.stringify(payload, null, 2));

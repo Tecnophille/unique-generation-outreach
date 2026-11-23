@@ -1,13 +1,12 @@
 import { Router } from 'express';
 import multer from 'multer';
-import path from 'path';
 import { authRequired } from '../middleware/auth.js';
 import { config } from '../config.js';
 import { ensureUploadsDir, listMedia, recordUpload } from '../services/mediaService.js';
 
 ensureUploadsDir();
 
-const storage = multer.diskStorage({
+const diskStorage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, config.uploadsDir),
   filename: (_req, file, cb) => {
     const safe = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -16,7 +15,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({
-  storage,
+  storage: config.useSupabaseStorage || config.onVercel ? multer.memoryStorage() : diskStorage,
   limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (!file.mimetype.startsWith('image/')) {
@@ -39,6 +38,12 @@ router.get('/uploads', authRequired, async (_req, res, next) => {
 router.post('/upload', authRequired, upload.single('file'), async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    if ((config.onVercel || config.useSupabaseStorage) && !config.useSupabaseStorage) {
+      return res.status(503).json({
+        error:
+          'Media uploads require Supabase Storage. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.',
+      });
+    }
     const asset = await recordUpload(req.file, req.admin.id);
     res.status(201).json(asset);
   } catch (err) {

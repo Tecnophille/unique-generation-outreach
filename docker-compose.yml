@@ -1,3 +1,5 @@
+# Local Docker smoke test with Postgres.
+# Production target is Vercel + Supabase — see docs/vercel-supabase.md
 services:
   web:
     build: .
@@ -11,7 +13,11 @@ services:
       CORS_ORIGIN: http://localhost:8080
       CMS_ADMIN_EMAIL: admin@ugo.local
       CMS_ADMIN_PASSWORD: ${CMS_ADMIN_PASSWORD:-ugoadmin2026}
-      DATABASE_URL: postgres://ugo:ugo@db:5432/ugo
+      CMS_DATABASE_URL: ${CMS_DATABASE_URL:-postgres://ugo:ugo@db:5432/ugo}
+      DATABASE_URL_UNPOOLED: ${DATABASE_URL_UNPOOLED:-postgres://ugo:ugo@db:5432/ugo}
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      SUPABASE_STORAGE_BUCKET: ${SUPABASE_STORAGE_BUCKET:-ugo-media}
       COOKIE_SECURE: "0"
     depends_on:
       db:

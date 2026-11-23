@@ -2,16 +2,20 @@ import fs from 'fs';
 import path from 'path';
 import { readdir, readFile } from 'fs/promises';
 import pg from 'pg';
-import { PGlite } from '@electric-sql/pglite';
 import { config, root } from '../config.js';
+import {
+  describeDbTarget,
+  pgClientConfig,
+  resolveDatabaseUrl,
+} from './connection.js';
 
-const databaseUrl = config.databaseUrl;
+const databaseUrl = resolveDatabaseUrl();
 let pool;
 let local;
 
 export async function sql(text, params = []) {
   if (databaseUrl) {
-    pool ??= new pg.Pool({ connectionString: databaseUrl, max: 5 });
+    pool ??= new pg.Pool(pgClientConfig(databaseUrl, { max: 5 }));
     return (await pool.query(text, params)).rows;
   }
   local ??= startLocal().catch((error) => {
@@ -24,6 +28,7 @@ export async function sql(text, params = []) {
 }
 
 async function startLocal() {
+  const { PGlite } = await import('@electric-sql/pglite');
   fs.mkdirSync(config.pgliteDataDir, { recursive: true });
   const db = new PGlite(config.pgliteDataDir);
   const migrationsDir = path.join(root, 'migrations');
@@ -50,5 +55,12 @@ async function startLocal() {
 }
 
 export function dbMode() {
-  return databaseUrl ? 'postgres' : 'pglite';
+  return describeDbTarget(databaseUrl);
+}
+
+export async function closeDb() {
+  if (pool) {
+    await pool.end();
+    pool = undefined;
+  }
 }
