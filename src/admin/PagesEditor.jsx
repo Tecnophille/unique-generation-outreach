@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import MediaPicker from './MediaPicker';
 
-const PAGE_KEYS = [
-  { key: 'about', path: '/about' },
-  { key: 'pillars', path: '/pillars' },
-  { key: 'gatherings', path: '/gatherings' },
-  { key: 'reflections', path: '/reflections' },
-  { key: 'leadership', path: '/leadership' },
-  { key: 'faq', path: '/faq' },
-  { key: 'contact', path: '/contact' },
-];
+const CORE_PAGES = new Set([
+  'about',
+  'pillars',
+  'gatherings',
+  'reflections',
+  'leadership',
+  'faq',
+  'contact',
+  'events',
+  'videos',
+]);
 
 function Field({ label, children }) {
   return (
@@ -17,6 +20,19 @@ function Field({ label, children }) {
       {children}
     </div>
   );
+}
+
+function slugify(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 48);
+}
+
+function pagePath(key) {
+  return `/${key}`;
 }
 
 function CommonFields({ page, patchPage }) {
@@ -39,6 +55,7 @@ function CommonFields({ page, patchPage }) {
           onChange={(e) => patchPage({ heroImage: e.target.value })}
         />
       </Field>
+      <MediaPicker onPick={(url) => patchPage({ heroImage: url })} label="Upload / pick banner image" />
       {page.heroImage ? <img className="admin-thumb" src={page.heroImage} alt="" /> : null}
       <Field label="Story title">
         <input
@@ -71,36 +88,213 @@ function CommonFields({ page, patchPage }) {
   );
 }
 
+function ListToolbar({ onAdd, addLabel, children }) {
+  return (
+    <div className="admin-list-toolbar">
+      <button className="admin-btn ghost" type="button" onClick={onAdd}>
+        {addLabel}
+      </button>
+      {children}
+    </div>
+  );
+}
+
 export default function PagesEditor({ draft, setDraft }) {
-  const [active, setActive] = useState('about');
-  const meta = PAGE_KEYS.find((p) => p.key === active) || PAGE_KEYS[0];
+  const pageKeys = useMemo(() => {
+    const keys = Object.keys(draft.pages || {});
+    const preferred = [
+      'about',
+      'pillars',
+      'gatherings',
+      'reflections',
+      'leadership',
+      'faq',
+      'contact',
+      'events',
+      'videos',
+    ];
+    const ordered = [
+      ...preferred.filter((k) => keys.includes(k)),
+      ...keys.filter((k) => !preferred.includes(k)).sort(),
+    ];
+    return ordered;
+  }, [draft.pages]);
+
+  const [active, setActive] = useState(pageKeys[0] || 'about');
+  const [newTitle, setNewTitle] = useState('');
   const page = draft.pages?.[active] || {};
+  const path = pagePath(active);
 
   const patchPage = (next) =>
     setDraft((d) => ({
       ...d,
       pages: {
         ...(d.pages || {}),
-        [active]: { ...page, ...next },
+        [active]: { ...((d.pages || {})[active] || {}), ...next },
       },
     }));
 
+  function createPage() {
+    const title = newTitle.trim() || 'New page';
+    let key = slugify(title);
+    if (!key) key = `page-${Date.now().toString(36)}`;
+    if (key === 'admin' || key === 'api') {
+      alert('That slug is reserved.');
+      return;
+    }
+    if (draft.pages?.[key]) {
+      alert(`Page “${key}” already exists.`);
+      return;
+    }
+    const nextPage = {
+      label: title,
+      title,
+      intro: '',
+      heroImage: '',
+      storyTitle: '',
+      story: '',
+      cta: { label: '', href: '' },
+      gallery: [],
+      events: [],
+      videos: [],
+      articles: [],
+      custom: true,
+    };
+    setDraft((d) => {
+      const nav = [...(d.nav || [])];
+      if (!nav.some((n) => n.href === `/${key}`)) {
+        nav.push({ label: title, href: `/${key}` });
+      }
+      return {
+        ...d,
+        pages: { ...(d.pages || {}), [key]: nextPage },
+        nav,
+      };
+    });
+    setActive(key);
+    setNewTitle('');
+  }
+
+  function deletePage() {
+    if (CORE_PAGES.has(active) && !page.custom) {
+      alert('Core pages cannot be deleted. Clear their content instead.');
+      return;
+    }
+    if (!window.confirm(`Delete page /${active}?`)) return;
+    setDraft((d) => {
+      const pages = { ...(d.pages || {}) };
+      delete pages[active];
+      return {
+        ...d,
+        pages,
+        nav: (d.nav || []).filter((n) => n.href !== `/${active}`),
+      };
+    });
+    setActive('about');
+  }
+
+  function ensureEventsPage() {
+    if (draft.pages?.events) {
+      setActive('events');
+      return;
+    }
+    setDraft((d) => ({
+      ...d,
+      pages: {
+        ...(d.pages || {}),
+        events: {
+          label: 'Events',
+          title: 'Upcoming & past gatherings',
+          intro: 'Dates, places, and stories from Unique Generation Outreach.',
+          heroImage: '',
+          storyTitle: 'Come be part of it',
+          story: 'Browse events managed from the CMS Events studio.',
+          cta: { label: 'Contact us', href: '/contact' },
+          useSiteEvents: true,
+          custom: true,
+        },
+      },
+      nav: (d.nav || []).some((n) => n.href === '/events')
+        ? d.nav
+        : [...(d.nav || []), { label: 'Events', href: '/events' }],
+    }));
+    setActive('events');
+  }
+
+  function ensureVideosPage() {
+    if (draft.pages?.videos) {
+      setActive('videos');
+      return;
+    }
+    setDraft((d) => ({
+      ...d,
+      pages: {
+        ...(d.pages || {}),
+        videos: {
+          label: 'Videos',
+          title: 'Watch with us',
+          intro: 'Messages, highlights, and stories on YouTube.',
+          heroImage: '',
+          storyTitle: 'On the channel',
+          story: 'Videos managed from the CMS YouTube studio.',
+          cta: { label: 'Contact us', href: '/contact' },
+          useSiteVideos: true,
+          custom: true,
+        },
+      },
+      nav: (d.nav || []).some((n) => n.href === '/videos')
+        ? d.nav
+        : [...(d.nav || []), { label: 'Videos', href: '/videos' }],
+    }));
+    setActive('videos');
+  }
+
   return (
     <>
-      <h2>Menu pages</h2>
+      <h2>Pages & content</h2>
       <p className="hint">
-        Each route has its own content — not a copy of the homepage. Pick a page tab, edit, then
-        Save.
+        Edit every public route, create new pages, attach galleries, event write-ups, and YouTube
+        embeds. Save when you are done.
       </p>
+
+      <div className="admin-card admin-grid">
+        <div className="admin-grid two">
+          <Field label="New page title">
+            <input
+              value={newTitle}
+              placeholder="e.g. Youth camp"
+              onChange={(e) => setNewTitle(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  createPage();
+                }
+              }}
+            />
+          </Field>
+          <div className="admin-inline-actions">
+            <button className="admin-btn primary" type="button" onClick={createPage}>
+              Create page
+            </button>
+            <button className="admin-btn ghost" type="button" onClick={ensureEventsPage}>
+              Open Events page
+            </button>
+            <button className="admin-btn ghost" type="button" onClick={ensureVideosPage}>
+              Open Videos page
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div className="admin-page-tabs">
-        {PAGE_KEYS.map((p) => (
+        {pageKeys.map((key) => (
           <button
-            key={p.key}
+            key={key}
             type="button"
-            className={active === p.key ? 'is-active' : ''}
-            onClick={() => setActive(p.key)}
+            className={active === key ? 'is-active' : ''}
+            onClick={() => setActive(key)}
           >
-            {p.key}
+            {key}
           </button>
         ))}
       </div>
@@ -111,14 +305,22 @@ export default function PagesEditor({ draft, setDraft }) {
             <strong>{active}</strong>
             <div className="hint" style={{ margin: 0 }}>
               Live at{' '}
-              <a href={meta.path} target="_blank" rel="noreferrer">
-                {meta.path}
+              <a href={path} target="_blank" rel="noreferrer">
+                {path}
               </a>
+              {page.custom ? ' · custom page' : ' · core page'}
             </div>
           </div>
-          <a className="admin-btn ghost" href={meta.path} target="_blank" rel="noreferrer">
-            Preview page ↗
-          </a>
+          <div className="admin-inline-actions">
+            <a className="admin-btn ghost" href={path} target="_blank" rel="noreferrer">
+              Preview ↗
+            </a>
+            {(page.custom || !CORE_PAGES.has(active)) && (
+              <button className="admin-btn danger" type="button" onClick={deletePage}>
+                Delete page
+              </button>
+            )}
+          </div>
         </div>
 
         <CommonFields page={page} patchPage={patchPage} />
@@ -165,19 +367,32 @@ export default function PagesEditor({ draft, setDraft }) {
                     }}
                   />
                 </Field>
+                <button
+                  className="admin-btn ghost"
+                  type="button"
+                  onClick={() =>
+                    patchPage({
+                      milestones: (page.milestones || []).filter((_, idx) => idx !== i),
+                    })
+                  }
+                >
+                  Remove
+                </button>
               </div>
             ))}
-            <button
-              className="admin-btn ghost"
-              type="button"
-              onClick={() =>
+            <ListToolbar
+              addLabel="Add milestone"
+              onAdd={() =>
                 patchPage({
                   milestones: [...(page.milestones || []), { year: 'New', text: '' }],
                 })
               }
-            >
-              Add milestone
-            </button>
+            />
+          </>
+        )}
+
+        {(active === 'about' || page.custom || active === 'events' || active === 'videos') && (
+          <>
             <h3>Gallery</h3>
             {(page.gallery || []).map((g, i) => (
               <div className="admin-list-item admin-grid" key={i}>
@@ -191,6 +406,13 @@ export default function PagesEditor({ draft, setDraft }) {
                     }}
                   />
                 </Field>
+                <MediaPicker
+                  onPick={(url) => {
+                    const gallery = [...(page.gallery || [])];
+                    gallery[i] = { ...g, src: url };
+                    patchPage({ gallery });
+                  }}
+                />
                 <Field label="Caption">
                   <input
                     value={g.caption || ''}
@@ -201,25 +423,31 @@ export default function PagesEditor({ draft, setDraft }) {
                     }}
                   />
                 </Field>
+                <button
+                  className="admin-btn ghost"
+                  type="button"
+                  onClick={() =>
+                    patchPage({ gallery: (page.gallery || []).filter((_, idx) => idx !== i) })
+                  }
+                >
+                  Remove
+                </button>
               </div>
             ))}
-            <button
-              className="admin-btn ghost"
-              type="button"
-              onClick={() =>
+            <ListToolbar
+              addLabel="Add gallery image"
+              onAdd={() =>
                 patchPage({
                   gallery: [...(page.gallery || []), { src: '', caption: '' }],
                 })
               }
-            >
-              Add gallery image
-            </button>
+            />
           </>
         )}
 
         {active === 'pillars' && (
           <>
-            <h3>Pillar deep-dives (unique to this page)</h3>
+            <h3>Pillar deep-dives</h3>
             {(page.items || []).map((item, i) => (
               <div className="admin-list-item admin-grid" key={i}>
                 <Field label="Title">
@@ -252,14 +480,31 @@ export default function PagesEditor({ draft, setDraft }) {
                     }}
                   />
                 </Field>
+                <button
+                  className="admin-btn ghost"
+                  type="button"
+                  onClick={() =>
+                    patchPage({ items: (page.items || []).filter((_, idx) => idx !== i) })
+                  }
+                >
+                  Remove
+                </button>
               </div>
             ))}
+            <ListToolbar
+              addLabel="Add pillar"
+              onAdd={() =>
+                patchPage({
+                  items: [...(page.items || []), { title: '', text: '', detail: '' }],
+                })
+              }
+            />
           </>
         )}
 
-        {active === 'gatherings' && (
+        {(active === 'gatherings' || page.custom) && active !== 'videos' && (
           <>
-            <h3>GHP event stories (unique to this page)</h3>
+            <h3>Event stories on this page</h3>
             {(page.events || []).map((ev, i) => (
               <div className="admin-list-item admin-grid" key={i}>
                 <div className="admin-grid two">
@@ -304,6 +549,13 @@ export default function PagesEditor({ draft, setDraft }) {
                     }}
                   />
                 </Field>
+                <MediaPicker
+                  onPick={(url) => {
+                    const events = [...(page.events || [])];
+                    events[i] = { ...ev, image: url };
+                    patchPage({ events });
+                  }}
+                />
                 <Field label="Story">
                   <textarea
                     value={ev.story || ''}
@@ -314,12 +566,20 @@ export default function PagesEditor({ draft, setDraft }) {
                     }}
                   />
                 </Field>
+                <button
+                  className="admin-btn ghost"
+                  type="button"
+                  onClick={() =>
+                    patchPage({ events: (page.events || []).filter((_, idx) => idx !== i) })
+                  }
+                >
+                  Remove
+                </button>
               </div>
             ))}
-            <button
-              className="admin-btn ghost"
-              type="button"
-              onClick={() =>
+            <ListToolbar
+              addLabel="Add event story"
+              onAdd={() =>
                 patchPage({
                   events: [
                     ...(page.events || []),
@@ -327,15 +587,13 @@ export default function PagesEditor({ draft, setDraft }) {
                   ],
                 })
               }
-            >
-              Add event story
-            </button>
+            />
           </>
         )}
 
-        {active === 'reflections' && (
+        {(active === 'reflections' || page.custom) && (
           <>
-            <h3>Full articles (unique to this page)</h3>
+            <h3>Articles</h3>
             {(page.articles || []).map((a, i) => (
               <div className="admin-list-item admin-grid" key={i}>
                 <Field label="Date / label">
@@ -369,26 +627,76 @@ export default function PagesEditor({ draft, setDraft }) {
                     }}
                   />
                 </Field>
+                <button
+                  className="admin-btn ghost"
+                  type="button"
+                  onClick={() =>
+                    patchPage({ articles: (page.articles || []).filter((_, idx) => idx !== i) })
+                  }
+                >
+                  Remove
+                </button>
               </div>
             ))}
-            <button
-              className="admin-btn ghost"
-              type="button"
-              onClick={() =>
+            <ListToolbar
+              addLabel="Add article"
+              onAdd={() =>
                 patchPage({
                   articles: [...(page.articles || []), { date: '', title: '', body: '' }],
                 })
               }
-            >
-              Add article
-            </button>
+            />
           </>
         )}
+
+        <h3>YouTube on this page</h3>
+        <p className="hint">Optional embeds for this route. Site-wide videos also live under Videos.</p>
+        {(page.videos || []).map((v, i) => (
+          <div className="admin-list-item admin-grid" key={i}>
+            <Field label="Title">
+              <input
+                value={v.title || ''}
+                onChange={(e) => {
+                  const videos = [...(page.videos || [])];
+                  videos[i] = { ...v, title: e.target.value };
+                  patchPage({ videos });
+                }}
+              />
+            </Field>
+            <Field label="YouTube URL">
+              <input
+                value={v.url || ''}
+                onChange={(e) => {
+                  const videos = [...(page.videos || [])];
+                  videos[i] = { ...v, url: e.target.value };
+                  patchPage({ videos });
+                }}
+              />
+            </Field>
+            <button
+              className="admin-btn ghost"
+              type="button"
+              onClick={() =>
+                patchPage({ videos: (page.videos || []).filter((_, idx) => idx !== i) })
+              }
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+        <ListToolbar
+          addLabel="Add YouTube link"
+          onAdd={() =>
+            patchPage({
+              videos: [...(page.videos || []), { title: '', url: '', description: '' }],
+            })
+          }
+        />
 
         {active === 'leadership' && (
           <>
             <h3>Focus cards</h3>
-            <p className="hint">Team bios are edited under “Team directory”. These cards are page-only.</p>
+            <p className="hint">Team bios are under Team directory. These cards are page-only.</p>
             {(page.focus || []).map((f, i) => (
               <div className="admin-list-item admin-grid" key={i}>
                 <Field label="Title">
@@ -450,6 +758,18 @@ export default function PagesEditor({ draft, setDraft }) {
           <p className="hint">
             FAQ answers are edited under <strong>FAQ answers</strong>. This page holds the unique
             intro/story/CTA only.
+          </p>
+        )}
+
+        {(active === 'events' || page.useSiteEvents) && (
+          <p className="hint">
+            This page lists site-wide events from the <strong>Events</strong> studio. Manage items
+            there, then Save.
+          </p>
+        )}
+        {(active === 'videos' || page.useSiteVideos) && (
+          <p className="hint">
+            This page lists site-wide YouTube links from the <strong>YouTube</strong> studio.
           </p>
         )}
       </div>

@@ -2,13 +2,18 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContent } from '../cms/ContentContext';
 import PagesEditor from './PagesEditor';
+import EventsEditor from './EventsEditor';
+import VideosEditor from './VideosEditor';
 import RevisionsPanel from './RevisionsPanel';
 import MessagesPanel from './MessagesPanel';
 import './admin.css';
 
 const SECTIONS = [
   { id: 'overview', label: 'Dashboard', group: 'Start' },
-  { id: 'pages', label: 'Menu pages', group: 'Pages' },
+  { id: 'pages', label: 'Pages & content', group: 'Content' },
+  { id: 'events', label: 'Events', group: 'Content' },
+  { id: 'videos', label: 'YouTube', group: 'Content' },
+  { id: 'media', label: 'Media library', group: 'Content' },
   { id: 'hero', label: 'Home · Hero', group: 'Homepage' },
   { id: 'about', label: 'Home · About teaser', group: 'Homepage' },
   { id: 'pillars', label: 'Home · Pillars teaser', group: 'Homepage' },
@@ -19,7 +24,6 @@ const SECTIONS = [
   { id: 'contact', label: 'Contact panel', group: 'Shared data' },
   { id: 'inbox', label: 'Inbox', group: 'Shared data' },
   { id: 'nav', label: 'Navigation', group: 'Site' },
-  { id: 'media', label: 'Media library', group: 'Site' },
 ];
 
 const PAGE_KEYS = [
@@ -83,13 +87,15 @@ function Login({ onSuccess }) {
       <div className="admin-login__atmosphere" aria-hidden="true" />
       <main className="admin-login__panel">
         <header className="admin-login__brand">
-          <img
-            className="admin-login__logo"
-            src="/logo-icon.png"
-            alt="Unique Generation Outreach"
-            width={88}
-            height={88}
-          />
+          <div className="admin-login__logo-frame">
+            <img
+              className="admin-login__logo"
+              src="/logo-icon.png"
+              alt="Unique Generation Outreach"
+              width={88}
+              height={88}
+            />
+          </div>
           <p className="admin-login__org">Unique Generation Outreach</p>
           <h1 id="admin-login-title">Content studio</h1>
           <p className="admin-login__lede">
@@ -378,6 +384,8 @@ export default function AdminApp() {
         )}
 
         {section === 'pages' && <PagesEditor draft={draft} setDraft={setDraft} />}
+        {section === 'events' && <EventsEditor draft={draft} setDraft={setDraft} />}
+        {section === 'videos' && <VideosEditor draft={draft} setDraft={setDraft} />}
         {section === 'inbox' && <MessagesPanel />}
 
         {section === 'hero' && (
@@ -929,6 +937,19 @@ export default function AdminApp() {
         {section === 'nav' && (
           <>
             <h2>Navigation</h2>
+            <p className="hint">Add, reorder labels, or remove menu links. New pages can auto-add a link.</p>
+            <button
+              className="admin-btn primary"
+              type="button"
+              onClick={() =>
+                setDraft((d) => ({
+                  ...d,
+                  nav: [...(d.nav || []), { label: 'New link', href: '/' }],
+                }))
+              }
+            >
+              Add nav item
+            </button>
             {(draft.nav || []).map((item, i) => (
               <div className="admin-card admin-grid two" key={i}>
                 <Field label="Label">
@@ -951,6 +972,18 @@ export default function AdminApp() {
                     }}
                   />
                 </Field>
+                <button
+                  className="admin-btn ghost"
+                  type="button"
+                  onClick={() =>
+                    setDraft((d) => ({
+                      ...d,
+                      nav: (d.nav || []).filter((_, idx) => idx !== i),
+                    }))
+                  }
+                >
+                  Remove
+                </button>
               </div>
             ))}
           </>
@@ -959,34 +992,57 @@ export default function AdminApp() {
         {section === 'media' && (
           <>
             <h2>Media library</h2>
-            <p className="hint">Upload images, then paste the returned URL into any image field.</p>
+            <p className="hint">
+              Upload images for banners, events, and galleries. Copy a URL into any image field, or
+              use “Pick from library” on page editors.
+            </p>
             <div className="admin-card">
               <input
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
+                  const files = [...(e.target.files || [])];
+                  if (!files.length) return;
                   try {
-                    const url = await uploadFile(file);
-                    setStatus(`Uploaded: ${url}`);
+                    const urls = [];
+                    for (const file of files) {
+                      urls.push(await uploadFile(file));
+                    }
+                    setStatus(`Uploaded ${urls.length} file(s)`);
                     setError('');
                   } catch (err) {
                     setError(err.message || 'Upload failed');
+                  } finally {
+                    e.target.value = '';
                   }
                 }}
               />
             </div>
-            <div className="admin-card admin-grid">
+            <div className="admin-card admin-media-grid">
               {uploads.length === 0 ? <p className="hint">No uploads yet.</p> : null}
               {uploads.map((f) => (
-                <div key={f.id || f.filename || f.url}>
-                  <code>{f.url}</code>
+                <div className="admin-media-card" key={f.id || f.filename || f.url}>
                   <img
                     className="admin-thumb"
                     src={f.url}
                     alt={f.original_name || f.filename || 'Upload'}
                   />
+                  <code title={f.url}>{f.url}</code>
+                  <button
+                    className="admin-btn ghost"
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(f.url);
+                        setStatus('Copied image URL');
+                      } catch {
+                        setStatus(f.url);
+                      }
+                    }}
+                  >
+                    Copy URL
+                  </button>
                 </div>
               ))}
             </div>

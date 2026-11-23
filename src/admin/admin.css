@@ -30,7 +30,10 @@
 
 .admin-side__brand img {
   width: 3.4rem;
-  height: auto;
+  height: 3.4rem;
+  padding: 0.35rem;
+  object-fit: contain;
+  object-position: center;
   border-radius: 999px;
   background: #fff;
 }
@@ -425,15 +428,25 @@
   margin-bottom: 1.35rem;
 }
 
-.admin-login__logo {
+.admin-login__logo-frame {
+  display: grid;
+  place-items: center;
   width: 5.75rem;
   height: 5.75rem;
   margin: 0 auto 1rem;
-  padding: 0.55rem;
+  padding: 0.65rem;
   border-radius: 999px;
-  object-fit: contain;
   background: #fff;
   box-shadow: 0 10px 28px rgba(82, 95, 189, 0.18);
+  overflow: hidden;
+}
+
+.admin-login__logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
 }
 
 .admin-login__org {
@@ -558,6 +571,95 @@
   color: #525fbd;
   border-color: rgba(82, 95, 189, 0.55);
   outline: none;
+}
+
+.admin-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.admin-list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.admin-media-picker {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.admin-media-picker__panel {
+  border: 1px solid rgba(35, 31, 27, 0.1);
+  border-radius: 12px;
+  padding: 0.85rem;
+  background: #f9f7f5;
+}
+
+.admin-media-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+
+.admin-media-picker__item {
+  border: 1px solid rgba(35, 31, 27, 0.1);
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  aspect-ratio: 1;
+}
+
+.admin-media-picker__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-media-picker__item:hover,
+.admin-media-picker__item:focus-visible {
+  border-color: #525fbd;
+  outline: none;
+}
+
+.admin-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.85rem;
+}
+
+.admin-media-card {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.admin-media-card code {
+  font-size: 0.72rem;
+  word-break: break-all;
+  color: #615c57;
+}
+
+.admin-video-preview {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1c1916;
+}
+
+.admin-video-preview iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .admin-list-item {

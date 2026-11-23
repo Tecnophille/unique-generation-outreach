@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import SiteLayout from '../components/SiteLayout';
 import PageHero from '../components/PageHero';
 import Contact from '../components/Contact';
@@ -11,6 +11,7 @@ import {
   LeadershipUnique,
   FaqUnique,
   ContactUnique,
+  CustomPageUnique,
 } from './views/UniquePages';
 
 const VIEW_MAP = {
@@ -21,9 +22,15 @@ const VIEW_MAP = {
   leadership: LeadershipUnique,
   faq: FaqUnique,
   contact: ContactUnique,
+  events: CustomPageUnique,
+  videos: CustomPageUnique,
 };
 
-export default function SectionPage({ pageKey }) {
+const RESERVED = new Set(['admin', 'api', 'uploads']);
+
+export default function SectionPage({ pageKey: pageKeyProp }) {
+  const params = useParams();
+  const pageKey = pageKeyProp || params.pageKey;
   const { content, loading, error } = useContent();
 
   if (loading) {
@@ -34,10 +41,7 @@ export default function SectionPage({ pageKey }) {
     return <div className="boot-screen">Could not load site content. {error}</div>;
   }
 
-  const page = content.pages?.[pageKey] || {};
-  const View = VIEW_MAP[pageKey];
-
-  if (!View) {
+  if (!pageKey || RESERVED.has(pageKey)) {
     return (
       <SiteLayout>
         <div className="section wrap">
@@ -47,6 +51,20 @@ export default function SectionPage({ pageKey }) {
       </SiteLayout>
     );
   }
+
+  const page = content.pages?.[pageKey];
+  if (!page) {
+    return (
+      <SiteLayout>
+        <div className="section wrap">
+          <h1>Page not found</h1>
+          <Link to="/">Back home</Link>
+        </div>
+      </SiteLayout>
+    );
+  }
+
+  const View = VIEW_MAP[pageKey] || CustomPageUnique;
 
   return (
     <SiteLayout>

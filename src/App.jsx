@@ -24,6 +24,8 @@ export default function App() {
             <Route path="/contact" element={<SectionPage pageKey="contact" />} />
             <Route path="/leadership" element={<SectionPage pageKey="leadership" />} />
             <Route path="/faq" element={<SectionPage pageKey="faq" />} />
+            <Route path="/events" element={<SectionPage pageKey="events" />} />
+            <Route path="/videos" element={<SectionPage pageKey="videos" />} />
             <Route
               path="/admin/*"
               element={
@@ -32,6 +34,7 @@ export default function App() {
                 </Suspense>
               }
             />
+            <Route path="/:pageKey" element={<SectionPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>

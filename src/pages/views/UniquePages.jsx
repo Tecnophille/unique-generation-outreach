@@ -138,6 +138,7 @@ export function GatheringsUnique({ page }) {
           </div>
         ) : null}
       </section>
+      <VideosBlock videos={page.videos} />
     </>
   );
 }
@@ -280,6 +281,140 @@ export function ContactUnique({ page }) {
         </div>
       </section>
       {/* Contact form/panel is unique enough as the contact component, imported by parent if needed */}
+    </>
+  );
+}
+
+function youtubeId(url) {
+  const m = String(url || '').match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|v=)([\w-]{11})/,
+  );
+  return m?.[1] || '';
+}
+
+function VideosBlock({ videos, heading = 'Videos' }) {
+  const list = (videos || []).filter((v) => youtubeId(v.url));
+  if (!list.length) return null;
+  return (
+    <section className="section">
+      <div className="wrap">
+        <h2 className="uniq-heading">{heading}</h2>
+        <div className="uniq-videos">
+          {list.map((v) => {
+            const id = youtubeId(v.url);
+            return (
+              <article key={v.id || v.url} className="uniq-video">
+                <div className="uniq-video__frame">
+                  <iframe
+                    title={v.title || 'YouTube video'}
+                    src={`https://www.youtube.com/embed/${id}`}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+                {v.title ? <h3>{v.title}</h3> : null}
+                {v.description ? <p>{v.description}</p> : null}
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function GalleryBlock({ gallery }) {
+  if (!gallery?.length) return null;
+  return (
+    <section className="section">
+      <div className="wrap">
+        <h2 className="uniq-heading">Gallery</h2>
+        <div className="uniq-gallery">
+          {gallery.map((g) => (
+            <figure key={g.src}>
+              <img src={g.src} alt={g.caption || ''} />
+              {g.caption ? <figcaption>{g.caption}</figcaption> : null}
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SiteEventsBlock() {
+  const { content } = useContent();
+  const events = content.events || [];
+  if (!events.length) {
+    return (
+      <section className="section">
+        <div className="wrap">
+          <p className="hint">No events published yet.</p>
+        </div>
+      </section>
+    );
+  }
+  return (
+    <section className="section">
+      <div className="wrap uniq-events">
+        {events.map((ev) => (
+          <article key={ev.id || ev.title} className="uniq-event">
+            {ev.image ? (
+              <div className="uniq-event__media">
+                <img src={ev.image} alt="" />
+              </div>
+            ) : null}
+            <div className="uniq-event__body">
+              {ev.date ? <span className="tag">{ev.date}</span> : null}
+              <h3>{ev.title}</h3>
+              {ev.location ? <p className="uniq-event__theme">{ev.location}</p> : null}
+              {ev.summary ? <p>{ev.summary}</p> : null}
+              {ev.link ? (
+                <p>
+                  <a className="btn btn--solid" href={ev.link}>
+                    Details
+                  </a>
+                </p>
+              ) : null}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/** Flexible layout for CMS-created pages and events/videos hubs. */
+export function CustomPageUnique({ page }) {
+  const { content } = useContent();
+  const siteVideos = page.useSiteVideos ? content.videos || [] : [];
+  const pageVideos = [...(page.videos || []), ...siteVideos];
+
+  return (
+    <>
+      <StoryBlock title={page.storyTitle} story={page.story} cta={page.cta} />
+      {page.useSiteEvents ? <SiteEventsBlock /> : null}
+      {!page.useSiteEvents && (page.events || []).length ? (
+        <GatheringsUnique
+          page={{ ...page, storyTitle: '', story: '', cta: null, videos: [] }}
+        />
+      ) : null}
+      {(page.articles || []).length ? (
+        <ReflectionsUnique page={{ ...page, storyTitle: '', story: '', cta: null }} />
+      ) : null}
+      <GalleryBlock gallery={page.gallery} />
+      <VideosBlock
+        videos={pageVideos}
+        heading={page.useSiteVideos ? 'On YouTube' : 'Videos'}
+      />
+      {page.cta?.label && page.cta?.href && !page.story ? (
+        <div className="wrap page-extras__cta" style={{ paddingBottom: '3rem' }}>
+          <Link className="btn btn--solid" to={page.cta.href}>
+            {page.cta.label}
+          </Link>
+        </div>
+      ) : null}
     </>
   );
 }
