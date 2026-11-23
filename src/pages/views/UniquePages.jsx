@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useContent } from '../../cms/ContentContext';
 import TeamAvatar from '../../components/TeamAvatar';
+import { InView, Stagger, StaggerItem } from '../../components/motion';
 
 function StoryBlock({ title, story, cta }) {
   if (!story && !title) return null;
   return (
     <section className="uniq-story section section--tight">
-      <div className="wrap uniq-story__inner">
+      <InView className="wrap uniq-story__inner" amount={0.35}>
         {title ? <h2>{title}</h2> : null}
         {String(story || '')
           .split(/\n\n+/)
@@ -21,7 +22,7 @@ function StoryBlock({ title, story, cta }) {
             </Link>
           </p>
         ) : null}
-      </div>
+      </InView>
     </section>
   );
 }
@@ -30,13 +31,21 @@ function QuoteBlock({ quote }) {
   if (!quote?.text) return null;
   return (
     <section className="uniq-quote">
-      <div className="wrap">
+      <InView className="wrap" amount={0.4}>
         <blockquote>
           <p>“{quote.text}”</p>
           {quote.attribution ? <cite>— {quote.attribution}</cite> : null}
         </blockquote>
-      </div>
+      </InView>
     </section>
+  );
+}
+
+function SectionHeading({ children }) {
+  return (
+    <InView as="h2" className="uniq-heading" amount={0.6}>
+      {children}
+    </InView>
   );
 }
 
@@ -47,34 +56,34 @@ export function AboutUnique({ page }) {
       <QuoteBlock quote={page.quote} />
       <section className="section section--tight">
         <div className="wrap">
-          <h2 className="uniq-heading">Milestones of the mission</h2>
-          <div className="uniq-milestones">
+          <SectionHeading>Milestones of the mission</SectionHeading>
+          <Stagger className="uniq-milestones">
             {(page.milestones || []).map((m) => (
-              <article key={m.year}>
+              <StaggerItem as="article" key={m.year}>
                 <span>{m.year}</span>
                 <p>{m.text}</p>
-              </article>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
       <section className="section">
         <div className="wrap">
-          <h2 className="uniq-heading">Life around the mission</h2>
-          <div className="uniq-gallery">
+          <SectionHeading>Life around the mission</SectionHeading>
+          <Stagger className="uniq-gallery">
             {(page.gallery || []).map((g) => (
-              <figure key={g.src}>
+              <StaggerItem as="figure" key={g.src}>
                 <img src={g.src} alt={g.caption || ''} />
                 {g.caption ? <figcaption>{g.caption}</figcaption> : null}
-              </figure>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
           {page.cta ? (
-            <div className="page-extras__cta">
+            <InView className="page-extras__cta" delay={0.08}>
               <Link className="btn btn--solid" to={page.cta.href}>
                 {page.cta.label}
               </Link>
-            </div>
+            </InView>
           ) : null}
         </div>
       </section>
@@ -87,24 +96,24 @@ export function PillarsUnique({ page }) {
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
       <section className="section">
-        <div className="wrap uniq-pillar-list">
+        <Stagger className="wrap uniq-pillar-list">
           {(page.items || []).map((item, i) => (
-            <article key={item.title} className="uniq-pillar">
+            <StaggerItem as="article" key={item.title} className="uniq-pillar">
               <div className="uniq-pillar__index">0{i + 1}</div>
               <div>
                 <h3>{item.title}</h3>
                 <p className="uniq-pillar__lead">{item.text}</p>
                 <p>{item.detail}</p>
               </div>
-            </article>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
         {page.cta ? (
-          <div className="wrap page-extras__cta">
+          <InView className="wrap page-extras__cta" delay={0.08}>
             <Link className="btn btn--solid" to={page.cta.href}>
               {page.cta.label}
             </Link>
-          </div>
+          </InView>
         ) : null}
       </section>
     </>
@@ -116,9 +125,9 @@ export function GatheringsUnique({ page }) {
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
       <section className="section">
-        <div className="wrap uniq-events">
+        <Stagger className="wrap uniq-events">
           {(page.events || []).map((ev) => (
-            <article key={ev.name} className="uniq-event">
+            <StaggerItem as="article" key={ev.name} className="uniq-event">
               <div className="uniq-event__media">
                 <img src={ev.image} alt="" />
               </div>
@@ -128,15 +137,15 @@ export function GatheringsUnique({ page }) {
                 <p className="uniq-event__theme">{ev.theme}</p>
                 <p>{ev.story}</p>
               </div>
-            </article>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
         {page.cta ? (
-          <div className="wrap page-extras__cta">
+          <InView className="wrap page-extras__cta" delay={0.08}>
             <Link className="btn btn--solid" to={page.cta.href}>
               {page.cta.label}
             </Link>
-          </div>
+          </InView>
         ) : null}
       </section>
       <VideosBlock videos={page.videos} />
@@ -149,9 +158,9 @@ export function ReflectionsUnique({ page }) {
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
       <section className="section">
-        <div className="wrap uniq-articles">
+        <Stagger className="wrap uniq-articles">
           {(page.articles || []).map((a) => (
-            <article key={a.title} className="uniq-article">
+            <StaggerItem as="article" key={a.title} className="uniq-article">
               <div className="reflection__date">{a.date}</div>
               <h3>{a.title}</h3>
               {String(a.body || '')
@@ -160,15 +169,15 @@ export function ReflectionsUnique({ page }) {
                 .map((p) => (
                   <p key={p.slice(0, 28)}>{p}</p>
                 ))}
-            </article>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
         {page.cta ? (
-          <div className="wrap page-extras__cta">
+          <InView className="wrap page-extras__cta" delay={0.08}>
             <Link className="btn btn--solid" to={page.cta.href}>
               {page.cta.label}
             </Link>
-          </div>
+          </InView>
         ) : null}
       </section>
     </>
@@ -185,21 +194,21 @@ export function LeadershipUnique({ page }) {
       <StoryBlock title={page.storyTitle} story={page.story} />
       <section className="section section--tight">
         <div className="wrap">
-          <div className="page-extras__grid">
+          <Stagger className="page-extras__grid">
             {(page.focus || []).map((f) => (
-              <article key={f.title} className="page-extras__card">
+              <StaggerItem as="article" key={f.title} className="page-extras__card">
                 <h3>{f.title}</h3>
                 <p>{f.text}</p>
-              </article>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
       <section className="section">
         <div className="wrap">
-          <h2 className="uniq-heading">The team</h2>
+          <SectionHeading>The team</SectionHeading>
           {convener ? (
-            <article className="leader leader-featured" style={{ marginTop: '1.5rem' }}>
+            <InView as="article" className="leader leader-featured" style={{ marginTop: '1.5rem' }}>
               <TeamAvatar person={convener} large />
               <div>
                 <div className="leader__role">{convener.role}</div>
@@ -207,11 +216,11 @@ export function LeadershipUnique({ page }) {
                 <p className="leader__titles">{convener.titles}</p>
                 <p>{convener.bio}</p>
               </div>
-            </article>
+            </InView>
           ) : null}
-          <div className="team-grid" style={{ marginTop: '1.5rem' }}>
+          <Stagger className="team-grid" style={{ marginTop: '1.5rem' }}>
             {rest.map((person) => (
-              <article key={person.name} className="leader team-card">
+              <StaggerItem as="article" key={person.name} className="leader team-card">
                 <TeamAvatar person={person} />
                 <div>
                   <div className="leader__role">{person.role}</div>
@@ -220,15 +229,15 @@ export function LeadershipUnique({ page }) {
                   {person.location ? <p className="leader__location">{person.location}</p> : null}
                   <p>{person.bio}</p>
                 </div>
-              </article>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
           {page.cta ? (
-            <div className="page-extras__cta">
+            <InView className="page-extras__cta" delay={0.08}>
               <Link className="btn btn--solid" to={page.cta.href}>
                 {page.cta.label}
               </Link>
-            </div>
+            </InView>
           ) : null}
         </div>
       </section>
@@ -244,9 +253,9 @@ export function FaqUnique({ page }) {
       <StoryBlock title={page.storyTitle} story={page.story} cta={page.cta} />
       <section className="section">
         <div className="wrap faq" style={{ display: 'block' }}>
-          <div className="faq-list">
+          <Stagger className="faq-list">
             {faqs.map((item) => (
-              <details key={item.q} className="faq-item">
+              <StaggerItem as="details" key={item.q} className="faq-item">
                 <summary>
                   {item.q}
                   <span className="faq-item__plus" aria-hidden="true">
@@ -254,9 +263,9 @@ export function FaqUnique({ page }) {
                   </span>
                 </summary>
                 <p className="faq-item__body">{item.a}</p>
-              </details>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
     </>
@@ -268,16 +277,15 @@ export function ContactUnique({ page }) {
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
       <section className="section section--tight">
-        <div className="wrap page-extras__grid">
+        <Stagger className="wrap page-extras__grid">
           {(page.channels || []).map((c) => (
-            <article key={c.title} className="page-extras__card">
+            <StaggerItem as="article" key={c.title} className="page-extras__card">
               <h3>{c.title}</h3>
               <p>{c.text}</p>
-            </article>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
-      {/* Contact form/panel is unique enough as the contact component, imported by parent if needed */}
     </>
   );
 }
@@ -295,7 +303,7 @@ function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
     if (!showEmpty) return null;
     return (
       <section className="section">
-        <div className="wrap site-empty">
+        <InView className="wrap site-empty">
           <h2>Videos coming soon</h2>
           <p>
             We’re gathering messages and moments from Unique Generation Outreach. Subscribe on the
@@ -309,19 +317,19 @@ function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
               Read reflections
             </Link>
           </div>
-        </div>
+        </InView>
       </section>
     );
   }
   return (
     <section className="section">
       <div className="wrap">
-        <h2 className="uniq-heading">{heading}</h2>
-        <div className="uniq-videos">
+        <SectionHeading>{heading}</SectionHeading>
+        <Stagger className="uniq-videos">
           {list.map((v) => {
             const id = youtubeId(v.url);
             return (
-              <article key={v.id || v.url} className="uniq-video">
+              <StaggerItem as="article" key={v.id || v.url} className="uniq-video">
                 <div className="uniq-video__frame">
                   <iframe
                     title={v.title || 'YouTube video'}
@@ -333,10 +341,10 @@ function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
                 </div>
                 {v.title ? <h3>{v.title}</h3> : null}
                 {v.description ? <p>{v.description}</p> : null}
-              </article>
+              </StaggerItem>
             );
           })}
-        </div>
+        </Stagger>
       </div>
     </section>
   );
@@ -347,15 +355,15 @@ function GalleryBlock({ gallery }) {
   return (
     <section className="section">
       <div className="wrap">
-        <h2 className="uniq-heading">Gallery</h2>
-        <div className="uniq-gallery">
+        <SectionHeading>Gallery</SectionHeading>
+        <Stagger className="uniq-gallery">
           {gallery.map((g) => (
-            <figure key={g.src}>
+            <StaggerItem as="figure" key={g.src}>
               <img src={g.src} alt={g.caption || ''} />
               {g.caption ? <figcaption>{g.caption}</figcaption> : null}
-            </figure>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );
@@ -367,7 +375,7 @@ function SiteEventsBlock() {
   if (!events.length) {
     return (
       <section className="section">
-        <div className="wrap site-empty">
+        <InView className="wrap site-empty">
           <h2>Events are coming soon</h2>
           <p>
             We’re preparing the next gatherings and outreaches. Check back shortly, or reach out if
@@ -381,15 +389,15 @@ function SiteEventsBlock() {
               Read gathering stories
             </Link>
           </div>
-        </div>
+        </InView>
       </section>
     );
   }
   return (
     <section className="section">
-      <div className="wrap uniq-events">
+      <Stagger className="wrap uniq-events">
         {events.map((ev) => (
-          <article key={ev.id || ev.title} className="uniq-event">
+          <StaggerItem as="article" key={ev.id || ev.title} className="uniq-event">
             {ev.image ? (
               <div className="uniq-event__media">
                 <img src={ev.image} alt="" />
@@ -409,9 +417,9 @@ function SiteEventsBlock() {
                 </p>
               ) : null}
             </div>
-          </article>
+          </StaggerItem>
         ))}
-      </div>
+      </Stagger>
     </section>
   );
 }
@@ -422,13 +430,7 @@ function PageBlocks({ blocks }) {
     <>
       {blocks.map((block) => {
         if (block.type === 'richtext') {
-          return (
-            <StoryBlock
-              key={block.id}
-              title={block.title}
-              story={block.body}
-            />
-          );
+          return <StoryBlock key={block.id} title={block.title} story={block.body} />;
         }
         if (block.type === 'quote') {
           return <QuoteBlock key={block.id} quote={block} />;
@@ -442,7 +444,7 @@ function PageBlocks({ blocks }) {
         if (block.type === 'cta') {
           return (
             <section key={block.id} className="section section--tight">
-              <div className="wrap uniq-cta-block">
+              <InView className="wrap uniq-cta-block">
                 {block.title ? <h2>{block.title}</h2> : null}
                 {block.text ? <p>{block.text}</p> : null}
                 {block.label && block.href ? (
@@ -450,28 +452,28 @@ function PageBlocks({ blocks }) {
                     {block.label}
                   </Link>
                 ) : null}
-              </div>
+              </InView>
             </section>
           );
         }
         if (block.type === 'stats') {
           return (
             <section key={block.id} className="section section--tight">
-              <div className="wrap uniq-stats">
+              <Stagger className="wrap uniq-stats">
                 {(block.items || []).map((item, i) => (
-                  <article key={i}>
+                  <StaggerItem as="article" key={i}>
                     <strong>{item.value}</strong>
                     <span>{item.label}</span>
-                  </article>
+                  </StaggerItem>
                 ))}
-              </div>
+              </Stagger>
             </section>
           );
         }
         if (block.type === 'embed' && block.html) {
           return (
             <section key={block.id} className="section section--tight">
-              <div
+              <InView
                 className="wrap uniq-embed"
                 dangerouslySetInnerHTML={{ __html: block.html }}
               />
@@ -490,7 +492,7 @@ function SiteResourcesBlock() {
   if (!resources.length) {
     return (
       <section className="section">
-        <div className="wrap site-empty">
+        <InView className="wrap site-empty">
           <h2>Resources are on the way</h2>
           <p>
             Guides and downloads will appear here as they’re published. Meanwhile, explore the
@@ -504,15 +506,15 @@ function SiteResourcesBlock() {
               Contact us
             </Link>
           </div>
-        </div>
+        </InView>
       </section>
     );
   }
   return (
     <section className="section">
-      <div className="wrap uniq-resources">
+      <Stagger className="wrap uniq-resources">
         {resources.map((r) => (
-          <article key={r.id || r.title} className="uniq-resource">
+          <StaggerItem as="article" key={r.id || r.title} className="uniq-resource">
             {r.cover ? <img src={r.cover} alt="" /> : null}
             <div>
               {r.category ? <span className="tag">{r.category}</span> : null}
@@ -526,9 +528,9 @@ function SiteResourcesBlock() {
                 </p>
               ) : null}
             </div>
-          </article>
+          </StaggerItem>
         ))}
-      </div>
+      </Stagger>
     </section>
   );
 }
@@ -546,9 +548,7 @@ export function CustomPageUnique({ page }) {
       {page.useSiteEvents ? <SiteEventsBlock /> : null}
       {page.useSiteResources ? <SiteResourcesBlock /> : null}
       {!page.useSiteEvents && (page.events || []).length ? (
-        <GatheringsUnique
-          page={{ ...page, storyTitle: '', story: '', cta: null, videos: [] }}
-        />
+        <GatheringsUnique page={{ ...page, storyTitle: '', story: '', cta: null, videos: [] }} />
       ) : null}
       {(page.articles || []).length ? (
         <ReflectionsUnique page={{ ...page, storyTitle: '', story: '', cta: null }} />
@@ -560,11 +560,11 @@ export function CustomPageUnique({ page }) {
         showEmpty={Boolean(page.useSiteVideos)}
       />
       {page.cta?.label && page.cta?.href && !page.story ? (
-        <div className="wrap page-extras__cta" style={{ paddingBottom: '3rem' }}>
+        <InView className="wrap page-extras__cta" style={{ paddingBottom: '3rem' }}>
           <Link className="btn btn--solid" to={page.cta.href}>
             {page.cta.label}
           </Link>
-        </div>
+        </InView>
       ) : null}
     </>
   );

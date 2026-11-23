@@ -1,4 +1,5 @@
 import { useContent } from '../cms/ContentContext';
+import { InView, Stagger, StaggerItem } from './motion';
 
 export function TestimonialsStrip() {
   const { content } = useContent();
@@ -7,10 +8,12 @@ export function TestimonialsStrip() {
   return (
     <section className="section social-proof">
       <div className="wrap">
-        <h2 className="uniq-heading">Voices with us</h2>
-        <div className="social-proof__grid">
+        <InView as="h2" className="uniq-heading" amount={0.6}>
+          Voices with us
+        </InView>
+        <Stagger className="social-proof__grid">
           {items.map((t) => (
-            <article key={t.id || t.name} className="social-proof__card">
+            <StaggerItem as="article" key={t.id || t.name} className="social-proof__card">
               <p>“{t.quote}”</p>
               <footer>
                 {t.image ? <img src={t.image} alt="" /> : null}
@@ -19,9 +22,9 @@ export function TestimonialsStrip() {
                   {t.role ? <span>{t.role}</span> : null}
                 </div>
               </footer>
-            </article>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );
@@ -34,8 +37,10 @@ export function PartnersStrip() {
   return (
     <section className="section section--tight partners-strip">
       <div className="wrap">
-        <h2 className="uniq-heading">Partners</h2>
-        <div className="partners-strip__grid">
+        <InView as="h2" className="uniq-heading" amount={0.6}>
+          Partners
+        </InView>
+        <Stagger className="partners-strip__grid">
           {items.map((p) => {
             const body = (
               <>
@@ -43,16 +48,23 @@ export function PartnersStrip() {
               </>
             );
             return p.url ? (
-              <a key={p.id || p.name} className="partners-strip__item" href={p.url} target="_blank" rel="noreferrer">
+              <StaggerItem
+                as="a"
+                key={p.id || p.name}
+                className="partners-strip__item"
+                href={p.url}
+                target="_blank"
+                rel="noreferrer"
+              >
                 {body}
-              </a>
+              </StaggerItem>
             ) : (
-              <div key={p.id || p.name} className="partners-strip__item">
+              <StaggerItem as="div" key={p.id || p.name} className="partners-strip__item">
                 {body}
-              </div>
+              </StaggerItem>
             );
           })}
-        </div>
+        </Stagger>
       </div>
     </section>
   );
@@ -67,10 +79,12 @@ export function FeaturedEventsStrip() {
   return (
     <section className="section">
       <div className="wrap">
-        <h2 className="uniq-heading">Featured events</h2>
-        <div className="uniq-events">
+        <InView as="h2" className="uniq-heading" amount={0.6}>
+          Featured events
+        </InView>
+        <Stagger className="uniq-events">
           {items.map((ev) => (
-            <article key={ev.id || ev.title} className="uniq-event">
+            <StaggerItem as="article" key={ev.id || ev.title} className="uniq-event">
               {ev.image ? (
                 <div className="uniq-event__media">
                   <img src={ev.image} alt="" />
@@ -82,9 +96,9 @@ export function FeaturedEventsStrip() {
                 {ev.location ? <p className="uniq-event__theme">{ev.location}</p> : null}
                 {ev.summary ? <p>{ev.summary}</p> : null}
               </div>
-            </article>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   );
