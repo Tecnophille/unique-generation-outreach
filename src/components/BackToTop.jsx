@@ -4,10 +4,25 @@ export default function BackToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 420);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const footer = document.querySelector('.footer');
+
+    const update = () => {
+      const scrolled = window.scrollY > 420;
+      let footerInView = false;
+      if (footer) {
+        const rect = footer.getBoundingClientRect();
+        footerInView = rect.top < window.innerHeight - 24;
+      }
+      setVisible(scrolled && !footerInView);
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
   }, []);
 
   return (
@@ -16,7 +31,16 @@ export default function BackToTop() {
       className={`back-to-top${visible ? ' is-visible' : ''}`}
       aria-label="Return to top"
       title="Return to top"
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      onClick={() => {
+        const html = document.documentElement;
+        const previous = html.style.scrollBehavior;
+        // Explicit smooth only for this intentional control.
+        html.style.scrollBehavior = 'smooth';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.setTimeout(() => {
+          html.style.scrollBehavior = previous;
+        }, 600);
+      }}
     >
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <path

@@ -30,8 +30,10 @@
   box-sizing: border-box;
 }
 
+/* Intentionally no global smooth scroll — it makes SPA route changes
+   animate from the previous page offset. Back-to-top uses smooth explicitly. */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 body {
