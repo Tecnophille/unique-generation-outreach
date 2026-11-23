@@ -5,6 +5,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import DocumentMeta from './components/DocumentMeta';
 import RedirectHandler from './components/RedirectHandler';
 import ScrollToTop from './components/ScrollToTop';
+import BootScreen from './components/BootScreen';
 import HomePage from './pages/HomePage';
 import SectionPage from './pages/SectionPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -34,7 +35,7 @@ export default function App() {
             <Route
               path="/admin/*"
               element={
-                <Suspense fallback={<div className="boot-screen">Loading CMS…</div>}>
+                <Suspense fallback={<BootScreen label="Loading CMS" />}>
                   <AdminApp />
                 </Suspense>
               }

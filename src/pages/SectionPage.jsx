@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import SiteLayout from '../components/SiteLayout';
 import PageHero from '../components/PageHero';
 import Contact from '../components/Contact';
+import BootScreen from '../components/BootScreen';
 import { useContent } from '../cms/ContentContext';
 import {
   AboutUnique,
@@ -34,11 +35,24 @@ export default function SectionPage({ pageKey: pageKeyProp }) {
   const { content, loading, error } = useContent();
 
   if (loading) {
-    return <div className="boot-screen">Loading Unique Generation Outreach…</div>;
+    return <BootScreen />;
   }
 
   if (error || !content) {
-    return <div className="boot-screen">Could not load site content. {error}</div>;
+    return (
+      <div className="boot-screen boot-screen--message">
+        <div className="boot-screen__message">
+          <img
+            className="boot-screen__logo boot-screen__logo--sm"
+            src="/logo-icon.png?v=3"
+            alt=""
+            width={56}
+            height={56}
+          />
+          <p>Could not load site content.{error ? ` ${error}` : ''}</p>
+        </div>
+      </div>
+    );
   }
 
   if (!pageKey || RESERVED.has(pageKey)) {
