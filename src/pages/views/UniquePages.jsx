@@ -456,65 +456,143 @@ function SiteEventsBlock() {
   );
 }
 
+function blockHasContent(block) {
+  if (!block?.type) return false;
+  switch (block.type) {
+    case 'richtext':
+      return Boolean(block.title?.trim() || block.body?.trim());
+    case 'quote':
+      return Boolean(block.text?.trim());
+    case 'gallery':
+      return (block.items || []).some((g) => g?.src);
+    case 'video':
+      return Boolean(youtubeId(block.url));
+    case 'cta':
+      return Boolean(block.title?.trim() || block.text?.trim() || (block.label && block.href));
+    case 'stats':
+      return (block.items || []).some((i) => i?.value || i?.label);
+    case 'embed':
+      return Boolean(block.html?.trim());
+    default:
+      return false;
+  }
+}
+
+/** Flexible CMS blocks — one continuous band that matches built-in page rhythm. */
 export function PageBlocks({ blocks }) {
-  if (!blocks?.length) return null;
+  const list = (blocks || []).filter(blockHasContent);
+  if (!list.length) return null;
+
   return (
-    <>
-      {blocks.map((block) => {
-        if (block.type === 'richtext') {
-          return <StoryBlock key={block.id} title={block.title} story={block.body} />;
-        }
-        if (block.type === 'quote') {
-          return <QuoteBlock key={block.id} quote={block} />;
-        }
-        if (block.type === 'gallery') {
-          return <GalleryBlock key={block.id} gallery={block.items} />;
-        }
-        if (block.type === 'video') {
-          return <VideosBlock key={block.id} videos={[block]} heading={block.title || 'Video'} />;
-        }
-        if (block.type === 'cta') {
-          return (
-            <section key={block.id} className="section section--tight">
-              <InView className="wrap uniq-cta-block">
-                {block.title ? <h2>{block.title}</h2> : null}
-                {block.text ? <p>{block.text}</p> : null}
-                {block.label && block.href ? (
-                  <Link className="btn btn--solid" to={block.href}>
-                    {block.label}
-                  </Link>
-                ) : null}
+    <section className="page-blocks section section--tight" aria-label="Page content">
+      <div className="page-blocks__stack wrap">
+        {list.map((block) => {
+          if (block.type === 'richtext') {
+            return (
+              <InView key={block.id} className="page-blocks__item page-blocks__item--prose">
+                {block.title ? <h2 className="uniq-heading">{block.title}</h2> : null}
+                {String(block.body || '')
+                  .split(/\n\n+/)
+                  .filter(Boolean)
+                  .map((p) => (
+                    <p key={p.slice(0, 32)}>{p}</p>
+                  ))}
               </InView>
-            </section>
-          );
-        }
-        if (block.type === 'stats') {
-          return (
-            <section key={block.id} className="section section--tight">
-              <Stagger className="wrap uniq-stats">
-                {(block.items || []).map((item, i) => (
-                  <StaggerItem as="article" key={i}>
-                    <strong>{item.value}</strong>
-                    <span>{item.label}</span>
-                  </StaggerItem>
-                ))}
-              </Stagger>
-            </section>
-          );
-        }
-        if (block.type === 'embed' && block.html) {
-          return (
-            <section key={block.id} className="section section--tight">
-              <InView
-                className="wrap uniq-embed"
-                dangerouslySetInnerHTML={{ __html: block.html }}
-              />
-            </section>
-          );
-        }
-        return null;
-      })}
-    </>
+            );
+          }
+
+          if (block.type === 'quote') {
+            return (
+              <InView key={block.id} className="page-blocks__item page-blocks__item--quote">
+                <blockquote>
+                  <p>“{block.text}”</p>
+                  {block.attribution ? <cite>— {block.attribution}</cite> : null}
+                </blockquote>
+              </InView>
+            );
+          }
+
+          if (block.type === 'gallery') {
+            const items = (block.items || []).filter((g) => g?.src);
+            return (
+              <div key={block.id} className="page-blocks__item">
+                <Stagger className="uniq-gallery">
+                  {items.map((g) => (
+                    <StaggerItem as="figure" key={g.src}>
+                      <img src={g.src} alt={g.caption || ''} />
+                      {g.caption ? <figcaption>{g.caption}</figcaption> : null}
+                    </StaggerItem>
+                  ))}
+                </Stagger>
+              </div>
+            );
+          }
+
+          if (block.type === 'video') {
+            const id = youtubeId(block.url);
+            return (
+              <InView key={block.id} className="page-blocks__item page-blocks__item--video">
+                {block.title ? <h2 className="uniq-heading">{block.title}</h2> : null}
+                <article className="uniq-video">
+                  <div className="uniq-video__frame">
+                    <iframe
+                      title={block.title || 'YouTube video'}
+                      src={`https://www.youtube.com/embed/${id}`}
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                </article>
+              </InView>
+            );
+          }
+
+          if (block.type === 'cta') {
+            return (
+              <InView key={block.id} className="page-blocks__item page-blocks__item--cta">
+                <div className="uniq-cta-block">
+                  {block.title ? <h2>{block.title}</h2> : null}
+                  {block.text ? <p>{block.text}</p> : null}
+                  {block.label && block.href ? (
+                    <Link className="btn btn--solid" to={block.href}>
+                      {block.label}
+                    </Link>
+                  ) : null}
+                </div>
+              </InView>
+            );
+          }
+
+          if (block.type === 'stats') {
+            return (
+              <div key={block.id} className="page-blocks__item">
+                <Stagger className="uniq-stats">
+                  {(block.items || [])
+                    .filter((item) => item?.value || item?.label)
+                    .map((item, i) => (
+                      <StaggerItem as="article" key={i}>
+                        <strong>{item.value}</strong>
+                        <span>{item.label}</span>
+                      </StaggerItem>
+                    ))}
+                </Stagger>
+              </div>
+            );
+          }
+
+          if (block.type === 'embed') {
+            return (
+              <InView key={block.id} className="page-blocks__item page-blocks__item--embed">
+                <div className="uniq-embed" dangerouslySetInnerHTML={{ __html: block.html }} />
+              </InView>
+            );
+          }
+
+          return null;
+        })}
+      </div>
+    </section>
   );
 }
 
