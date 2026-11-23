@@ -185,6 +185,7 @@ export default function AdminApp() {
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [unread, setUnread] = useState(0);
 
   useEffect(() => {
     fetch('/api/session', { credentials: 'include' })
@@ -261,6 +262,24 @@ export default function AdminApp() {
     return () => window.removeEventListener('keydown', onKey);
   }, [dirty, saving, save]);
 
+  useEffect(() => {
+    function onBeforeUnload(e) {
+      if (!dirty) return;
+      e.preventDefault();
+      e.returnValue = '';
+    }
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => window.removeEventListener('beforeunload', onBeforeUnload);
+  }, [dirty]);
+
+  useEffect(() => {
+    if (!authed) return;
+    fetch('/api/contact/unread-count', { credentials: 'include' })
+      .then((r) => (r.ok ? r.json() : { count: 0 }))
+      .then((d) => setUnread(Number(d.count) || 0))
+      .catch(() => setUnread(0));
+  }, [authed, section]);
+
   async function logout() {
     await fetch('/api/logout', { method: 'POST', credentials: 'include' });
     setAuthed(false);
@@ -305,6 +324,9 @@ export default function AdminApp() {
               onClick={() => setSection(s.id)}
             >
               {s.label}
+              {s.id === 'inbox' && unread > 0 ? (
+                <span className="admin-side__badge">{unread}</span>
+              ) : null}
             </button>
           </div>
         ))}
@@ -433,7 +455,7 @@ export default function AdminApp() {
         {section === 'nav' && (
           <>
             <h2>Navigation</h2>
-            <p className="hint">Primary menu links. New pages can auto-add entries.</p>
+            <p className="hint">Primary menu links. Reorder with ↑ ↓. New pages can auto-add entries.</p>
             <button
               className="admin-btn primary"
               type="button"
@@ -468,18 +490,44 @@ export default function AdminApp() {
                     }}
                   />
                 </Field>
-                <button
-                  className="admin-btn ghost"
-                  type="button"
-                  onClick={() =>
-                    setDraft((d) => ({
-                      ...d,
-                      nav: (d.nav || []).filter((_, idx) => idx !== i),
-                    }))
-                  }
-                >
-                  Remove
-                </button>
+                <div className="admin-inline-actions">
+                  <button
+                    className="admin-btn ghost"
+                    type="button"
+                    onClick={() => {
+                      if (i === 0) return;
+                      const nav = [...draft.nav];
+                      [nav[i - 1], nav[i]] = [nav[i], nav[i - 1]];
+                      setDraft((d) => ({ ...d, nav }));
+                    }}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    className="admin-btn ghost"
+                    type="button"
+                    onClick={() => {
+                      if (i >= draft.nav.length - 1) return;
+                      const nav = [...draft.nav];
+                      [nav[i + 1], nav[i]] = [nav[i], nav[i + 1]];
+                      setDraft((d) => ({ ...d, nav }));
+                    }}
+                  >
+                    ↓
+                  </button>
+                  <button
+                    className="admin-btn ghost"
+                    type="button"
+                    onClick={() =>
+                      setDraft((d) => ({
+                        ...d,
+                        nav: (d.nav || []).filter((_, idx) => idx !== i),
+                      }))
+                    }
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             ))}
           </>

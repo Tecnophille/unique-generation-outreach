@@ -48,3 +48,18 @@ export async function markRead(id) {
   );
   return rows[0] || null;
 }
+
+export async function deleteMessage(id) {
+  const rows = await sql(
+    `delete from contact_messages where id = $1 returning id`,
+    [id],
+  );
+  return rows[0] || null;
+}
+
+export async function countUnread() {
+  const rows = await sql(
+    `select count(*)::int as count from contact_messages where status = 'new'`,
+  );
+  return rows[0]?.count || 0;
+}

@@ -4,30 +4,38 @@ import MediaPicker from './MediaPicker';
 export default function TeamEditor({ draft, setDraft }) {
   const team = draft.leadership || [];
 
+  function setTeam(next) {
+    setDraft((d) => ({ ...d, leadership: next }));
+  }
+
   function update(i, patch) {
     const leadership = [...team];
     leadership[i] = { ...leadership[i], ...patch };
-    setDraft((d) => ({ ...d, leadership }));
+    setTeam(leadership);
+  }
+
+  function move(i, dir) {
+    const j = i + dir;
+    if (j < 0 || j >= team.length) return;
+    const next = [...team];
+    [next[i], next[j]] = [next[j], next[i]];
+    setTeam(next);
   }
 
   return (
     <>
       <h2>Team directory</h2>
       <p className="hint">
-        Leaders and helpers shown on the Leadership page. Upload a photo for each person (or paste an
-        image URL).
+        First person is featured as Convener. Upload photos, reorder with ↑ ↓, then Save.
       </p>
       <button
         className="admin-btn primary"
         type="button"
         onClick={() =>
-          setDraft((d) => ({
-            ...d,
-            leadership: [
-              ...(d.leadership || []),
-              { name: '', role: '', titles: '', location: '', bio: '', photo: '' },
-            ],
-          }))
+          setTeam([
+            ...team,
+            { name: '', role: '', titles: '', location: '', bio: '', photo: '' },
+          ])
         }
       >
         Add person
@@ -35,19 +43,25 @@ export default function TeamEditor({ draft, setDraft }) {
       {team.map((person, i) => (
         <div className="admin-card admin-grid" key={i}>
           <div className="admin-page-head">
-            <strong>{person.name || `Person ${i + 1}`}</strong>
-            <button
-              className="admin-btn danger"
-              type="button"
-              onClick={() =>
-                setDraft((d) => ({
-                  ...d,
-                  leadership: d.leadership.filter((_, idx) => idx !== i),
-                }))
-              }
-            >
-              Remove
-            </button>
+            <strong>
+              {i === 0 ? 'Featured · ' : ''}
+              {person.name || `Person ${i + 1}`}
+            </strong>
+            <div className="admin-inline-actions">
+              <button className="admin-btn ghost" type="button" onClick={() => move(i, -1)}>
+                ↑
+              </button>
+              <button className="admin-btn ghost" type="button" onClick={() => move(i, 1)}>
+                ↓
+              </button>
+              <button
+                className="admin-btn danger"
+                type="button"
+                onClick={() => setTeam(team.filter((_, idx) => idx !== i))}
+              >
+                Remove
+              </button>
+            </div>
           </div>
 
           <div className="admin-team-photo">
@@ -61,7 +75,7 @@ export default function TeamEditor({ draft, setDraft }) {
                 <input
                   value={person.photo || ''}
                   onChange={(e) => update(i, { photo: e.target.value })}
-                  placeholder="https://… or upload below"
+                  placeholder="Upload below or paste URL"
                 />
               </Field>
               <MediaPicker
