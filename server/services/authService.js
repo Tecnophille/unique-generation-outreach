@@ -4,22 +4,49 @@ import { sql } from '../db/index.js';
 import { config } from '../config.js';
 
 export async function ensureAdmin() {
-  const existing = await sql('select id from admins limit 1');
-  if (existing.length) return existing[0];
-  const hash = await bcrypt.hash(config.defaultAdmin.password, 10);
-  const rows = await sql(
-    `insert into admins (email, name, password_hash)
-     values ($1, $2, $3)
-     returning id, email, name`,
-    [config.defaultAdmin.email, config.defaultAdmin.name, hash],
-  );
-  console.log(`[auth] seeded admin ${config.defaultAdmin.email}`);
-  return rows[0];
+  const email = String(config.defaultAdmin.email).trim().toLowerCase();
+  const name = config.defaultAdmin.name;
+  const existing = await sql('select id, email from admins where email = $1 limit 1', [email]);
+
+  if (!existing.length) {
+    const hash = await bcrypt.hash(config.defaultAdmin.password, 12);
+    const rows = await sql(
+      `insert into admins (email, name, password_hash)
+       values ($1, $2, $3)
+       returning id, email, name`,
+      [email, name, hash],
+    );
+    console.log(`[auth] seeded admin ${email}`);
+    return rows[0];
+  }
+
+  // When CMS_ADMIN_PASSWORD is explicitly provided, rotate only if it changed.
+  if (config.adminPasswordFromEnv) {
+    const rows = await sql('select password_hash from admins where email = $1 limit 1', [email]);
+    const currentHash = rows[0]?.password_hash;
+    const matches = currentHash
+      ? await bcrypt.compare(config.defaultAdmin.password, currentHash)
+      : false;
+    if (!matches) {
+      const hash = await bcrypt.hash(config.defaultAdmin.password, 12);
+      await sql(
+        `update admins
+         set password_hash = $1, name = $2, updated_at = now()
+         where email = $3`,
+        [hash, name, email],
+      );
+      console.log(`[auth] rotated admin password from CMS_ADMIN_PASSWORD for ${email}`);
+    } else {
+      await sql(`update admins set name = $1, updated_at = now() where email = $2`, [name, email]);
+    }
+  }
+
+  return existing[0];
 }
 
 export async function login(email, password) {
   const rows = await sql('select * from admins where email = $1 limit 1', [
-    email || config.defaultAdmin.email,
+    String(email || config.defaultAdmin.email).trim().toLowerCase(),
   ]);
   const admin = rows[0];
   if (!admin) return null;
@@ -28,10 +55,11 @@ export async function login(email, password) {
 
   const token = crypto.randomBytes(32).toString('hex');
   const expires = new Date(Date.now() + config.sessionDays * 24 * 60 * 60 * 1000);
-  await sql(
-    `insert into sessions (token, admin_id, expires_at) values ($1, $2, $3)`,
-    [token, admin.id, expires.toISOString()],
-  );
+  await sql(`insert into sessions (token, admin_id, expires_at) values ($1, $2, $3)`, [
+    token,
+    admin.id,
+    expires.toISOString(),
+  ]);
   return {
     token,
     expiresAt: expires.toISOString(),
@@ -45,7 +73,7 @@ export async function logout(token) {
 }
 
 export async function getSession(token) {
-  if (!token) return null;
+  if (!token || String(token).length > 128) return null;
   const rows = await sql(
     `select s.token, s.expires_at, a.id, a.email, a.name
      from sessions s

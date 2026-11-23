@@ -13,6 +13,11 @@ export async function createMessage(input = {}) {
     err.status = 400;
     throw err;
   }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const err = new Error('A valid email is required');
+    err.status = 400;
+    throw err;
+  }
 
   const rows = await sql(
     `insert into contact_messages (name, email, phone, subject, message, source)

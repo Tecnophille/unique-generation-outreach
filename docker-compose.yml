@@ -1,0 +1,40 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      TRUST_PROXY: "1"
+      SITE_URL: http://localhost:8080
+      CORS_ORIGIN: http://localhost:8080
+      CMS_ADMIN_EMAIL: admin@ugo.local
+      CMS_ADMIN_PASSWORD: ${CMS_ADMIN_PASSWORD:-ugoadmin2026}
+      DATABASE_URL: postgres://ugo:ugo@db:5432/ugo
+      COOKIE_SECURE: "0"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - uploads:/app/public/uploads
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ugo
+      POSTGRES_PASSWORD: ugo
+      POSTGRES_DB: ugo
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ugo -d ugo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
+  uploads:

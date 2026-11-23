@@ -1,28 +1,29 @@
 # UGO backend
 
-Express API + Vite (dev) with Postgres in production and PGlite locally.
+Express API + Vite (dev) / static `dist` (production). Postgres in hosted environments; PGlite locally when `DATABASE_URL` is unset.
 
 ## Layout
 
 ```
 server/
-  index.js          # boot (DB seed + Vite/static + listen)
-  app.js            # Express API mount
-  config.js
-  db/index.js       # sql() helper (pg | pglite)
-  middleware/auth.js
-  routes/           # health, auth, content, media
-  services/         # auth, content, media
-migrations/         # SQL schema (additive)
-scripts/migrate.mjs # production migrate
+  index.js              # boot, static/SPA, sitemap, graceful shutdown
+  app.js                # Express API + security middleware
+  config.js             # env-driven configuration
+  db/index.js           # sql() helper (pg | pglite)
+  middleware/           # auth, security headers, rate limits
+  routes/               # health, auth, content, pages, media, contact
+  services/             # domain logic
+migrations/             # SQL schema (additive)
+scripts/migrate.mjs     # production migrate
 ```
 
 ## API
 
 | Method | Path | Auth | Purpose |
 |--------|------|------|---------|
-| GET | `/api/health` | no | health + db mode |
-| POST | `/api/login` | no | email + password → session cookie |
+| GET | `/api/health` | no | liveness + db mode |
+| GET | `/api/ready` | no | readiness (503 if db down) |
+| POST | `/api/login` | no | email + password → httpOnly cookie |
 | POST | `/api/logout` | no | clear session |
 | GET | `/api/session` | no | auth status |
 | GET | `/api/me` | yes | current admin |
@@ -32,17 +33,17 @@ scripts/migrate.mjs # production migrate
 | GET | `/api/content/revisions` | yes | revision list |
 | POST | `/api/content/revisions/:id/restore` | yes | restore revision |
 | GET | `/api/pages` | no | list CMS pages |
-| GET | `/api/pages/:key` | no | one page payload |
-| PUT | `/api/pages/:key` | yes | replace one page |
+| GET/PUT | `/api/pages/:key` | put yes | page payload |
 | GET | `/api/uploads` | yes | media library |
 | POST | `/api/upload` | yes | multipart image upload |
 | POST | `/api/contact` | no | store contact/newsletter message |
 | GET | `/api/contact/messages` | yes | inbox |
 | POST | `/api/contact/messages/:id/read` | yes | mark message read |
 
-## Local defaults
+## Production notes
 
-- Admin email: `admin@ugo.local`
-- Password: `ugoadmin2026` (override with `CMS_ADMIN_PASSWORD`)
-- DB: on-disk PGlite at `data/pglite` when `DATABASE_URL` is unset
-- Uploads: `public/uploads` served at `/uploads`
+- Set `CMS_ADMIN_PASSWORD` (rotated into DB when present)
+- Set `SITE_URL` / `CORS_ORIGIN` for public HTTPS origin
+- `COOKIE_SECURE=1` and `TRUST_PROXY=1` behind TLS terminators
+- Login / contact / upload routes are rate-limited
+- Mutating requests check `Origin` in production when allow-list is configured
