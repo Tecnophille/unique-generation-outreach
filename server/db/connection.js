@@ -1,3 +1,12 @@
+import dns from 'node:dns';
+
+// Prefer IPv4 — some sandboxes cannot reach Supabase over IPv6 (ENETUNREACH).
+try {
+  dns.setDefaultResultOrder('ipv4first');
+} catch {
+  // older Node
+}
+
 /**
  * Resolve Postgres connection settings for Supabase / any hosted Postgres.
  *
