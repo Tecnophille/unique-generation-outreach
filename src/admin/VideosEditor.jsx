@@ -41,8 +41,8 @@ export default function VideosEditor({ draft, setDraft }) {
     <>
       <h2>YouTube & videos</h2>
       <p className="hint">
-        Paste full YouTube links. They publish on the Videos page (<code>/videos</code>) and can
-        also be attached to any menu page.
+        Paste full YouTube links. They publish on <code>/videos</code> and on built-in pages that
+        include the YouTube studio (About, Gatherings, and others — toggle per page in Pages).
       </p>
       <div className="admin-toolbar" style={{ position: 'static', background: 'transparent' }}>
         <button className="admin-btn primary" type="button" onClick={() => setVideos([emptyVideo(), ...videos])}>
@@ -53,7 +53,7 @@ export default function VideosEditor({ draft, setDraft }) {
         <EmptyState
           icon="list"
           title="No YouTube links yet"
-          body="Add a video to publish on /videos and reuse across custom pages."
+          body="Add a video to publish on /videos and on built-in pages that include the studio."
           actionLabel="Add YouTube link"
           onAction={() => setVideos([emptyVideo(), ...videos])}
         />

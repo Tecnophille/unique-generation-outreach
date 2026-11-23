@@ -753,7 +753,19 @@ export default function PagesEditor({ draft, setDraft }) {
         )}
 
         <h3>YouTube on this page</h3>
-        <p className="hint">Optional embeds for this route. Site-wide videos also live under Videos.</p>
+        <label className="admin-check" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.75rem' }}>
+          <input
+            type="checkbox"
+            checked={active === 'videos' ? true : Boolean(page.useSiteVideos)}
+            disabled={active === 'videos'}
+            onChange={(e) => patchPage({ useSiteVideos: e.target.checked })}
+          />
+          Include YouTube studio videos on this page
+        </label>
+        <p className="hint">
+          Optional embeds for this route. Site-wide videos from the YouTube studio appear when the
+          box above is checked (always on for /videos).
+        </p>
         {(page.videos || []).map((v, i) => (
           <div className="admin-list-item admin-grid" key={i}>
             <Field label="Title">
@@ -872,7 +884,8 @@ export default function PagesEditor({ draft, setDraft }) {
         )}
         {(active === 'videos' || page.useSiteVideos) && (
           <p className="hint">
-            This page lists site-wide YouTube links from the <strong>YouTube</strong> studio.
+            This page lists site-wide YouTube links from the <strong>YouTube</strong> studio
+            (built-in pages included, not only custom pages).
           </p>
         )}
       </div>
