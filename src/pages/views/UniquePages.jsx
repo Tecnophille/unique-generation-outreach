@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useContent } from '../../cms/ContentContext';
+import { BUILTIN_SITE_VIDEO_PAGES } from '../../cms/contentModel';
 import TeamAvatar from '../../components/TeamAvatar';
 import { InView, Stagger, StaggerItem } from '../../components/motion';
 
@@ -120,7 +121,7 @@ export function PillarsUnique({ page }) {
   );
 }
 
-export function GatheringsUnique({ page }) {
+export function GatheringsUnique({ page, pageKey = 'gatherings', includePageVideos = true }) {
   return (
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
@@ -148,7 +149,7 @@ export function GatheringsUnique({ page }) {
           </InView>
         ) : null}
       </section>
-      <VideosBlock videos={page.videos} />
+      {includePageVideos ? <PageVideos page={page} pageKey={pageKey} /> : null}
     </>
   );
 }
@@ -295,6 +296,37 @@ function youtubeId(url) {
     /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|v=)([\w-]{11})/,
   );
   return m?.[1] || '';
+}
+
+export function resolvePageVideos(page, content, pageKey) {
+  const includeSite =
+    pageKey === 'videos' ||
+    page?.useSiteVideos === true ||
+    (page?.useSiteVideos !== false && BUILTIN_SITE_VIDEO_PAGES.has(pageKey));
+  const pageVideos = page?.videos || [];
+  const siteVideos = includeSite ? content?.videos || [] : [];
+  const seen = new Set();
+  const videos = [];
+  for (const v of [...pageVideos, ...siteVideos]) {
+    const key = String(v?.url || v?.id || '').trim();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    videos.push(v);
+  }
+  return { videos, includeSite };
+}
+
+/** Site-wide YouTube studio library + optional per-page embeds. */
+export function PageVideos({ page, pageKey }) {
+  const { content } = useContent();
+  const { videos, includeSite } = resolvePageVideos(page, content, pageKey);
+  return (
+    <VideosBlock
+      videos={videos}
+      heading={includeSite ? 'On YouTube' : 'Videos'}
+      showEmpty={includeSite && pageKey === 'videos'}
+    />
+  );
 }
 
 function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
@@ -536,11 +568,7 @@ function SiteResourcesBlock() {
 }
 
 /** Flexible layout for CMS-created pages and events/videos hubs. */
-export function CustomPageUnique({ page }) {
-  const { content } = useContent();
-  const siteVideos = page.useSiteVideos ? content.videos || [] : [];
-  const pageVideos = [...(page.videos || []), ...siteVideos];
-
+export function CustomPageUnique({ page, pageKey = 'custom' }) {
   return (
     <>
       <StoryBlock title={page.storyTitle} story={page.story} cta={page.cta} />
@@ -548,17 +576,16 @@ export function CustomPageUnique({ page }) {
       {page.useSiteEvents ? <SiteEventsBlock /> : null}
       {page.useSiteResources ? <SiteResourcesBlock /> : null}
       {!page.useSiteEvents && (page.events || []).length ? (
-        <GatheringsUnique page={{ ...page, storyTitle: '', story: '', cta: null, videos: [] }} />
+        <GatheringsUnique
+          page={{ ...page, storyTitle: '', story: '', cta: null, videos: [], useSiteVideos: false }}
+          includePageVideos={false}
+        />
       ) : null}
       {(page.articles || []).length ? (
         <ReflectionsUnique page={{ ...page, storyTitle: '', story: '', cta: null }} />
       ) : null}
       <GalleryBlock gallery={page.gallery} />
-      <VideosBlock
-        videos={pageVideos}
-        heading={page.useSiteVideos ? 'On YouTube' : 'Videos'}
-        showEmpty={Boolean(page.useSiteVideos)}
-      />
+      <PageVideos page={page} pageKey={pageKey} />
       {page.cta?.label && page.cta?.href && !page.story ? (
         <InView className="wrap page-extras__cta" style={{ paddingBottom: '3rem' }}>
           <Link className="btn btn--solid" to={page.cta.href}>
