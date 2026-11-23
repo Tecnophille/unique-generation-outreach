@@ -619,6 +619,32 @@ p {
   max-width: 28rem;
 }
 
+.reflections__intro .btn {
+  margin-bottom: 1.75rem;
+}
+
+.reflections__media {
+  margin: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-soft);
+  max-width: 28rem;
+}
+
+.reflections__media img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+
+@media (min-width: 900px) {
+  .reflections__media img {
+    aspect-ratio: 3 / 4;
+    min-height: 22rem;
+  }
+}
+
 .reflection-cards {
   display: grid;
   gap: 1rem;
