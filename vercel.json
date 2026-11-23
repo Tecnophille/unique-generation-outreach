@@ -13,6 +13,14 @@
     "api/index.js": {
       "includeFiles": "{migrations/**,public/cms/**,server/**}",
       "maxDuration": 30
+    },
+    "api/sitemap.js": {
+      "includeFiles": "{migrations/**,public/cms/**,server/**}",
+      "maxDuration": 30
+    },
+    "api/robots.js": {
+      "includeFiles": "{migrations/**,public/cms/**,server/**}",
+      "maxDuration": 30
     }
   },
   "headers": [
