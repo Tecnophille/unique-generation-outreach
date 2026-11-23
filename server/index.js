@@ -5,13 +5,37 @@ import { createApiApp } from './app.js';
 import { config, root } from './config.js';
 import { dbMode } from './db/index.js';
 import { ensureReady } from './boot.js';
+import { getContent } from './services/contentService.js';
+
+const CORE = [
+  '/',
+  '/about',
+  '/pillars',
+  '/gatherings',
+  '/reflections',
+  '/leadership',
+  '/faq',
+  '/contact',
+  '/events',
+  '/videos',
+  '/resources',
+];
+
+function isLivePage(page) {
+  if (!page) return false;
+  const status = page.status || 'published';
+  if (status === 'published') return true;
+  if (status === 'scheduled' && page.publishAt) {
+    const t = Date.parse(page.publishAt);
+    return !Number.isNaN(t) && t <= Date.now();
+  }
+  return false;
+}
 
 async function boot() {
   await ensureReady();
 
   const app = createApiApp();
-
-  const publicPaths = ['/', '/about', '/pillars', '/gatherings', '/reflections', '/leadership', '/faq', '/contact'];
 
   app.get('/robots.txt', (_req, res) => {
     const base = config.siteUrl || '';
@@ -22,14 +46,28 @@ async function boot() {
     );
   });
 
-  app.get('/sitemap.xml', (req, res) => {
-    const base = config.siteUrl || `${req.protocol}://${req.get('host')}`;
-    const urls = publicPaths
-      .map((p) => `  <url><loc>${base}${p === '/' ? '/' : p}</loc></url>`)
-      .join('\n');
-    res.type('application/xml').send(
-      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
-    );
+  app.get('/sitemap.xml', async (req, res, next) => {
+    try {
+      const base = (config.siteUrl || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
+      const content = await getContent();
+      const paths = new Set(CORE);
+      Object.entries(content.pages || {}).forEach(([key, page]) => {
+        if (!key || key === 'admin' || key === 'api') return;
+        if (!isLivePage(page)) return;
+        paths.add(`/${key}`);
+      });
+      const urls = [...paths]
+        .sort((a, b) => a.localeCompare(b))
+        .map((p) => `  <url><loc>${base}${p === '/' ? '/' : p}</loc></url>`)
+        .join('\n');
+      res
+        .type('application/xml')
+        .send(
+          `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+        );
+    } catch (err) {
+      next(err);
+    }
   });
 
   if (config.isProd) {

@@ -6,12 +6,21 @@ export default function Dashboard({ draft, setSection, onRestored }) {
   const drafts = pages.length - published.length;
 
   const scheduled = pages.filter((k) => (draft.pages[k].status || '') === 'scheduled');
+  const seoReady = pages.filter((k) => {
+    const p = draft.pages[k] || {};
+    const title = (p.seo?.title || p.title || '').trim();
+    const desc = (p.seo?.description || p.intro || '').trim();
+    return title.length >= 20 && desc.length >= 80;
+  }).length;
   const health = [];
   if (!(draft.seo?.defaultDescription || '').trim()) health.push('Add a default SEO description');
   if (!(draft.nav || []).length) health.push('Navigation is empty');
   if (!(draft.events || []).length) health.push('No events yet — open Events studio');
   if (!(draft.videos || []).length) health.push('No YouTube links yet');
   if (!(draft.resources || []).length) health.push('Resources library is empty');
+  if (pages.length && seoReady < pages.length) {
+    health.push(`${pages.length - seoReady} pages need stronger SEO titles/descriptions`);
+  }
 
   const stats = [
     { value: pages.length, label: 'Pages', go: 'pages' },
@@ -24,6 +33,7 @@ export default function Dashboard({ draft, setSection, onRestored }) {
     { value: draft.partners?.length || 0, label: 'Partners', go: 'partners' },
     { value: draft.announcements?.length || 0, label: 'Announcements', go: 'announcements' },
     { value: draft.redirects?.length || 0, label: 'Redirects', go: 'redirects' },
+    { value: `${seoReady}/${pages.length || 0}`, label: 'SEO ready', go: 'pages' },
     { value: drafts, label: 'Draft pages', go: 'pages' },
     { value: scheduled.length, label: 'Scheduled', go: 'pages' },
   ];
@@ -48,7 +58,7 @@ export default function Dashboard({ draft, setSection, onRestored }) {
           <h2>Mission control</h2>
           <p className="hint">
             Full-site CMS for Unique Generation Outreach — pages, media, events, video, team, and
-            more. Last saved:{' '}
+            more. Press Ctrl/⌘ K to jump anywhere. Last saved:{' '}
             {draft.updatedAt ? new Date(draft.updatedAt).toLocaleString() : '—'}
           </p>
         </div>
@@ -59,6 +69,9 @@ export default function Dashboard({ draft, setSection, onRestored }) {
           <button className="admin-btn ghost" type="button" onClick={() => setSection('media')}>
             Upload media
           </button>
+          <a className="admin-btn ghost" href="/sitemap.xml" target="_blank" rel="noreferrer">
+            Sitemap
+          </a>
         </div>
       </div>
 

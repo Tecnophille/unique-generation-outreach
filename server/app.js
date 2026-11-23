@@ -10,6 +10,7 @@ import contentRoutes from './routes/content.js';
 import mediaRoutes from './routes/media.js';
 import pagesRoutes from './routes/pages.js';
 import contactRoutes from './routes/contact.js';
+import seoRoutes from './routes/seo.js';
 
 function corsOrigin(origin, callback) {
   if (!origin) return callback(null, true);
@@ -55,6 +56,7 @@ export function createApiApp() {
   app.use('/api', pagesRoutes);
   app.use('/api', mediaRoutes);
   app.use('/api', contactRoutes);
+  app.use('/api', seoRoutes);
 
   app.use('/api', (_req, res) => {
     res.status(404).json({ error: 'Not found' });

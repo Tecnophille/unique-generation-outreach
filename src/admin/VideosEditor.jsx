@@ -54,13 +54,31 @@ export default function VideosEditor({ draft, setDraft }) {
           <div className="admin-card admin-grid" key={v.id || i}>
             <div className="admin-page-head">
               <strong>{v.title || `Video ${i + 1}`}</strong>
-              <button
-                className="admin-btn danger"
-                type="button"
-                onClick={() => setVideos(videos.filter((_, idx) => idx !== i))}
-              >
-                Delete
-              </button>
+              <div className="admin-inline-actions">
+                <button
+                  className="admin-btn ghost"
+                  type="button"
+                  onClick={() =>
+                    setVideos([
+                      {
+                        ...structuredClone(v),
+                        id: `yt-${Date.now()}`,
+                        title: `${v.title || 'Video'} (copy)`,
+                      },
+                      ...videos,
+                    ])
+                  }
+                >
+                  Duplicate
+                </button>
+                <button
+                  className="admin-btn danger"
+                  type="button"
+                  onClick={() => setVideos(videos.filter((_, idx) => idx !== i))}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
             <Field label="Title">
               <input value={v.title || ''} onChange={(e) => update(i, { title: e.target.value })} />

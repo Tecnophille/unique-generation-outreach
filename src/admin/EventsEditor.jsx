@@ -98,13 +98,33 @@ export default function EventsEditor({ draft, setDraft }) {
         <div className="admin-card admin-grid" key={ev.id || i}>
           <div className="admin-page-head">
             <strong>{ev.title || `Event ${i + 1}`}</strong>
-            <button
-              className="admin-btn danger"
-              type="button"
-              onClick={() => setEvents(events.filter((_, idx) => idx !== i))}
-            >
-              Delete
-            </button>
+            <div className="admin-inline-actions">
+              <button
+                className="admin-btn ghost"
+                type="button"
+                onClick={() =>
+                  setEvents([
+                    {
+                      ...structuredClone(ev),
+                      id: uid('ev'),
+                      title: `${ev.title || 'Event'} (copy)`,
+                      status: 'draft',
+                      featured: false,
+                    },
+                    ...events,
+                  ])
+                }
+              >
+                Duplicate
+              </button>
+              <button
+                className="admin-btn danger"
+                type="button"
+                onClick={() => setEvents(events.filter((_, idx) => idx !== i))}
+              >
+                Delete
+              </button>
+            </div>
           </div>
           <div className="admin-grid two">
             <Field label="Title">

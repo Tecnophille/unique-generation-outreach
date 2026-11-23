@@ -382,7 +382,10 @@ export default function PagesEditor({ draft, setDraft }) {
           />
         </Field>
         <div className="admin-grid two">
-          <Field label="SEO title override">
+          <Field
+            label="SEO title override"
+            hint={`${(page.seo?.title || '').length}/60 · aim 50–60 chars`}
+          >
             <input
               value={page.seo?.title || ''}
               onChange={(e) =>
@@ -390,7 +393,10 @@ export default function PagesEditor({ draft, setDraft }) {
               }
             />
           </Field>
-          <Field label="SEO description">
+          <Field
+            label="SEO description"
+            hint={`${(page.seo?.description || page.intro || '').length}/160 · aim 120–160 chars`}
+          >
             <textarea
               value={page.seo?.description || ''}
               onChange={(e) =>
@@ -399,6 +405,21 @@ export default function PagesEditor({ draft, setDraft }) {
             />
           </Field>
         </div>
+        <div className="admin-seo-preview">
+          <div className="admin-seo-preview__url">
+            unique-generation-outreach.vercel.app{path}
+          </div>
+          <div className="admin-seo-preview__title">
+            {page.seo?.title || page.title || active}
+          </div>
+          <div className="admin-seo-preview__desc">
+            {page.seo?.description || page.intro || 'Add an SEO description for richer search snippets.'}
+          </div>
+        </div>
+        <details className="admin-preview">
+          <summary>Live page preview</summary>
+          <iframe title={`Preview ${path}`} src={path} className="admin-preview__frame" />
+        </details>
 
         <CommonFields page={page} patchPage={patchPage} />
 

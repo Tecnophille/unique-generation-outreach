@@ -19,6 +19,7 @@ import RedirectsEditor from './RedirectsEditor';
 import ResourcesEditor from './ResourcesEditor';
 import BackupEditor from './BackupEditor';
 import Finder from './Finder';
+import CommandPalette from './CommandPalette';
 import './admin.css';
 
 const SECTIONS = [
@@ -186,6 +187,14 @@ export default function AdminApp() {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [unread, setUnread] = useState(0);
+  const [cmdOpen, setCmdOpen] = useState(false);
+  const [sideCollapsed, setSideCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('ugo-cms-side') === '1';
+    } catch {
+      return false;
+    }
+  });
 
   useEffect(() => {
     fetch('/api/session', { credentials: 'include' })
@@ -257,6 +266,22 @@ export default function AdminApp() {
         e.preventDefault();
         if (dirty && !saving) save();
       }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setCmdOpen((v) => !v);
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
+        e.preventDefault();
+        setSideCollapsed((v) => {
+          const next = !v;
+          try {
+            localStorage.setItem('ugo-cms-side', next ? '1' : '0');
+          } catch {
+            /* ignore */
+          }
+          return next;
+        });
+      }
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -298,8 +323,10 @@ export default function AdminApp() {
   if (!draft) return <div className="boot-screen">No content loaded.</div>;
 
   return (
-    <div className="admin-shell admin-shell--studio">
-      <aside className="admin-side">
+    <div
+      className={`admin-shell admin-shell--studio${sideCollapsed ? ' admin-shell--collapsed' : ''}`}
+    >
+      <aside className="admin-side" aria-label="Studio navigation">
         <div className="admin-side__brand">
           <img src="/logo-icon.png?v=3" alt="" />
           <div>
@@ -307,9 +334,17 @@ export default function AdminApp() {
             <span>Full content studio</span>
           </div>
         </div>
+        <button
+          type="button"
+          className="admin-side__cmd"
+          onClick={() => setCmdOpen(true)}
+          title="Command palette (Ctrl/⌘ K)"
+        >
+          Jump… <kbd>⌘K</kbd>
+        </button>
         <input
           className="admin-side__search"
-          placeholder="Search studio…"
+          placeholder="Filter nav…"
           value={navQuery}
           onChange={(e) => setNavQuery(e.target.value)}
         />
@@ -322,8 +357,9 @@ export default function AdminApp() {
               type="button"
               className={section === s.id ? 'is-active' : ''}
               onClick={() => setSection(s.id)}
+              title={s.label}
             >
-              {s.label}
+              <span className="admin-side__label">{s.label}</span>
               {s.id === 'inbox' && unread > 0 ? (
                 <span className="admin-side__badge">{unread}</span>
               ) : null}
@@ -331,6 +367,24 @@ export default function AdminApp() {
           </div>
         ))}
         <div className="admin-side__foot">
+          <button
+            type="button"
+            className="admin-side__collapse"
+            onClick={() => {
+              setSideCollapsed((v) => {
+                const next = !v;
+                try {
+                  localStorage.setItem('ugo-cms-side', next ? '1' : '0');
+                } catch {
+                  /* ignore */
+                }
+                return next;
+              });
+            }}
+            title="Collapse sidebar (Ctrl/⌘ \\)"
+          >
+            {sideCollapsed ? 'Expand' : 'Collapse'}
+          </button>
           <Link to="/" target="_blank" rel="noreferrer">
             Open website ↗
           </Link>
@@ -340,6 +394,14 @@ export default function AdminApp() {
         </div>
       </aside>
 
+      <CommandPalette
+        open={cmdOpen}
+        onClose={() => setCmdOpen(false)}
+        sections={SECTIONS}
+        onSelect={setSection}
+        unread={unread}
+      />
+
       <main className="admin-main">
         <div className="admin-toolbar admin-toolbar--sticky">
           <div className="admin-toolbar__left">
@@ -347,6 +409,14 @@ export default function AdminApp() {
             <strong>{SECTIONS.find((s) => s.id === section)?.label}</strong>
           </div>
           <div className="admin-toolbar__right">
+            <button
+              className="admin-btn ghost"
+              type="button"
+              onClick={() => setCmdOpen(true)}
+              title="Command palette"
+            >
+              ⌘K
+            </button>
             <button className="admin-btn primary" type="button" onClick={save} disabled={!dirty || saving}>
               {saving ? 'Saving…' : 'Save changes'}
             </button>
