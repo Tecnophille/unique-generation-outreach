@@ -32,11 +32,12 @@ const PAGE_KEYS = [
   { key: 'faq', path: '/faq' },
 ];
 
-function Field({ label, children }) {
+function Field({ label, htmlFor, children, hint }) {
   return (
     <div className="admin-field">
-      <label>{label}</label>
+      <label htmlFor={htmlFor}>{label}</label>
       {children}
+      {hint ? <span className="admin-field__hint">{hint}</span> : null}
     </div>
   );
 }
@@ -44,6 +45,7 @@ function Field({ label, children }) {
 function Login({ onSuccess }) {
   const [email, setEmail] = useState('admin@ugo.local');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -58,10 +60,19 @@ function Login({ onSuccess }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      if (!res.ok) throw new Error('Invalid email or password');
+      if (!res.ok) {
+        let message = 'Invalid email or password';
+        try {
+          const data = await res.json();
+          if (data?.error) message = data.error;
+        } catch {
+          /* ignore */
+        }
+        throw new Error(message);
+      }
       onSuccess();
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err.message || 'Login failed. Check your connection and try again.');
     } finally {
       setBusy(false);
     }
@@ -69,33 +80,100 @@ function Login({ onSuccess }) {
 
   return (
     <div className="admin-login">
-      <form className="admin-login__card" onSubmit={submit}>
-        <h1>UGO CMS</h1>
-        <p>Sign in to manage Unique Generation Outreach. Backed by the CMS database API.</p>
-        <Field label="Email">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoFocus
-            required
+      <div className="admin-login__atmosphere" aria-hidden="true" />
+      <main className="admin-login__panel">
+        <header className="admin-login__brand">
+          <img
+            className="admin-login__logo"
+            src="/logo.png"
+            alt="Unique Generation Outreach"
+            width={88}
+            height={88}
           />
-        </Field>
-        <Field label="Password">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Field>
-        {error ? <p className="admin-status err">{error}</p> : null}
-        <div style={{ marginTop: '1rem' }}>
-          <button className="admin-btn primary" type="submit" disabled={busy}>
+          <p className="admin-login__org">Unique Generation Outreach</p>
+          <h1 id="admin-login-title">Content studio</h1>
+          <p className="admin-login__lede">
+            Sign in to edit pages, media, and messages for the UGO site.
+          </p>
+        </header>
+
+        <form
+          className="admin-login__form"
+          onSubmit={submit}
+          aria-labelledby="admin-login-title"
+          noValidate
+        >
+          <div
+            className={`admin-login__alert${error ? ' is-visible' : ''}`}
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            {error || '\u00a0'}
+          </div>
+
+          <Field label="Email" htmlFor="admin-email">
+            <input
+              id="admin-email"
+              name="email"
+              type="email"
+              autoComplete="username"
+              inputMode="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (error) setError('');
+              }}
+              autoFocus
+              required
+              aria-invalid={Boolean(error) || undefined}
+              aria-describedby={error ? 'admin-login-error' : undefined}
+            />
+          </Field>
+
+          <Field label="Password" htmlFor="admin-password">
+            <div className="admin-login__password">
+              <input
+                id="admin-password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (error) setError('');
+                }}
+                required
+                aria-invalid={Boolean(error) || undefined}
+                aria-describedby={error ? 'admin-login-error' : undefined}
+              />
+              <button
+                type="button"
+                className="admin-login__reveal"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-pressed={showPassword}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+          </Field>
+
+          {error ? (
+            <p id="admin-login-error" className="visually-hidden">
+              {error}
+            </p>
+          ) : null}
+
+          <button className="admin-btn primary admin-login__submit" type="submit" disabled={busy}>
             {busy ? 'Signing in…' : 'Sign in'}
           </button>
-        </div>
-      </form>
+        </form>
+
+        <p className="admin-login__foot">
+          <Link to="/">← Back to the public site</Link>
+        </p>
+      </main>
     </div>
   );
 }
