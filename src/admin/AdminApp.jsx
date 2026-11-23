@@ -20,6 +20,7 @@ import ResourcesEditor from './ResourcesEditor';
 import BackupEditor from './BackupEditor';
 import Finder from './Finder';
 import CommandPalette from './CommandPalette';
+import BootScreen from '../components/BootScreen';
 import './admin.css';
 
 const SECTIONS = [
@@ -348,9 +349,9 @@ export default function AdminApp() {
     );
   }, [navQuery]);
 
-  if (checking || loading) return <div className="boot-screen">Loading CMS…</div>;
+  if (checking || loading) return <BootScreen label="Loading CMS" />;
   if (!authed) return <Login onSuccess={() => setAuthed(true)} />;
-  if (!draft) return <div className="boot-screen">No content loaded.</div>;
+  if (!draft) return <BootScreen label="No content loaded" />;
 
   return (
     <div
