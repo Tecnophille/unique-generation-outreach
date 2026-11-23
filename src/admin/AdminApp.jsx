@@ -188,6 +188,7 @@ export default function AdminApp() {
   const [saving, setSaving] = useState(false);
   const [unread, setUnread] = useState(0);
   const [cmdOpen, setCmdOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
   const [sideCollapsed, setSideCollapsed] = useState(() => {
     try {
       return localStorage.getItem('ugo-cms-side') === '1';
@@ -195,6 +196,12 @@ export default function AdminApp() {
       return false;
     }
   });
+
+  const goSection = useCallback((id) => {
+    setSection(id);
+    setNavOpen(false);
+    setCmdOpen(false);
+  }, []);
 
   useEffect(() => {
     fetch('/api/session', { credentials: 'include' })
@@ -305,9 +312,32 @@ export default function AdminApp() {
       .catch(() => setUnread(0));
   }, [authed, section]);
 
+  useEffect(() => {
+    if (!navOpen) return undefined;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    function onKey(e) {
+      if (e.key === 'Escape') setNavOpen(false);
+    }
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [navOpen]);
+
+  useEffect(() => {
+    function onResize() {
+      if (window.matchMedia('(min-width: 901px)').matches) setNavOpen(false);
+    }
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   async function logout() {
     await fetch('/api/logout', { method: 'POST', credentials: 'include' });
     setAuthed(false);
+    setNavOpen(false);
   }
 
   const filteredSections = useMemo(() => {
@@ -324,20 +354,39 @@ export default function AdminApp() {
 
   return (
     <div
-      className={`admin-shell admin-shell--studio${sideCollapsed ? ' admin-shell--collapsed' : ''}`}
+      className={`admin-shell admin-shell--studio${sideCollapsed ? ' admin-shell--collapsed' : ''}${navOpen ? ' admin-shell--nav-open' : ''}`}
     >
-      <aside className="admin-side" aria-label="Studio navigation">
+      <button
+        type="button"
+        className="admin-nav-backdrop"
+        aria-label="Close navigation"
+        tabIndex={navOpen ? 0 : -1}
+        onClick={() => setNavOpen(false)}
+      />
+
+      <aside className="admin-side" aria-label="Studio navigation" id="admin-side-nav">
         <div className="admin-side__brand">
           <img src="/logo-icon.png?v=3" alt="" />
           <div>
             <strong>UGO CMS</strong>
             <span>Full content studio</span>
           </div>
+          <button
+            type="button"
+            className="admin-side__close"
+            aria-label="Close navigation"
+            onClick={() => setNavOpen(false)}
+          >
+            ✕
+          </button>
         </div>
         <button
           type="button"
           className="admin-side__cmd"
-          onClick={() => setCmdOpen(true)}
+          onClick={() => {
+            setCmdOpen(true);
+            setNavOpen(false);
+          }}
           title="Command palette (Ctrl/⌘ K)"
         >
           Jump… <kbd>⌘K</kbd>
@@ -348,24 +397,26 @@ export default function AdminApp() {
           value={navQuery}
           onChange={(e) => setNavQuery(e.target.value)}
         />
-        {filteredSections.map((s, idx) => (
-          <div key={s.id}>
-            {idx === 0 || filteredSections[idx - 1].group !== s.group ? (
-              <div className="admin-side__group">{s.group}</div>
-            ) : null}
-            <button
-              type="button"
-              className={section === s.id ? 'is-active' : ''}
-              onClick={() => setSection(s.id)}
-              title={s.label}
-            >
-              <span className="admin-side__label">{s.label}</span>
-              {s.id === 'inbox' && unread > 0 ? (
-                <span className="admin-side__badge">{unread}</span>
+        <nav className="admin-side__nav">
+          {filteredSections.map((s, idx) => (
+            <div key={s.id}>
+              {idx === 0 || filteredSections[idx - 1].group !== s.group ? (
+                <div className="admin-side__group">{s.group}</div>
               ) : null}
-            </button>
-          </div>
-        ))}
+              <button
+                type="button"
+                className={section === s.id ? 'is-active' : ''}
+                onClick={() => goSection(s.id)}
+                title={s.label}
+              >
+                <span className="admin-side__label">{s.label}</span>
+                {s.id === 'inbox' && unread > 0 ? (
+                  <span className="admin-side__badge">{unread}</span>
+                ) : null}
+              </button>
+            </div>
+          ))}
+        </nav>
         <div className="admin-side__foot">
           <button
             type="button"
@@ -398,19 +449,31 @@ export default function AdminApp() {
         open={cmdOpen}
         onClose={() => setCmdOpen(false)}
         sections={SECTIONS}
-        onSelect={setSection}
+        onSelect={goSection}
         unread={unread}
       />
 
       <main className="admin-main">
         <div className="admin-toolbar admin-toolbar--sticky">
           <div className="admin-toolbar__left">
-            <span className="admin-kicker">{SECTIONS.find((s) => s.id === section)?.group}</span>
-            <strong>{SECTIONS.find((s) => s.id === section)?.label}</strong>
+            <button
+              type="button"
+              className="admin-nav-toggle"
+              aria-expanded={navOpen}
+              aria-controls="admin-side-nav"
+              onClick={() => setNavOpen((v) => !v)}
+            >
+              <span className="admin-nav-toggle__bars" aria-hidden="true" />
+              Menu
+            </button>
+            <div className="admin-toolbar__titles">
+              <span className="admin-kicker">{SECTIONS.find((s) => s.id === section)?.group}</span>
+              <strong>{SECTIONS.find((s) => s.id === section)?.label}</strong>
+            </div>
           </div>
           <div className="admin-toolbar__right">
             <button
-              className="admin-btn ghost"
+              className="admin-btn ghost admin-toolbar__cmd"
               type="button"
               onClick={() => setCmdOpen(true)}
               title="Command palette"
@@ -418,10 +481,10 @@ export default function AdminApp() {
               ⌘K
             </button>
             <button className="admin-btn primary" type="button" onClick={save} disabled={!dirty || saving}>
-              {saving ? 'Saving…' : 'Save changes'}
+              {saving ? 'Saving…' : 'Save'}
             </button>
             <button
-              className="admin-btn ghost"
+              className="admin-btn ghost admin-toolbar__secondary"
               type="button"
               onClick={() => {
                 setDraft(normalizeContent(structuredClone(content)));
@@ -432,11 +495,11 @@ export default function AdminApp() {
             >
               Discard
             </button>
-            <button className="admin-btn ghost" type="button" onClick={refresh}>
+            <button className="admin-btn ghost admin-toolbar__secondary" type="button" onClick={refresh}>
               Reload
             </button>
-            {dirty ? <span className="admin-status">Unsaved · Ctrl/⌘ S</span> : null}
-            {status ? <span className="admin-status ok">{status}</span> : null}
+            {dirty ? <span className="admin-status admin-toolbar__meta">Unsaved</span> : null}
+            {status ? <span className="admin-status ok admin-toolbar__meta">{status}</span> : null}
             {error ? <span className="admin-status err">{error}</span> : null}
           </div>
         </div>
@@ -444,14 +507,14 @@ export default function AdminApp() {
         {section === 'overview' && (
           <Dashboard
             draft={draft}
-            setSection={setSection}
+            setSection={goSection}
             onRestored={(payload) => {
               setDraft(normalizeContent(structuredClone(payload)));
               setStatus('Revision restored');
             }}
           />
         )}
-        {section === 'finder' && <Finder draft={draft} setSection={setSection} />}
+        {section === 'finder' && <Finder draft={draft} setSection={goSection} />}
         {section === 'pages' && <PagesEditor draft={draft} setDraft={setDraft} />}
         {section === 'events' && <EventsEditor draft={draft} setDraft={setDraft} />}
         {section === 'videos' && <VideosEditor draft={draft} setDraft={setDraft} />}
