@@ -426,11 +426,12 @@
 }
 
 .admin-login__logo {
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 5.75rem;
+  height: 5.75rem;
   margin: 0 auto 1rem;
+  padding: 0.55rem;
   border-radius: 999px;
-  object-fit: cover;
+  object-fit: contain;
   background: #fff;
   box-shadow: 0 10px 28px rgba(82, 95, 189, 0.18);
 }
