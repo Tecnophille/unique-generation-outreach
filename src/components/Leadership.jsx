@@ -5,21 +5,23 @@ export default function Leadership() {
   const [convener, ...team] = leadership;
 
   return (
-    <section className="section" id="leadership">
+    <section className="section" id="leadership" style={{ background: 'var(--paper)' }}>
       <div className="wrap">
-        <span className="eyebrow">Leadership</span>
-        <h2 className="section-title">People who steward the mission</h2>
-        <p className="section-lead">
-          Meet the Convener and the team who carry Unique Generation Outreach across administration,
-          events, creativity, protocol, volunteering, and development.
-        </p>
+        <div className="section-head">
+          <span className="label label--center">Leadership</span>
+          <h2>People who steward the mission</h2>
+          <p>
+            Meet the Convener and the team who carry Unique Generation Outreach across
+            administration, events, creativity, protocol, volunteering, and development.
+          </p>
+        </div>
 
         <motion.article
           className="leader leader-featured"
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="avatar avatar--lg" aria-hidden="true">
             {initials(convener.name)}
@@ -36,11 +38,11 @@ export default function Leadership() {
           {team.map((person, i) => (
             <motion.article
               key={person.name}
-              className="leader team-member"
-              initial={{ opacity: 0, y: 20 }}
+              className="leader team-card"
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.55, delay: (i % 4) * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.5, delay: (i % 3) * 0.05, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="avatar" aria-hidden="true">
                 {initials(person.name)}
@@ -49,17 +51,13 @@ export default function Leadership() {
                 <div className="leader__role">{person.role}</div>
                 <h3>{person.name}</h3>
                 <p className="leader__titles">{person.titles}</p>
-                {person.location ? (
-                  <p className="leader__location">{person.location}</p>
-                ) : null}
+                {person.location ? <p className="leader__location">{person.location}</p> : null}
                 <p>{person.bio}</p>
               </div>
             </motion.article>
           ))}
         </div>
-        <p className="gatherings-note">
-          Portrait placeholders use initials — swap in official headshots when provided.
-        </p>
+        <p className="placeholder-note">Portrait placeholders — official headshots coming soon.</p>
       </div>
     </section>
   );

@@ -4,47 +4,63 @@ export const brand = {
 };
 
 export const hero = {
-  headline: 'Unity, empowerment, and lasting opportunity',
+  badge: 'Gathered for purpose and service',
+  headline: 'A place to unite, empower, and walk in faith.',
   support:
-    'A community initiative dedicated to faith, service, and transforming lives across generations.',
-  primaryCta: { label: 'Meet the team', href: '#leadership' },
-  secondaryCta: { label: 'Stay in touch', href: '#contact' },
-  // Atmospheric placeholder — replace with gathering photography
+    'Unique Generation Outreach promotes unity, creates opportunities, and inspires transformation across communities — through faith, service, and purposeful leadership.',
+  primaryCta: { label: 'Our pillars', href: '#pillars' },
+  secondaryCta: { label: 'Get in touch', href: '#contact' },
   image:
-    'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=2400&q=80',
+    'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=2400&q=80',
 };
 
 export const about = {
-  eyebrow: 'Who we are',
-  title: 'A generation gathered for purpose',
-  body: `Unique Generation Outreach promotes unity, empowers individuals, creates opportunities, and inspires positive transformation across communities. Led by Convener Leader Daniel Ajuruchukwu — clergyman, public speaker, entrepreneur, and Priest-in-Charge of Will of God Sabbath Mission — we build a society where people discover their potential and contribute meaningfully to a better future.`,
-  note: 'Purposeful leadership. Selfless service. Strong family values. Lasting opportunity for present and future generations.',
+  label: 'About',
+  body: `We are a community shaped by faith, service, and daily life. Across seasons and generations, we gather to empower one another, create opportunities, and walk together in purpose. Our doors are open — to the curious, the searching, and all who seek lasting transformation.`,
+  cta: { label: 'Meet our leadership', href: '#leadership' },
+  images: [
+    'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=900&q=80',
+    'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80',
+    'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=900&q=80',
+  ],
 };
 
 export const pillars = [
   {
     title: 'Unity',
     text: 'Building communities through collective effort, shared purpose, and mutual support.',
+    color: '#C45C4A',
+    icon: 'heart',
   },
   {
     title: 'Empowerment',
     text: 'Helping individuals discover their potential and step into purposeful leadership.',
+    color: '#5B8FBF',
+    icon: 'spark',
   },
   {
     title: 'Opportunities',
     text: 'Creating pathways for growth, enterprise, and meaningful contribution.',
+    color: '#D4883A',
+    icon: 'path',
   },
   {
     title: 'Transformation',
     text: 'Inspiring lasting positive change in families, neighbourhoods, and cities.',
+    color: '#C9A227',
+    icon: 'bloom',
   },
   {
     title: 'Gatherings',
     text: 'Hosting programmes and GHP events that bring people together in faith and fellowship.',
+    color: '#7A5EA8',
+    icon: 'people',
   },
   {
     title: 'Volunteering',
     text: 'Fostering a culture of service where every contribution advances the mission.',
+    color: '#5A9A6A',
+    icon: 'hands',
   },
 ];
 
@@ -53,47 +69,43 @@ export const gatherings = [
     year: '2022',
     name: 'Koinonia',
     theme: 'Fellowship & belonging',
+    tag: 'GHP',
     image:
       'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80',
   },
   {
     year: '2024',
     name: 'Kavod',
-    theme: 'Honour & reverence',
+    theme: 'Honour & reverence in community life',
+    tag: 'GHP',
     image:
       'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=80',
   },
   {
     year: '2025',
     name: 'Shabach',
-    theme: 'Praise & celebration',
+    theme: 'Praise, celebration, and shared joy',
+    tag: 'GHP',
     image:
       'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    year: '2026',
-    name: 'Berakah',
-    theme: 'Blessing & increase',
-    image:
-      'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1200&q=80',
   },
 ];
 
 export const reflections = [
   {
-    date: 'Sample · GHP theme',
+    date: 'Sample · GHP',
     title: 'Koinonia — walking together',
     excerpt:
       'Fellowship is more than gathering. It is choosing one another — sharing burdens, celebrating victories, and building a community where no one walks alone.',
   },
   {
-    date: 'Sample · GHP theme',
+    date: 'Sample · GHP',
     title: 'Kavod — honour that lifts',
     excerpt:
-      'True honour recognises the dignity God places in every person. When we lift others, we strengthen the fabric of our families and cities.',
+      'True honour recognises the dignity placed in every person. When we lift others, we strengthen the fabric of our families and cities.',
   },
   {
-    date: 'Sample · GHP theme',
+    date: 'Sample · GHP',
     title: 'Berakah — living as a blessing',
     excerpt:
       'Blessing is meant to move through us. Opportunity, service, and kindness become seeds of transformation for the next generation.',
@@ -126,20 +138,20 @@ export const leadership = [
   {
     name: 'Ing. Cynthia Uloma Offor',
     role: 'Secretary',
-    titles: 'Project Management Professional · Research & Development Specialist · Administrator',
+    titles: 'Project Management Professional · R&D Specialist · Administrator',
     location: 'Lagos, Nigeria',
-    bio: 'A dynamic professional with a Master’s in Food Engineering and expertise in project management, research, and organisational development. She strengthens administrative structure, coordinates communications, maintains records, and supports programme implementation.',
+    bio: 'A dynamic professional with a Master’s in Food Engineering. She strengthens administrative structure, coordinates communications, maintains records, and supports programme implementation.',
   },
   {
     name: 'Oziomachukwu Amaefula',
     role: 'Assistant Secretary',
     titles: 'Student Nurse · Mental Health Practitioner',
     location: 'United Kingdom',
-    bio: 'A student nurse and mental health practitioner passionate about healthcare, mental well-being, and human development. He supports administrative and documentation activities alongside the Secretary.',
+    bio: 'A student nurse and mental health practitioner passionate about healthcare and human development. He supports administrative and documentation activities alongside the Secretary.',
   },
   {
     name: 'Ifeanyi Daniel',
-    role: 'Director of Stage Management and Events Operations',
+    role: 'Director of Stage Management & Events',
     titles: 'Music Producer · Musician',
     location: 'Lagos, Nigeria',
     bio: 'A music producer and musician who oversees stage presentations and event operations, bringing creative experience to programmes and public engagements.',
@@ -149,35 +161,35 @@ export const leadership = [
     role: 'Creative Director',
     titles: 'Sound Engineer',
     location: 'Lagos State, Nigeria',
-    bio: 'A sound engineer contributing to creative direction and presentation — using technical and artistic expertise to enhance communication, storytelling, and audience engagement.',
+    bio: 'A sound engineer contributing to creative direction — using technical and artistic expertise to enhance communication, storytelling, and audience engagement.',
   },
   {
     name: 'Okafor Chukwunwem',
     role: 'Director of Protocol',
     titles: 'Solar Energy Entrepreneur',
     location: 'Lagos, Nigeria',
-    bio: 'An entrepreneur specialising in solar energy solutions. He coordinates official engagements, event arrangements, and protocol-related activities with professionalism and teamwork.',
+    bio: 'Coordinates official engagements, event arrangements, and protocol-related activities with professionalism and teamwork.',
   },
   {
     name: 'Dr. Cosmic Macduff',
     role: 'Volunteers Coordinator',
-    titles: 'Entrepreneur · Author · Public Speaker · Business Executive · Managing Director, Macversity Group',
+    titles: 'Entrepreneur · Author · Public Speaker · MD, Macversity Group',
     location: 'Lagos, Nigeria',
-    bio: 'Supports volunteer engagement and coordination. Committed to encouraging participation, strengthening teamwork, and fostering a culture of service that advances empowerment, unity, and community transformation.',
+    bio: 'Supports volunteer engagement and coordination, fostering a culture of service that advances empowerment, unity, and community transformation.',
   },
   {
     name: 'Ojugbana Chukwuka Bobby',
     role: 'Director of Information',
     titles: 'Entrepreneur — Building Materials',
     location: 'Lagos, Nigeria',
-    bio: 'Supports information and communication activities — disseminating public awareness and communicating programmes, objectives, and initiatives.',
+    bio: 'Supports information and communication activities — disseminating public awareness of programmes, objectives, and initiatives.',
   },
   {
     name: 'Engr. Dr. Odinaka Bruno Chinedu',
     role: 'Special Adviser on Development',
-    titles: 'Engineer · Entrepreneur · Business Executive · Managing Director/CEO, B-CIJVAL Engineering Services Ltd.',
+    titles: 'Engineer · Entrepreneur · MD/CEO, B-CIJVAL Engineering Services Ltd.',
     location: null,
-    bio: 'Contributes professional expertise, strategic insight, and leadership experience toward developmental goals and community impact. His leadership philosophy is anchored in excellence, innovation, collaboration, and lasting impact.',
+    bio: 'Contributes professional expertise and strategic insight toward developmental goals. Leadership philosophy anchored in excellence, innovation, collaboration, and lasting impact.',
   },
 ];
 
@@ -206,22 +218,30 @@ export const faqs = [
 
 export const contact = {
   title: 'Let’s stay in touch',
-  body: 'Have a question, a need, or a desire to serve? We are here to listen. Reach out — we will take time to respond with care.',
-  // Placeholders until real details are provided
+  body: 'Have a question, a need, or something on your heart? We’re here to listen. Feel free to reach out — we’ll take the time to respond with care.',
+  cta: 'Reach out to us',
+  skyImage:
+    'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=1600&q=80',
+  newsletter: {
+    titleBefore: 'Join our ',
+    titleAccent: 'newsletter.',
+    body: 'Subscribe to receive the latest updates when contact details are confirmed.',
+    features: [
+      { title: 'News & Reflections', text: 'Receive news and reflections as they are published.' },
+      { title: 'Community life', text: 'Stay informed about gatherings and programmes.' },
+    ],
+  },
   placeholders: {
     email: 'Contact email coming soon',
     phone: 'Phone number coming soon',
-    location: 'Nigeria · international team',
   },
 };
 
 export const nav = [
-  { label: 'About', href: '#about' },
   { label: 'Pillars', href: '#pillars' },
+  { label: 'About', href: '#about' },
   { label: 'Gatherings', href: '#gatherings' },
   { label: 'Reflections', href: '#reflections' },
-  { label: 'Leadership', href: '#leadership' },
-  { label: 'FAQ', href: '#faq' },
   { label: 'Contact', href: '#contact' },
 ];
 
