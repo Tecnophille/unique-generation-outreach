@@ -357,8 +357,8 @@ function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
   if (!list.length) {
     if (!showEmpty) return null;
     return (
-      <section className="section section--tight page-blocks">
-        <InView className="wrap site-empty">
+      <section className="page-blocks__section">
+        <InView className="wrap page-blocks__column site-empty">
           <h2>Videos coming soon</h2>
           <p>
             We’re gathering messages and moments from Unique Generation Outreach. Subscribe on the
@@ -378,8 +378,8 @@ function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
   }
   const single = list.length === 1;
   return (
-    <section className="section section--tight page-blocks">
-      <div className={`wrap page-blocks__stack${single ? ' page-blocks__stack--video-single' : ''}`}>
+    <section className="page-blocks__section">
+      <div className={`wrap${single ? ' page-blocks__column' : ''}`}>
         <SectionHeading>{heading}</SectionHeading>
         <Stagger className={`uniq-videos${single ? ' uniq-videos--single' : ''}`}>
           {list.map((v) => {
@@ -503,44 +503,53 @@ function blockHasContent(block) {
   }
 }
 
-/** Flexible CMS blocks — one continuous band that matches built-in page rhythm. */
+/**
+ * CMS blocks use the same wrap pattern as StoryBlock: `.wrap` + content max-width
+ * on the same node so margin-inline:auto centers the column (not left-pinned in a wide wrap).
+ */
 export function PageBlocks({ blocks }) {
   const list = (blocks || []).filter(blockHasContent);
   if (!list.length) return null;
 
   return (
-    <section className="page-blocks section section--tight" aria-label="Page content">
-      <div className="page-blocks__stack wrap">
-        {list.map((block) => {
-          if (block.type === 'richtext') {
-            return (
-              <InView key={block.id} className="page-blocks__item page-blocks__item--prose">
+    <div className="page-blocks" aria-label="Page content">
+      {list.map((block) => {
+        if (block.type === 'richtext') {
+          return (
+            <section key={block.id} className="page-blocks__section">
+              <InView className="wrap page-blocks__column" amount={0.35}>
                 {block.title ? <h2 className="uniq-heading">{block.title}</h2> : null}
                 {String(block.body || '')
                   .split(/\n\n+/)
                   .filter(Boolean)
                   .map((p) => (
-                    <p key={p.slice(0, 32)}>{p}</p>
+                    <p key={p.slice(0, 32)} className="page-blocks__prose">
+                      {p}
+                    </p>
                   ))}
               </InView>
-            );
-          }
+            </section>
+          );
+        }
 
-          if (block.type === 'quote') {
-            return (
-              <InView key={block.id} className="page-blocks__item page-blocks__item--quote">
-                <blockquote>
+        if (block.type === 'quote') {
+          return (
+            <section key={block.id} className="page-blocks__section page-blocks__section--quote">
+              <InView className="wrap page-blocks__column" amount={0.35}>
+                <blockquote className="page-blocks__quote">
                   <p>“{block.text}”</p>
                   {block.attribution ? <cite>— {block.attribution}</cite> : null}
                 </blockquote>
               </InView>
-            );
-          }
+            </section>
+          );
+        }
 
-          if (block.type === 'gallery') {
-            const items = (block.items || []).filter((g) => g?.src);
-            return (
-              <div key={block.id} className="page-blocks__item">
+        if (block.type === 'gallery') {
+          const items = (block.items || []).filter((g) => g?.src);
+          return (
+            <section key={block.id} className="page-blocks__section">
+              <div className="wrap">
                 <Stagger className="uniq-gallery">
                   {items.map((g) => (
                     <StaggerItem as="figure" key={g.src}>
@@ -550,13 +559,15 @@ export function PageBlocks({ blocks }) {
                   ))}
                 </Stagger>
               </div>
-            );
-          }
+            </section>
+          );
+        }
 
-          if (block.type === 'video') {
-            const id = youtubeId(block.url);
-            return (
-              <InView key={block.id} className="page-blocks__item page-blocks__item--video">
+        if (block.type === 'video') {
+          const id = youtubeId(block.url);
+          return (
+            <section key={block.id} className="page-blocks__section">
+              <InView className="wrap page-blocks__column" amount={0.35}>
                 {block.title ? <h2 className="uniq-heading">{block.title}</h2> : null}
                 <article className="uniq-video">
                   <div className="uniq-video__frame">
@@ -570,12 +581,14 @@ export function PageBlocks({ blocks }) {
                   </div>
                 </article>
               </InView>
-            );
-          }
+            </section>
+          );
+        }
 
-          if (block.type === 'cta') {
-            return (
-              <InView key={block.id} className="page-blocks__item page-blocks__item--cta">
+        if (block.type === 'cta') {
+          return (
+            <section key={block.id} className="page-blocks__section">
+              <InView className="wrap page-blocks__column" amount={0.35}>
                 <div className="uniq-cta-block">
                   {block.title ? <h2>{block.title}</h2> : null}
                   {block.text ? <p>{block.text}</p> : null}
@@ -586,12 +599,14 @@ export function PageBlocks({ blocks }) {
                   ) : null}
                 </div>
               </InView>
-            );
-          }
+            </section>
+          );
+        }
 
-          if (block.type === 'stats') {
-            return (
-              <div key={block.id} className="page-blocks__item">
+        if (block.type === 'stats') {
+          return (
+            <section key={block.id} className="page-blocks__section">
+              <div className="wrap">
                 <Stagger className="uniq-stats">
                   {(block.items || [])
                     .filter((item) => item?.value || item?.label)
@@ -603,21 +618,23 @@ export function PageBlocks({ blocks }) {
                     ))}
                 </Stagger>
               </div>
-            );
-          }
+            </section>
+          );
+        }
 
-          if (block.type === 'embed') {
-            return (
-              <InView key={block.id} className="page-blocks__item page-blocks__item--embed">
+        if (block.type === 'embed') {
+          return (
+            <section key={block.id} className="page-blocks__section">
+              <InView className="wrap page-blocks__column" amount={0.35}>
                 <div className="uniq-embed" dangerouslySetInnerHTML={{ __html: block.html }} />
               </InView>
-            );
-          }
+            </section>
+          );
+        }
 
-          return null;
-        })}
-      </div>
-    </section>
+        return null;
+      })}
+    </div>
   );
 }
 
