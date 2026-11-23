@@ -13,8 +13,6 @@ import {
   FaqUnique,
   ContactUnique,
   CustomPageUnique,
-  PageBlocks,
-  PageVideos,
 } from './views/UniquePages';
 
 const VIEW_MAP = {
@@ -28,17 +26,6 @@ const VIEW_MAP = {
   events: CustomPageUnique,
   videos: CustomPageUnique,
 };
-
-/** CustomPageUnique already renders page.blocks; specialized views need them appended. */
-function viewIncludesBlocks(pageKey) {
-  const View = VIEW_MAP[pageKey];
-  return !View || View === CustomPageUnique;
-}
-
-/** Gatherings + CustomPageUnique already render PageVideos. */
-function viewIncludesVideos(pageKey) {
-  return pageKey === 'gatherings' || viewIncludesBlocks(pageKey);
-}
 
 const RESERVED = new Set(['admin', 'api', 'uploads']);
 
@@ -111,8 +98,6 @@ export default function SectionPage({ pageKey: pageKeyProp }) {
         />
         <div className="page-shell__body">
           <View page={page} pageKey={pageKey} />
-          {!viewIncludesBlocks(pageKey) ? <PageBlocks blocks={page.blocks} /> : null}
-          {!viewIncludesVideos(pageKey) ? <PageVideos page={page} pageKey={pageKey} /> : null}
           {pageKey === 'contact' ? <Contact /> : null}
         </div>
       </div>

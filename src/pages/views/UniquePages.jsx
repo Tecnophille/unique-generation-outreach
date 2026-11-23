@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { useContent } from '../../cms/ContentContext';
-import { BUILTIN_SITE_VIDEO_PAGES } from '../../cms/contentModel';
 import TeamAvatar from '../../components/TeamAvatar';
 import { InView, Stagger, StaggerItem } from '../../components/motion';
 
@@ -50,53 +49,66 @@ function SectionHeading({ children }) {
   );
 }
 
-export function AboutUnique({ page }) {
+export function AboutUnique({ page, pageKey = 'about' }) {
   return (
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
+      <PageBlocks blocks={page.blocks} />
       <QuoteBlock quote={page.quote} />
-      <section className="section section--tight">
-        <div className="wrap">
-          <SectionHeading>Milestones of the mission</SectionHeading>
-          <Stagger className="uniq-milestones">
-            {(page.milestones || []).map((m) => (
-              <StaggerItem as="article" key={m.year}>
-                <span>{m.year}</span>
-                <p>{m.text}</p>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
-      <section className="section">
-        <div className="wrap">
-          <SectionHeading>Life around the mission</SectionHeading>
-          <Stagger className="uniq-gallery">
-            {(page.gallery || []).map((g) => (
-              <StaggerItem as="figure" key={g.src}>
-                <img src={g.src} alt={g.caption || ''} />
-                {g.caption ? <figcaption>{g.caption}</figcaption> : null}
-              </StaggerItem>
-            ))}
-          </Stagger>
-          {page.cta ? (
-            <InView className="page-extras__cta" delay={0.08}>
-              <Link className="btn btn--solid" to={page.cta.href}>
-                {page.cta.label}
-              </Link>
-            </InView>
-          ) : null}
-        </div>
-      </section>
+      {(page.milestones || []).length ? (
+        <section className="section section--tight">
+          <div className="wrap">
+            <SectionHeading>Milestones of the mission</SectionHeading>
+            <Stagger className="uniq-milestones">
+              {(page.milestones || []).map((m) => (
+                <StaggerItem as="article" key={m.year}>
+                  <span>{m.year}</span>
+                  <p>{m.text}</p>
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+        </section>
+      ) : null}
+      {(page.gallery || []).length ? (
+        <section className="section section--tight">
+          <div className="wrap">
+            <SectionHeading>Life around the mission</SectionHeading>
+            <Stagger className="uniq-gallery">
+              {(page.gallery || []).map((g) => (
+                <StaggerItem as="figure" key={g.src}>
+                  <img src={g.src} alt={g.caption || ''} />
+                  {g.caption ? <figcaption>{g.caption}</figcaption> : null}
+                </StaggerItem>
+              ))}
+            </Stagger>
+            {page.cta ? (
+              <InView className="page-extras__cta" delay={0.08}>
+                <Link className="btn btn--solid" to={page.cta.href}>
+                  {page.cta.label}
+                </Link>
+              </InView>
+            ) : null}
+          </div>
+        </section>
+      ) : page.cta ? (
+        <InView className="wrap page-extras__cta" style={{ paddingBottom: '2.5rem' }}>
+          <Link className="btn btn--solid" to={page.cta.href}>
+            {page.cta.label}
+          </Link>
+        </InView>
+      ) : null}
+      <PageVideos page={page} pageKey={pageKey} />
     </>
   );
 }
 
-export function PillarsUnique({ page }) {
+export function PillarsUnique({ page, pageKey = 'pillars' }) {
   return (
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
-      <section className="section">
+      <PageBlocks blocks={page.blocks} />
+      <section className="section section--tight">
         <Stagger className="wrap uniq-pillar-list">
           {(page.items || []).map((item, i) => (
             <StaggerItem as="article" key={item.title} className="uniq-pillar">
@@ -117,6 +129,7 @@ export function PillarsUnique({ page }) {
           </InView>
         ) : null}
       </section>
+      <PageVideos page={page} pageKey={pageKey} />
     </>
   );
 }
@@ -125,7 +138,8 @@ export function GatheringsUnique({ page, pageKey = 'gatherings', includePageVide
   return (
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
-      <section className="section">
+      <PageBlocks blocks={page.blocks} />
+      <section className="section section--tight">
         <Stagger className="wrap uniq-events">
           {(page.events || []).map((ev) => (
             <StaggerItem as="article" key={ev.name} className="uniq-event">
@@ -154,11 +168,12 @@ export function GatheringsUnique({ page, pageKey = 'gatherings', includePageVide
   );
 }
 
-export function ReflectionsUnique({ page }) {
+export function ReflectionsUnique({ page, pageKey = 'reflections' }) {
   return (
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
-      <section className="section">
+      <PageBlocks blocks={page.blocks} />
+      <section className="section section--tight">
         <Stagger className="wrap uniq-articles">
           {(page.articles || []).map((a) => (
             <StaggerItem as="article" key={a.title} className="uniq-article">
@@ -181,11 +196,12 @@ export function ReflectionsUnique({ page }) {
           </InView>
         ) : null}
       </section>
+      <PageVideos page={page} pageKey={pageKey} />
     </>
   );
 }
 
-export function LeadershipUnique({ page }) {
+export function LeadershipUnique({ page, pageKey = 'leadership' }) {
   const { content } = useContent();
   const team = content.leadership || [];
   const [convener, ...rest] = team;
@@ -193,19 +209,22 @@ export function LeadershipUnique({ page }) {
   return (
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
+      <PageBlocks blocks={page.blocks} />
+      {(page.focus || []).length ? (
+        <section className="section section--tight">
+          <div className="wrap">
+            <Stagger className="page-extras__grid">
+              {(page.focus || []).map((f) => (
+                <StaggerItem as="article" key={f.title} className="page-extras__card">
+                  <h3>{f.title}</h3>
+                  <p>{f.text}</p>
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+        </section>
+      ) : null}
       <section className="section section--tight">
-        <div className="wrap">
-          <Stagger className="page-extras__grid">
-            {(page.focus || []).map((f) => (
-              <StaggerItem as="article" key={f.title} className="page-extras__card">
-                <h3>{f.title}</h3>
-                <p>{f.text}</p>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
-      <section className="section">
         <div className="wrap">
           <SectionHeading>The team</SectionHeading>
           {convener ? (
@@ -242,17 +261,19 @@ export function LeadershipUnique({ page }) {
           ) : null}
         </div>
       </section>
+      <PageVideos page={page} pageKey={pageKey} />
     </>
   );
 }
 
-export function FaqUnique({ page }) {
+export function FaqUnique({ page, pageKey = 'faq' }) {
   const { content } = useContent();
   const faqs = content.faqs || [];
   return (
     <>
       <StoryBlock title={page.storyTitle} story={page.story} cta={page.cta} />
-      <section className="section">
+      <PageBlocks blocks={page.blocks} />
+      <section className="section section--tight">
         <div className="wrap faq" style={{ display: 'block' }}>
           <Stagger className="faq-list">
             {faqs.map((item) => (
@@ -269,24 +290,29 @@ export function FaqUnique({ page }) {
           </Stagger>
         </div>
       </section>
+      <PageVideos page={page} pageKey={pageKey} />
     </>
   );
 }
 
-export function ContactUnique({ page }) {
+export function ContactUnique({ page, pageKey = 'contact' }) {
   return (
     <>
       <StoryBlock title={page.storyTitle} story={page.story} />
-      <section className="section section--tight">
-        <Stagger className="wrap page-extras__grid">
-          {(page.channels || []).map((c) => (
-            <StaggerItem as="article" key={c.title} className="page-extras__card">
-              <h3>{c.title}</h3>
-              <p>{c.text}</p>
-            </StaggerItem>
-          ))}
-        </Stagger>
-      </section>
+      <PageBlocks blocks={page.blocks} />
+      {(page.channels || []).length ? (
+        <section className="section section--tight">
+          <Stagger className="wrap page-extras__grid">
+            {(page.channels || []).map((c) => (
+              <StaggerItem as="article" key={c.title} className="page-extras__card">
+                <h3>{c.title}</h3>
+                <p>{c.text}</p>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </section>
+      ) : null}
+      <PageVideos page={page} pageKey={pageKey} />
     </>
   );
 }
@@ -299,11 +325,8 @@ function youtubeId(url) {
 }
 
 export function resolvePageVideos(page, content, pageKey) {
-  const includeSite =
-    pageKey === 'videos' ||
-    page?.useSiteVideos === true ||
-    (page?.useSiteVideos !== false && BUILTIN_SITE_VIDEO_PAGES.has(pageKey));
-  const pageVideos = page?.videos || [];
+  const includeSite = pageKey === 'videos' || page?.useSiteVideos === true;
+  const pageVideos = (page?.videos || []).filter((v) => youtubeId(v?.url));
   const siteVideos = includeSite ? content?.videos || [] : [];
   const seen = new Set();
   const videos = [];
@@ -334,7 +357,7 @@ function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
   if (!list.length) {
     if (!showEmpty) return null;
     return (
-      <section className="section">
+      <section className="section section--tight page-blocks">
         <InView className="wrap site-empty">
           <h2>Videos coming soon</h2>
           <p>
@@ -353,11 +376,12 @@ function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
       </section>
     );
   }
+  const single = list.length === 1;
   return (
-    <section className="section">
-      <div className="wrap">
+    <section className="section section--tight page-blocks">
+      <div className={`wrap page-blocks__stack${single ? ' page-blocks__stack--video-single' : ''}`}>
         <SectionHeading>{heading}</SectionHeading>
-        <Stagger className="uniq-videos">
+        <Stagger className={`uniq-videos${single ? ' uniq-videos--single' : ''}`}>
           {list.map((v) => {
             const id = youtubeId(v.url);
             return (
@@ -382,14 +406,15 @@ function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
   );
 }
 
-function GalleryBlock({ gallery }) {
-  if (!gallery?.length) return null;
+function GalleryBlock({ gallery, heading }) {
+  const items = (gallery || []).filter((g) => g?.src);
+  if (!items.length) return null;
   return (
-    <section className="section">
+    <section className="section section--tight page-blocks">
       <div className="wrap">
-        <SectionHeading>Gallery</SectionHeading>
+        {heading ? <SectionHeading>{heading}</SectionHeading> : null}
         <Stagger className="uniq-gallery">
-          {gallery.map((g) => (
+          {items.map((g) => (
             <StaggerItem as="figure" key={g.src}>
               <img src={g.src} alt={g.caption || ''} />
               {g.caption ? <figcaption>{g.caption}</figcaption> : null}
@@ -655,14 +680,24 @@ export function CustomPageUnique({ page, pageKey = 'custom' }) {
       {page.useSiteResources ? <SiteResourcesBlock /> : null}
       {!page.useSiteEvents && (page.events || []).length ? (
         <GatheringsUnique
-          page={{ ...page, storyTitle: '', story: '', cta: null, videos: [], useSiteVideos: false }}
+          page={{
+            ...page,
+            storyTitle: '',
+            story: '',
+            cta: null,
+            blocks: [],
+            videos: [],
+            useSiteVideos: false,
+          }}
           includePageVideos={false}
         />
       ) : null}
       {(page.articles || []).length ? (
-        <ReflectionsUnique page={{ ...page, storyTitle: '', story: '', cta: null }} />
+        <ReflectionsUnique
+          page={{ ...page, storyTitle: '', story: '', cta: null, blocks: [], useSiteVideos: false }}
+        />
       ) : null}
-      <GalleryBlock gallery={page.gallery} />
+      <GalleryBlock gallery={page.gallery} heading="Gallery" />
       <PageVideos page={page} pageKey={pageKey} />
       {page.cta?.label && page.cta?.href && !page.story ? (
         <InView className="wrap page-extras__cta" style={{ paddingBottom: '3rem' }}>
