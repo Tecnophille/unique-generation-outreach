@@ -49,8 +49,8 @@ npm run migrate
 | `SUPABASE_URL` | `https://xxxx.supabase.co` |
 | `SUPABASE_SERVICE_ROLE_KEY` | service_role key |
 | `SUPABASE_STORAGE_BUCKET` | `ugo-media` |
-| `CMS_ADMIN_EMAIL` | your admin email |
-| `CMS_ADMIN_PASSWORD` | long random secret |
+| `CMS_ADMIN_EMAIL` | `admin@ugo.local` (Config — readable in dashboard) |
+| `CMS_ADMIN_PASSWORD` | long random secret (Config — reveal in Vercel → Settings → Environment Variables; not the local default `ugoadmin2026`) |
 | `SITE_URL` | `https://your-deployment.vercel.app` |
 | `CORS_ORIGIN` | same as `SITE_URL` |
 | `COOKIE_SECURE` | `1` |

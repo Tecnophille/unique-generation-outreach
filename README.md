@@ -12,7 +12,8 @@ npm run dev
 ```
 
 - Site: http://127.0.0.1:5173/
-- CMS: http://127.0.0.1:5173/admin — `admin@ugo.local` / `ugoadmin2026`
+- CMS (local): http://127.0.0.1:5173/admin — `admin@ugo.local` / `ugoadmin2026`
+- CMS (production): https://unique-generation-outreach.vercel.app/admin — email `admin@ugo.local`; password from Vercel env `CMS_ADMIN_PASSWORD`
 - Without a DB URL, content uses on-disk **PGlite**
 
 ## Deploy: Vercel + Supabase
