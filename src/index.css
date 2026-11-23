@@ -1046,10 +1046,35 @@ p {
   color: var(--ink);
 }
 
-.footer__copy {
-  margin-top: 2.5rem;
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--line);
+}
+
+.footer__to-top {
+  color: var(--muted);
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.footer__to-top:hover,
+.footer__to-top:focus-visible {
+  color: var(--ink);
+  border-bottom-color: rgba(35, 31, 27, 0.35);
+  outline: none;
+}
+
+.footer__copy {
+  margin: 0;
   font-size: 0.85rem;
   color: var(--muted-2);
 }
@@ -1075,14 +1100,51 @@ p {
 }
 
 /* —— Inner page hero —— */
+.page-shell {
+  animation: page-enter 0.45s var(--ease) both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-shell {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.page-shell__body > .section:first-child,
+.page-shell__body > .uniq-story:first-child,
+.page-shell__body > .uniq-quote:first-child {
+  padding-top: clamp(2.5rem, 5vw, 3.75rem);
+}
+
 .page-hero {
   position: relative;
-  min-height: 18rem;
+  min-height: clamp(20rem, 48vh, 28rem);
   display: grid;
   align-items: end;
   color: #fff;
   overflow: hidden;
   padding-top: 5.5rem;
+}
+
+.page-hero--plain .page-hero__overlay {
+  background:
+    radial-gradient(ellipse 70% 80% at 85% 15%, rgba(82, 95, 189, 0.35), transparent 55%),
+    linear-gradient(160deg, #1c2438 0%, #2a3148 45%, #1a1f2c 100%);
 }
 
 .page-hero__media {
@@ -1094,6 +1156,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scale(1.02);
 }
 
 .page-hero__overlay {
@@ -1101,16 +1164,17 @@ p {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(20, 18, 16, 0.45) 0%,
-    rgba(20, 18, 16, 0.62) 100%
+    rgba(20, 18, 16, 0.38) 0%,
+    rgba(20, 18, 16, 0.58) 55%,
+    rgba(20, 18, 16, 0.72) 100%
   );
 }
 
 .page-hero__content {
   position: relative;
   z-index: 2;
-  padding-block: 2.5rem 2.75rem;
-  max-width: 44rem;
+  padding-block: 2.75rem 3.25rem;
+  max-width: 46rem;
 }
 
 .page-hero__crumb {
@@ -1125,20 +1189,70 @@ p {
   text-underline-offset: 3px;
 }
 
-.page-hero h1 {
-  color: #fff;
-  font-size: clamp(1.9rem, 4vw, 2.75rem);
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  margin: 0.35rem 0 0.85rem;
+.page-hero__label {
+  color: rgba(255, 255, 255, 0.78);
 }
 
+.page-hero h1 {
+  color: #fff;
+  font-size: clamp(2.05rem, 4.4vw, 3.15rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  margin: 0.4rem 0 0.95rem;
+  text-wrap: balance;
+}
+
+.page-hero__intro,
 .page-hero p {
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 1.05rem;
-  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(1.02rem, 1.6vw, 1.12rem);
+  line-height: 1.65;
   margin: 0;
   max-width: 38rem;
+}
+
+.back-to-top {
+  position: fixed;
+  right: max(1rem, calc((100vw - var(--max)) / 2));
+  bottom: 1.35rem;
+  z-index: 40;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(35, 31, 27, 0.12);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--ink);
+  box-shadow: 0 10px 28px rgba(20, 18, 16, 0.14);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition:
+    opacity 0.22s var(--ease),
+    transform 0.22s var(--ease),
+    background 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
+  background: var(--ink);
+  color: #fff;
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  .back-to-top {
+    right: 1rem;
+    bottom: 1rem;
+  }
 }
 
 .nav__links a.is-active {
@@ -1202,8 +1316,10 @@ p {
 }
 
 .uniq-heading {
-  font-size: clamp(1.6rem, 3vw, 2.1rem);
-  margin-bottom: 1.5rem;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 1.65rem;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
 }
 
 .uniq-story__inner {
@@ -1211,8 +1327,10 @@ p {
 }
 
 .uniq-story__inner h2 {
-  font-size: clamp(1.6rem, 3vw, 2.1rem);
-  margin-bottom: 1rem;
+  font-size: clamp(1.65rem, 3vw, 2.2rem);
+  margin-bottom: 1.1rem;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
 }
 
 .uniq-story__inner p {

@@ -1,6 +1,7 @@
 import Nav from './Nav';
 import Footer from './Footer';
 import AnnouncementBar from './AnnouncementBar';
+import BackToTop from './BackToTop';
 import { useContent } from '../cms/ContentContext';
 
 export default function SiteLayout({ children }) {
@@ -18,8 +19,11 @@ export default function SiteLayout({ children }) {
     <>
       <AnnouncementBar />
       <Nav />
-      <main>{children}</main>
+      <main id="top" className="site-main">
+        {children}
+      </main>
       <Footer />
+      <BackToTop />
     </>
   );
 }

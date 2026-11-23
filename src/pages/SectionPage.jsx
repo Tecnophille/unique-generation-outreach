@@ -75,14 +75,18 @@ export default function SectionPage({ pageKey: pageKeyProp }) {
 
   return (
     <SiteLayout>
-      <PageHero
-        label={page.label || pageKey}
-        title={page.title || pageKey}
-        intro={page.intro}
-        image={page.heroImage}
-      />
-      <View page={page} />
-      {pageKey === 'contact' ? <Contact /> : null}
+      <div className="page-shell" key={pageKey}>
+        <PageHero
+          label={page.label || pageKey}
+          title={page.title || pageKey}
+          intro={page.intro}
+          image={page.heroImage}
+        />
+        <div className="page-shell__body">
+          <View page={page} />
+          {pageKey === 'contact' ? <Contact /> : null}
+        </div>
+      </div>
     </SiteLayout>
   );
 }

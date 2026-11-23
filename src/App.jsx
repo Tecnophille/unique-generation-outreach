@@ -4,6 +4,7 @@ import { ContentProvider } from './cms/ContentContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import DocumentMeta from './components/DocumentMeta';
 import RedirectHandler from './components/RedirectHandler';
+import ScrollToTop from './components/ScrollToTop';
 import HomePage from './pages/HomePage';
 import SectionPage from './pages/SectionPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -15,6 +16,7 @@ export default function App() {
     <ErrorBoundary>
       <ContentProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <DocumentMeta />
           <RedirectHandler />
           <Routes>

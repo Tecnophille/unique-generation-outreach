@@ -78,10 +78,19 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        <p className="footer__copy">
-          {footer?.copyright ||
-            `Copyright ${new Date().getFullYear()} · ${brand.name}`}
-        </p>
+        <div className="footer__bottom">
+          <p className="footer__copy">
+            {footer?.copyright ||
+              `Copyright ${new Date().getFullYear()} · ${brand.name}`}
+          </p>
+          <button
+            type="button"
+            className="footer__to-top"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            Return to top ↑
+          </button>
+        </div>
       </div>
     </footer>
   );
