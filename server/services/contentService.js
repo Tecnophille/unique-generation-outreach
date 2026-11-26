@@ -5,7 +5,7 @@ import { preparePublicContent } from '../../src/cms/contentModel.js';
 import { applyPublicContentRepairs } from '../../src/cms/publicContentRepairs.js';
 
 /** Bump when new idempotent public-copy repairs must re-run against existing DB rows. */
-const PUBLIC_COPY_REPAIR_VERSION = 1;
+const PUBLIC_COPY_REPAIR_VERSION = 2;
 
 function toJsonb(value) {
   return typeof value === 'string' ? value : JSON.stringify(value);
