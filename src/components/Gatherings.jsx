@@ -14,7 +14,7 @@ export default function Gatherings() {
     <section className="section" id="gatherings" style={{ background: 'var(--paper)' }}>
       <div className="wrap">
         <div className="section-head">
-          <span className="label label--center">Gatherings</span>
+          <span className="label">Gatherings</span>
           <h2>News and moments from our community</h2>
           <p>
             From Koinonia to Shabach, our GHP gatherings mark seasons of fellowship, honour, and

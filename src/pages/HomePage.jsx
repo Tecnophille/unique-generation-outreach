@@ -29,25 +29,25 @@ export default function HomePage() {
       <PartnersStrip />
       <PageBlocks blocks={content?.homeBlocks} />
       <section className="section section--tight">
-        <div className="wrap" style={{ textAlign: 'center' }}>
-          <span className="label label--center">Go deeper</span>
-          <h2 className="section-title" style={{ marginInline: 'auto' }}>
-            Explore the full story
-          </h2>
-          <p className="section-lead" style={{ marginInline: 'auto' }}>
-            Menu pages carry unique content — leadership, FAQ, gatherings, and more — beyond these
-            homepage teasers.
-          </p>
-          <div className="hero__ctas" style={{ justifyContent: 'center', marginTop: '1.5rem' }}>
-            <Link className="btn btn--solid" to="/about">
-              Our story
-            </Link>
-            <Link className="btn btn--outline" to="/leadership">
-              Leadership
-            </Link>
-            <Link className="btn btn--outline" to="/faq">
-              FAQ
-            </Link>
+        <div className="wrap">
+          <div className="section-head" style={{ marginBottom: 0 }}>
+            <span className="label">Go deeper</span>
+            <h2 className="section-title">Explore the full story</h2>
+            <p className="section-lead">
+              Menu pages carry unique content — leadership, FAQ, gatherings, and more — beyond these
+              homepage teasers.
+            </p>
+            <div className="hero__ctas" style={{ justifyContent: 'flex-start', marginTop: '1.5rem' }}>
+              <Link className="btn btn--solid" to="/about">
+                Our story
+              </Link>
+              <Link className="btn btn--outline" to="/leadership">
+                Leadership
+              </Link>
+              <Link className="btn btn--outline" to="/faq">
+                FAQ
+              </Link>
+            </div>
           </div>
         </div>
       </section>

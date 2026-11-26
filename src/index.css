@@ -123,13 +123,15 @@ p {
 
 /*
   Hero, story, and CMS prose sit on the same .wrap left edge as grids/lists.
-  Cap line length on copy — do not shrink/center the container (that inset
-  “How we serve” relative to pillar rows and the page gutter).
+  Cap line length on copy — do not shrink/center the container (that insets
+  headings relative to lists and the shared page gutter).
 */
 .page-hero__content > :is(.page-hero__crumb, .label, h1, .page-hero__intro, p),
 .uniq-story__inner > :is(h2, p),
-.page-blocks__column > :is(h2, p, .uniq-heading, .page-blocks__prose, blockquote, .page-blocks__quote) {
+.page-blocks__column > :is(h2, p, .uniq-heading, .page-blocks__prose, blockquote, .page-blocks__quote),
+.section-head > :is(.label, h2, p, .section-title, .section-lead) {
   max-width: var(--prose);
+  margin-inline: 0;
 }
 
 .section {
@@ -157,9 +159,10 @@ p {
 }
 
 .section-head {
-  text-align: center;
-  max-width: 40rem;
-  margin-inline: auto;
+  /* Full .wrap width — left edge matches PageHero / story / lists */
+  text-align: start;
+  max-width: none;
+  margin-inline: 0;
   margin-bottom: 3rem;
 }
 
@@ -1479,8 +1482,10 @@ p {
   position: relative;
   /* Taller frame = gentler cover crop on people photos */
   min-height: clamp(22rem, 54vh, 34rem);
-  display: grid;
-  align-items: end;
+  /* Flex (not grid): .wrap margin-inline:auto matches body sections exactly */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   color: #fff;
   overflow: hidden;
   padding-top: var(--page-hero-media-top);
