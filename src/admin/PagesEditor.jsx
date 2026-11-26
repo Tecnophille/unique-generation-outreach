@@ -661,6 +661,17 @@ export default function PagesEditor({ draft, setDraft }) {
                     patchPage({ events });
                   }}
                 />
+                <Field label="Image focus (CSS object-position)">
+                  <input
+                    placeholder="center 18%"
+                    value={ev.imagePosition || ''}
+                    onChange={(e) => {
+                      const events = [...(page.events || [])];
+                      events[i] = { ...ev, imagePosition: e.target.value };
+                      patchPage({ events });
+                    }}
+                  />
+                </Field>
                 <Field label="Story">
                   <textarea
                     value={ev.story || ''}

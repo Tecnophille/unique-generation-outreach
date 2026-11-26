@@ -278,6 +278,17 @@ export default function HomepageEditor({ draft, setDraft }) {
                   setDraft((d) => ({ ...d, gatherings }));
                 }}
               />
+              <Field label="Image focus (CSS object-position)">
+                <input
+                  placeholder="center 18%"
+                  value={g.imagePosition || ''}
+                  onChange={(e) => {
+                    const gatherings = [...draft.gatherings];
+                    gatherings[i] = { ...g, imagePosition: e.target.value };
+                    setDraft((d) => ({ ...d, gatherings }));
+                  }}
+                />
+              </Field>
               <button
                 className="admin-btn danger"
                 type="button"

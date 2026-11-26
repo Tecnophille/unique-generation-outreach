@@ -29,7 +29,11 @@ export default function Gatherings() {
               transition={{ duration: 0.55, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="gather-card__img">
-                <img src={g.image} alt={`${g.name} gathering`} />
+                <img
+                  src={g.image}
+                  alt={`${g.name} gathering`}
+                  style={g.imagePosition ? { objectPosition: g.imagePosition } : undefined}
+                />
               </div>
               <div className="gather-card__meta">
                 <span className="tag">{g.tag}</span>
@@ -43,8 +47,11 @@ export default function Gatherings() {
             </motion.article>
           ))}
         </div>
-        <div className="section-cta">
-          <Link className="btn btn--outline" to="/contact">
+        <div className="section-cta section-cta--flush">
+          <Link className="btn btn--outline" to="/gatherings">
+            Read full GHP stories
+          </Link>
+          <Link className="btn btn--solid" to="/contact">
             Learn about Berakah 2026
           </Link>
         </div>

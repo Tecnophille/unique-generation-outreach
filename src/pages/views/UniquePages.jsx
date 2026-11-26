@@ -163,7 +163,15 @@ export function GatheringsUnique({ page, pageKey = 'gatherings', includePageVide
           {(page.events || []).map((ev) => (
             <StaggerItem as="article" key={ev.name} className="uniq-event">
               <div className="uniq-event__media">
-                <img src={ev.image} alt="" />
+                <img
+                  src={ev.image}
+                  alt=""
+                  style={
+                    ev.imagePosition
+                      ? { objectPosition: ev.imagePosition }
+                      : undefined
+                  }
+                />
               </div>
               <div className="uniq-event__body">
                 <span className="tag">GHP {ev.year}</span>
