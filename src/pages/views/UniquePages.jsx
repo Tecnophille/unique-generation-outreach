@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useContent } from '../../cms/ContentContext';
 import TeamAvatar from '../../components/TeamAvatar';
+import { topicFromChannelTitle, topicQueryValue } from '../../components/Contact';
 import { InView, Stagger, StaggerItem } from '../../components/motion';
 
 /** Same centered reading column as the page story (44rem). */
@@ -321,12 +322,20 @@ export function ContactUnique({ page, pageKey = 'contact' }) {
       {(page.channels || []).length ? (
         <section className="section section--tight">
           <Stagger className="wrap page-extras__grid">
-            {(page.channels || []).map((c) => (
-              <StaggerItem as="article" key={c.title} className="page-extras__card">
-                <h3>{c.title}</h3>
-                <p>{c.text}</p>
-              </StaggerItem>
-            ))}
+            {(page.channels || []).map((c) => {
+              const topic = topicFromChannelTitle(c.title);
+              const to = `/contact?topic=${topicQueryValue(topic)}#enquiry`;
+              return (
+                <StaggerItem as="article" key={c.title} className="page-extras__card page-extras__card--action">
+                  <h3>{c.title}</h3>
+                  <p>{c.text}</p>
+                  <Link className="page-extras__card-link" to={to}>
+                    Start this enquiry
+                    <span aria-hidden="true"> →</span>
+                  </Link>
+                </StaggerItem>
+              );
+            })}
           </Stagger>
         </section>
       ) : null}

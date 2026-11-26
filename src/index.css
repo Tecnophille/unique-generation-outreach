@@ -22,6 +22,7 @@
   --radius-lg: 20px;
   --radius-pill: 999px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-offset: 5.5rem;
 }
 
 *,
@@ -34,6 +35,7 @@
    animate from the previous page offset. Back-to-top uses smooth explicitly. */
 html {
   scroll-behavior: auto;
+  scroll-padding-top: var(--nav-offset);
 }
 
 body {
@@ -58,7 +60,9 @@ a {
 }
 
 button,
-input {
+input,
+textarea,
+select {
   font: inherit;
 }
 
@@ -91,10 +95,12 @@ p {
 
 .section {
   padding-block: 5.5rem;
+  scroll-margin-top: var(--nav-offset);
 }
 
 .section--tight {
   padding-block: clamp(2.75rem, 4.5vw, 3.75rem);
+  scroll-margin-top: var(--nav-offset);
 }
 
 .label {
@@ -230,8 +236,9 @@ p {
   border-bottom: 1px solid transparent;
 }
 
-.nav.is-scrolled {
-  background: rgba(249, 247, 245, 0.92);
+.nav.is-scrolled,
+.nav.is-menu-open {
+  background: rgba(249, 247, 245, 0.97);
   backdrop-filter: blur(14px);
   border-bottom-color: var(--line);
 }
@@ -283,24 +290,62 @@ p {
 }
 
 .nav__toggle {
+  position: relative;
+  z-index: 62;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 5px;
+  width: 2.5rem;
+  height: 2.5rem;
   padding: 0.35rem;
 }
 
 .nav__toggle span {
+  display: block;
   width: 20px;
   height: 1.5px;
+  margin-inline: auto;
   background: #fff;
-  transition: background 0.3s;
+  transform-origin: center;
+  transition:
+    background 0.3s,
+    transform 0.28s var(--ease),
+    opacity 0.2s;
 }
 
-.nav.is-scrolled .nav__toggle span {
+.nav.is-scrolled .nav__toggle span,
+.nav.is-menu-open .nav__toggle span {
   background: var(--ink);
 }
 
+.nav__toggle.is-open span:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+
+.nav__toggle.is-open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0.2);
+}
+
+.nav__toggle.is-open span:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+.nav__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 58;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: rgba(20, 18, 16, 0.28);
+  cursor: pointer;
+}
+
 .nav__mobile {
+  position: relative;
+  z-index: 61;
   display: none;
   background: var(--bg);
   border-bottom: 1px solid var(--line);
@@ -326,6 +371,7 @@ p {
   .nav__toggle {
     display: none;
   }
+  .nav__backdrop,
   .nav__mobile {
     display: none !important;
   }
@@ -893,7 +939,113 @@ p {
   font-size: 0.98rem;
 }
 
-/* —— Contact (Faith dual panel) —— */
+/* —— Contact enquiry + Faith dual panel —— */
+.contact-stack {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.contact-enquiry {
+  scroll-margin-top: var(--nav-offset);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.5rem, 3vw, 2.35rem);
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .contact-enquiry {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 2.25rem;
+    align-items: start;
+  }
+}
+
+.contact-enquiry__intro .label {
+  display: inline-block;
+  margin-bottom: 0.65rem;
+}
+
+.contact-enquiry__intro h2 {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  margin-bottom: 0.75rem;
+}
+
+.contact-enquiry__intro p {
+  color: var(--muted);
+  max-width: 28rem;
+}
+
+.enquiry-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.enquiry-form__row {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .enquiry-form__row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.enquiry-form__field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.enquiry-form__field label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink-soft, var(--ink));
+}
+
+.enquiry-form__field input,
+.enquiry-form__field select,
+.enquiry-form__field textarea {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  color: var(--ink);
+}
+
+.enquiry-form__field textarea {
+  resize: vertical;
+  min-height: 8rem;
+}
+
+.enquiry-form__field input:focus,
+.enquiry-form__field select:focus,
+.enquiry-form__field textarea:focus {
+  outline: 2px solid var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.enquiry-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem 1.1rem;
+  margin-top: 0.25rem;
+}
+
+.enquiry-form__status {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.enquiry-form__status--error {
+  color: #9b3b2e;
+}
+
 .contact-panel {
   display: grid;
   border-radius: var(--radius-lg);
@@ -1245,6 +1397,14 @@ p {
   padding-top: clamp(2.5rem, 5vw, 3.75rem);
 }
 
+.uniq-story,
+.uniq-heading,
+.uniq-quote,
+.page-blocks__section,
+#enquiry {
+  scroll-margin-top: var(--nav-offset);
+}
+
 .page-hero {
   position: relative;
   min-height: clamp(20rem, 48vh, 28rem);
@@ -1413,16 +1573,40 @@ p {
   background: var(--paper);
 }
 
+.page-extras__card--action {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
 .page-extras__card h3 {
   font-size: 1.1rem;
   margin-bottom: 0.45rem;
   color: var(--olive, var(--ink));
 }
 
+.page-extras__card--action h3 {
+  margin-bottom: 0;
+}
+
 .page-extras__card p {
   color: var(--muted);
   font-size: 0.95rem;
   margin: 0;
+}
+
+.page-extras__card-link {
+  margin-top: auto;
+  padding-top: 0.35rem;
+  font-size: 0.92rem;
+  font-weight: 550;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.page-extras__card-link:hover {
+  color: var(--ink);
 }
 
 .page-extras__cta {
@@ -1525,23 +1709,31 @@ p {
 
 @media (min-width: 800px) {
   .uniq-milestones {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .uniq-milestones {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 .uniq-milestones article {
   border-top: 2px solid var(--accent);
   padding-top: 1rem;
+  min-width: 0;
 }
 
 .uniq-milestones span {
   display: block;
   font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 0.5rem;
+  overflow-wrap: anywhere;
 }
 
 .uniq-milestones p {

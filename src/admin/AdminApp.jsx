@@ -215,7 +215,7 @@ function NavIcon({ name }) {
 const LOCAL_DRAFT_KEY = 'ugo-cms-local-draft';
 
 function Login({ onSuccess }) {
-  const [email, setEmail] = useState('admin@ugo.local');
+  const [email, setEmail] = useState(import.meta.env.DEV ? 'admin@ugo.local' : '');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');

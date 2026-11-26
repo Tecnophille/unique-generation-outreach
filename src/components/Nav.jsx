@@ -22,11 +22,35 @@ export default function Nav() {
     setOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const onKey = (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKey);
+
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open]);
+
   const close = () => setOpen(false);
   const solid = !isHome || scrolled;
 
   return (
-    <header className={`nav${solid ? ' is-scrolled' : ''}`}>
+    <header className={`nav${solid ? ' is-scrolled' : ''}${open ? ' is-menu-open' : ''}`}>
+      {open ? (
+        <button
+          type="button"
+          className="nav__backdrop"
+          aria-label="Close menu"
+          onClick={close}
+        />
+      ) : null}
       <div className="wrap nav__inner">
         <Link className="nav__brand" to="/" onClick={close}>
           <img
@@ -54,9 +78,10 @@ export default function Nav() {
         </nav>
         <button
           type="button"
-          className="nav__toggle"
+          className={`nav__toggle${open ? ' is-open' : ''}`}
           aria-expanded={open}
-          aria-label="Menu"
+          aria-controls="site-mobile-nav"
+          aria-label={open ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen((v) => !v)}
         >
           <span />
@@ -64,7 +89,11 @@ export default function Nav() {
           <span />
         </button>
       </div>
-      <div className={`nav__mobile${open ? ' is-open' : ''}`}>
+      <div
+        id="site-mobile-nav"
+        className={`nav__mobile${open ? ' is-open' : ''}`}
+        hidden={!open}
+      >
         {nav.map((item) => (
           <NavLink
             key={`${item.href}-${item.label}`}
