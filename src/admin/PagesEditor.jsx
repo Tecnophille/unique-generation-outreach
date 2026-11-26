@@ -228,7 +228,8 @@ export default function PagesEditor({ draft, setDraft }) {
           intro: 'Dates, places, and stories from Unique Generation Outreach.',
           heroImage: '',
           storyTitle: 'Come be part of it',
-          story: 'Browse events managed from the CMS Events studio.',
+          story:
+            'GHP gatherings mark seasons of fellowship, honour, praise, and blessing. Explore the themes below, or ask us about the next date.',
           cta: { label: 'Contact us', href: '/contact' },
           useSiteEvents: true,
           custom: true,
@@ -256,7 +257,8 @@ export default function PagesEditor({ draft, setDraft }) {
           intro: 'Messages, highlights, and stories on YouTube.',
           heroImage: '',
           storyTitle: 'On the channel',
-          story: 'Videos managed from the CMS YouTube studio.',
+          story:
+            'Messages, gathering highlights, and stories from our YouTube channel — watch with us whenever you need encouragement.',
           cta: { label: 'Contact us', href: '/contact' },
           useSiteVideos: true,
           custom: true,

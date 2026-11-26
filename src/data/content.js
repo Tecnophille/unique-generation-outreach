@@ -93,19 +93,19 @@ export const gatherings = [
 
 export const reflections = [
   {
-    date: 'Sample · GHP',
+    date: 'GHP · Koinonia',
     title: 'Koinonia — walking together',
     excerpt:
       'Fellowship is more than gathering. It is choosing one another — sharing burdens, celebrating victories, and building a community where no one walks alone.',
   },
   {
-    date: 'Sample · GHP',
+    date: 'GHP · Kavod',
     title: 'Kavod — honour that lifts',
     excerpt:
       'True honour recognises the dignity placed in every person. When we lift others, we strengthen the fabric of our families and cities.',
   },
   {
-    date: 'Sample · GHP',
+    date: 'GHP · Berakah',
     title: 'Berakah — living as a blessing',
     excerpt:
       'Blessing is meant to move through us. Opportunity, service, and kindness become seeds of transformation for the next generation.',
@@ -220,21 +220,21 @@ export const contact = {
   title: 'Let’s stay in touch',
   body: 'Have a question, a need, or something on your heart? We’re here to listen. Feel free to reach out — we’ll take the time to respond with care.',
   cta: 'Reach out to us',
-  email: '',
+  email: 'contact@uniquegenerationoutreach.org',
   phone: '',
   skyImage:
     'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=1600&q=80',
   newsletter: {
     titleBefore: 'Join our ',
     titleAccent: 'newsletter.',
-    body: 'Subscribe to receive the latest updates when contact details are confirmed.',
+    body: 'Subscribe for news, reflections, and gathering updates from Unique Generation Outreach.',
     features: [
       { title: 'News & Reflections', text: 'Receive news and reflections as they are published.' },
       { title: 'Community life', text: 'Stay informed about gatherings and programmes.' },
     ],
   },
   placeholders: {
-    email: 'Contact email coming soon',
+    email: 'contact@uniquegenerationoutreach.org',
     phone: 'Phone number coming soon',
   },
 };

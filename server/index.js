@@ -1,36 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import express from 'express';
 import { createApiApp } from './app.js';
 import { config, root } from './config.js';
 import { dbMode } from './db/index.js';
 import { ensureReady } from './boot.js';
 import { getContent } from './services/contentService.js';
-
-const CORE = [
-  '/',
-  '/about',
-  '/pillars',
-  '/gatherings',
-  '/reflections',
-  '/leadership',
-  '/faq',
-  '/contact',
-  '/events',
-  '/videos',
-  '/resources',
-];
-
-function isLivePage(page) {
-  if (!page) return false;
-  const status = page.status || 'published';
-  if (status === 'published') return true;
-  if (status === 'scheduled' && page.publishAt) {
-    const t = Date.parse(page.publishAt);
-    return !Number.isNaN(t) && t <= Date.now();
-  }
-  return false;
-}
+import { isPublicPathLive, listLivePublicPaths } from './lib/publicRoutes.js';
 
 async function boot() {
   await ensureReady();
@@ -50,14 +25,8 @@ async function boot() {
     try {
       const base = (config.siteUrl || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
       const content = await getContent();
-      const paths = new Set(CORE);
-      Object.entries(content.pages || {}).forEach(([key, page]) => {
-        if (!key || key === 'admin' || key === 'api') return;
-        if (!isLivePage(page)) return;
-        paths.add(`/${key}`);
-      });
-      const urls = [...paths]
-        .sort((a, b) => a.localeCompare(b))
+      const paths = listLivePublicPaths(content);
+      const urls = paths
         .map((p) => `  <url><loc>${base}${p === '/' ? '/' : p}</loc></url>`)
         .join('\n');
       res
@@ -86,9 +55,16 @@ async function boot() {
         },
       }),
     );
-    app.get(/^(?!\/api(?:\/|$)).*/, (_req, res) => {
-      res.setHeader('Cache-Control', 'no-cache');
-      res.sendFile(path.join(config.distDir, 'index.html'));
+    app.get(/^(?!\/api(?:\/|$)).*/, async (req, res, next) => {
+      try {
+        const content = await getContent();
+        const live = isPublicPathLive(req.path, content);
+        res.status(live ? 200 : 404);
+        res.setHeader('Cache-Control', 'no-cache');
+        res.sendFile(path.join(config.distDir, 'index.html'));
+      } catch (err) {
+        next(err);
+      }
     });
   } else {
     const { createServer: createViteServer } = await import('vite');

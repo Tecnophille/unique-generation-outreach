@@ -86,3 +86,5 @@ curl -s https://YOUR_DOMAIN/api/health
 - Vercel’s filesystem is ephemeral — local `/uploads` is not used in production when Storage is configured.
 - Cold starts run `ensureAdmin` / `ensureContent` once per instance; content seeds from `public/cms/content.json` if the DB is empty.
 - `cursor-app.json` no longer requests Cursor-managed Postgres; Supabase is the source of truth.
+- Public HTML routes go through `api/spa.js`, which returns **HTTP 404** (still serving the SPA shell) for unknown or unpublished paths. Static assets under `dist/` are served normally.
+- Production contact email lives in CMS JSON at `contact.email` (Admin → Settings / Reach out). On read, the API auto-repairs the known typo `niquegenerationoutreach.org` → `uniquegenerationoutreach.org` and persists that fix into `site_content` so the next deploy does not rely on a manual CMS save.

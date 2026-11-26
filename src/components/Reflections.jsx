@@ -22,8 +22,8 @@ export default function Reflections() {
           <span className="label">Reflections</span>
           <h2>Nourish your faith day to day with the Word</h2>
           <p>
-            Short reflections that connect faith to everyday life — sample pieces inspired by our
-            GHP themes until official teachings are published.
+            Short reflections that connect faith to everyday life — drawn from our GHP themes of
+            fellowship, honour, praise, and blessing.
           </p>
           <Link className="btn btn--outline" to="/reflections">
             Read more reflections
