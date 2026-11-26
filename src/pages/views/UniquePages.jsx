@@ -547,9 +547,19 @@ function blockHasContent(block) {
   }
 }
 
+/** Resolve CMS layout slot against the existing column / full-wrap bands. */
+function BlockSlot({ block, preferWide = false, staticColumn = false, children }) {
+  const layout = block?.layout || 'auto';
+  const wide = layout === 'wide' || (layout === 'auto' && preferWide);
+  if (wide) return <ContentWrap>{children}</ContentWrap>;
+  if (staticColumn) return <ContentColumn as="div">{children}</ContentColumn>;
+  return <ContentColumn>{children}</ContentColumn>;
+}
+
 /**
  * Every CMS block type shares ContentColumn (same 44rem band as the page story)
- * unless it is a multi-item grid (gallery/stats) that needs the full wrap.
+ * unless it is a multi-item grid (gallery/stats) that needs the full wrap —
+ * or the editor picks an explicit layout slot.
  */
 export function PageBlocks({ blocks }) {
   const list = (blocks || []).filter(blockHasContent);
@@ -561,7 +571,7 @@ export function PageBlocks({ blocks }) {
         if (block.type === 'richtext') {
           return (
             <section key={block.id} className="page-blocks__section">
-              <ContentColumn>
+              <BlockSlot block={block}>
                 {block.title ? <h2 className="uniq-heading">{block.title}</h2> : null}
                 {String(block.body || '')
                   .split(/\n\n+/)
@@ -571,7 +581,7 @@ export function PageBlocks({ blocks }) {
                       {p}
                     </p>
                   ))}
-              </ContentColumn>
+              </BlockSlot>
             </section>
           );
         }
@@ -579,12 +589,12 @@ export function PageBlocks({ blocks }) {
         if (block.type === 'quote') {
           return (
             <section key={block.id} className="page-blocks__section page-blocks__section--quote">
-              <ContentColumn>
+              <BlockSlot block={block}>
                 <blockquote className="page-blocks__quote">
                   <p>“{block.text}”</p>
                   {block.attribution ? <cite>— {block.attribution}</cite> : null}
                 </blockquote>
-              </ContentColumn>
+              </BlockSlot>
             </section>
           );
         }
@@ -604,7 +614,9 @@ export function PageBlocks({ blocks }) {
           );
           return (
             <section key={block.id} className="page-blocks__section">
-              {single ? <ContentColumn as="div">{body}</ContentColumn> : <ContentWrap>{body}</ContentWrap>}
+              <BlockSlot block={block} preferWide={!single} staticColumn>
+                {body}
+              </BlockSlot>
             </section>
           );
         }
@@ -613,7 +625,7 @@ export function PageBlocks({ blocks }) {
           const id = youtubeId(block.url);
           return (
             <section key={block.id} className="page-blocks__section">
-              <ContentColumn>
+              <BlockSlot block={block}>
                 {block.title ? <h2 className="uniq-heading">{block.title}</h2> : null}
                 <article className="uniq-video">
                   <div className="uniq-video__frame">
@@ -626,7 +638,7 @@ export function PageBlocks({ blocks }) {
                     />
                   </div>
                 </article>
-              </ContentColumn>
+              </BlockSlot>
             </section>
           );
         }
@@ -634,7 +646,7 @@ export function PageBlocks({ blocks }) {
         if (block.type === 'cta') {
           return (
             <section key={block.id} className="page-blocks__section">
-              <ContentColumn>
+              <BlockSlot block={block}>
                 <div className="uniq-cta-block">
                   {block.title ? <h2>{block.title}</h2> : null}
                   {block.text ? <p>{block.text}</p> : null}
@@ -644,7 +656,7 @@ export function PageBlocks({ blocks }) {
                     </Link>
                   ) : null}
                 </div>
-              </ContentColumn>
+              </BlockSlot>
             </section>
           );
         }
@@ -664,7 +676,9 @@ export function PageBlocks({ blocks }) {
           );
           return (
             <section key={block.id} className="page-blocks__section">
-              {narrow ? <ContentColumn as="div">{body}</ContentColumn> : <ContentWrap>{body}</ContentWrap>}
+              <BlockSlot block={block} preferWide={!narrow} staticColumn>
+                {body}
+              </BlockSlot>
             </section>
           );
         }
@@ -672,9 +686,9 @@ export function PageBlocks({ blocks }) {
         if (block.type === 'embed') {
           return (
             <section key={block.id} className="page-blocks__section">
-              <ContentColumn>
+              <BlockSlot block={block}>
                 <div className="uniq-embed" dangerouslySetInnerHTML={{ __html: block.html }} />
-              </ContentColumn>
+              </BlockSlot>
             </section>
           );
         }

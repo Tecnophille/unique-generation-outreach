@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Field } from './fields';
 import MediaPicker from './MediaPicker';
 import BlocksEditor from './BlocksEditor';
+import SortableList from './SortableList';
 import { DEFAULT_REFLECTIONS_IMAGE } from '../cms/contentModel';
 
 const TABS = [
@@ -20,8 +21,8 @@ export default function HomepageEditor({ draft, setDraft }) {
     <>
       <h2>Homepage studio</h2>
       <p className="hint">
-        Edit hero and teasers here. Use Extra blocks for the same flexible sections as menu pages
-        (rich text, quote, gallery, YouTube, CTA, stats, embed).
+        Edit hero and teasers here. Drag list items to reorder. Use Extra blocks for the same
+        flexible sections as menu pages (rich text, quote, gallery, YouTube, CTA, stats, embed).
       </p>
       <div className="admin-page-tabs">
         {TABS.map((t) => (
@@ -187,122 +188,161 @@ export default function HomepageEditor({ draft, setDraft }) {
         </div>
       )}
 
-      {tab === 'pillars' &&
-        (draft.pillars || []).map((p, i) => (
-          <div className="admin-card admin-grid" key={i}>
-            <div className="admin-grid two">
-              <Field label="Title">
-                <input
-                  value={p.title || ''}
+      {tab === 'pillars' && (
+        <SortableList
+          items={draft.pillars || []}
+          onReorder={(pillars) => setDraft((d) => ({ ...d, pillars }))}
+          getKey={(p, i) => p.title || `pillar-${i}`}
+          renderItem={(p, i, { DragHandle, moveUp, moveDown, canMoveUp, canMoveDown, isDragging }) => (
+            <div className={`admin-card admin-grid${isDragging ? ' is-dragging-card' : ''}`}>
+              <div className="admin-page-head admin-sortable__head">
+                <div className="admin-sortable__title">
+                  <DragHandle label={`Drag ${p.title || `pillar ${i + 1}`}`} />
+                  <strong>{p.title || `Pillar ${i + 1}`}</strong>
+                </div>
+                <div className="admin-inline-actions">
+                  <button className="admin-btn ghost" type="button" disabled={!canMoveUp} onClick={moveUp}>
+                    ↑
+                  </button>
+                  <button className="admin-btn ghost" type="button" disabled={!canMoveDown} onClick={moveDown}>
+                    ↓
+                  </button>
+                </div>
+              </div>
+              <div className="admin-grid two">
+                <Field label="Title">
+                  <input
+                    value={p.title || ''}
+                    onChange={(e) => {
+                      const pillars = [...draft.pillars];
+                      pillars[i] = { ...p, title: e.target.value };
+                      setDraft((d) => ({ ...d, pillars }));
+                    }}
+                  />
+                </Field>
+                <Field label="Color">
+                  <input
+                    value={p.color || ''}
+                    onChange={(e) => {
+                      const pillars = [...draft.pillars];
+                      pillars[i] = { ...p, color: e.target.value };
+                      setDraft((d) => ({ ...d, pillars }));
+                    }}
+                  />
+                </Field>
+              </div>
+              <Field label="Text">
+                <textarea
+                  value={p.text || ''}
                   onChange={(e) => {
                     const pillars = [...draft.pillars];
-                    pillars[i] = { ...p, title: e.target.value };
-                    setDraft((d) => ({ ...d, pillars }));
-                  }}
-                />
-              </Field>
-              <Field label="Color">
-                <input
-                  value={p.color || ''}
-                  onChange={(e) => {
-                    const pillars = [...draft.pillars];
-                    pillars[i] = { ...p, color: e.target.value };
+                    pillars[i] = { ...p, text: e.target.value };
                     setDraft((d) => ({ ...d, pillars }));
                   }}
                 />
               </Field>
             </div>
-            <Field label="Text">
-              <textarea
-                value={p.text || ''}
-                onChange={(e) => {
-                  const pillars = [...draft.pillars];
-                  pillars[i] = { ...p, text: e.target.value };
-                  setDraft((d) => ({ ...d, pillars }));
-                }}
-              />
-            </Field>
-          </div>
-        ))}
+          )}
+        />
+      )}
 
       {tab === 'gatherings' && (
         <>
-          {(draft.gatherings || []).map((g, i) => (
-            <div className="admin-card admin-grid" key={i}>
-              <div className="admin-grid two">
-                <Field label="Year">
+          <SortableList
+            items={draft.gatherings || []}
+            onReorder={(gatherings) => setDraft((d) => ({ ...d, gatherings }))}
+            getKey={(g, i) => `${g.year || ''}-${g.name || i}`}
+            renderItem={(g, i, { DragHandle, moveUp, moveDown, canMoveUp, canMoveDown, isDragging }) => (
+              <div className={`admin-card admin-grid${isDragging ? ' is-dragging-card' : ''}`}>
+                <div className="admin-page-head admin-sortable__head">
+                  <div className="admin-sortable__title">
+                    <DragHandle label={`Drag ${g.name || `gathering ${i + 1}`}`} />
+                    <strong>{g.name || `Gathering ${i + 1}`}</strong>
+                  </div>
+                  <div className="admin-inline-actions">
+                    <button className="admin-btn ghost" type="button" disabled={!canMoveUp} onClick={moveUp}>
+                      ↑
+                    </button>
+                    <button className="admin-btn ghost" type="button" disabled={!canMoveDown} onClick={moveDown}>
+                      ↓
+                    </button>
+                    <button
+                      className="admin-btn danger"
+                      type="button"
+                      onClick={() =>
+                        setDraft((d) => ({
+                          ...d,
+                          gatherings: d.gatherings.filter((_, idx) => idx !== i),
+                        }))
+                      }
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+                <div className="admin-grid two">
+                  <Field label="Year">
+                    <input
+                      value={g.year || ''}
+                      onChange={(e) => {
+                        const gatherings = [...draft.gatherings];
+                        gatherings[i] = { ...g, year: e.target.value };
+                        setDraft((d) => ({ ...d, gatherings }));
+                      }}
+                    />
+                  </Field>
+                  <Field label="Name">
+                    <input
+                      value={g.name || ''}
+                      onChange={(e) => {
+                        const gatherings = [...draft.gatherings];
+                        gatherings[i] = { ...g, name: e.target.value };
+                        setDraft((d) => ({ ...d, gatherings }));
+                      }}
+                    />
+                  </Field>
+                </div>
+                <Field label="Theme">
                   <input
-                    value={g.year || ''}
+                    value={g.theme || ''}
                     onChange={(e) => {
                       const gatherings = [...draft.gatherings];
-                      gatherings[i] = { ...g, year: e.target.value };
+                      gatherings[i] = { ...g, theme: e.target.value };
                       setDraft((d) => ({ ...d, gatherings }));
                     }}
                   />
                 </Field>
-                <Field label="Name">
+                <Field label="Image URL">
                   <input
-                    value={g.name || ''}
+                    value={g.image || ''}
                     onChange={(e) => {
                       const gatherings = [...draft.gatherings];
-                      gatherings[i] = { ...g, name: e.target.value };
+                      gatherings[i] = { ...g, image: e.target.value };
+                      setDraft((d) => ({ ...d, gatherings }));
+                    }}
+                  />
+                </Field>
+                <MediaPicker
+                  onPick={(url) => {
+                    const gatherings = [...draft.gatherings];
+                    gatherings[i] = { ...g, image: url };
+                    setDraft((d) => ({ ...d, gatherings }));
+                  }}
+                />
+                <Field label="Image focus (CSS object-position)">
+                  <input
+                    placeholder="center 18%"
+                    value={g.imagePosition || ''}
+                    onChange={(e) => {
+                      const gatherings = [...draft.gatherings];
+                      gatherings[i] = { ...g, imagePosition: e.target.value };
                       setDraft((d) => ({ ...d, gatherings }));
                     }}
                   />
                 </Field>
               </div>
-              <Field label="Theme">
-                <input
-                  value={g.theme || ''}
-                  onChange={(e) => {
-                    const gatherings = [...draft.gatherings];
-                    gatherings[i] = { ...g, theme: e.target.value };
-                    setDraft((d) => ({ ...d, gatherings }));
-                  }}
-                />
-              </Field>
-              <Field label="Image URL">
-                <input
-                  value={g.image || ''}
-                  onChange={(e) => {
-                    const gatherings = [...draft.gatherings];
-                    gatherings[i] = { ...g, image: e.target.value };
-                    setDraft((d) => ({ ...d, gatherings }));
-                  }}
-                />
-              </Field>
-              <MediaPicker
-                onPick={(url) => {
-                  const gatherings = [...draft.gatherings];
-                  gatherings[i] = { ...g, image: url };
-                  setDraft((d) => ({ ...d, gatherings }));
-                }}
-              />
-              <Field label="Image focus (CSS object-position)">
-                <input
-                  placeholder="center 18%"
-                  value={g.imagePosition || ''}
-                  onChange={(e) => {
-                    const gatherings = [...draft.gatherings];
-                    gatherings[i] = { ...g, imagePosition: e.target.value };
-                    setDraft((d) => ({ ...d, gatherings }));
-                  }}
-                />
-              </Field>
-              <button
-                className="admin-btn danger"
-                type="button"
-                onClick={() =>
-                  setDraft((d) => ({
-                    ...d,
-                    gatherings: d.gatherings.filter((_, idx) => idx !== i),
-                  }))
-                }
-              >
-                Remove
-              </button>
-            </div>
-          ))}
+            )}
+          />
           <button
             className="admin-btn ghost"
             type="button"
@@ -311,7 +351,7 @@ export default function HomepageEditor({ draft, setDraft }) {
                 ...d,
                 gatherings: [
                   ...(d.gatherings || []),
-                  { year: '', name: '', theme: '', tag: 'GHP', image: '' },
+                  { year: '', name: '', theme: '', tag: 'GHP', image: '', imagePosition: '' },
                 ],
               }))
             }
@@ -342,52 +382,71 @@ export default function HomepageEditor({ draft, setDraft }) {
               />
             ) : null}
           </div>
-          {(draft.reflections || []).map((r, i) => (
-            <div className="admin-card admin-grid" key={i}>
-              <Field label="Date / label">
-                <input
-                  value={r.date || ''}
-                  onChange={(e) => {
-                    const reflections = [...draft.reflections];
-                    reflections[i] = { ...r, date: e.target.value };
-                    setDraft((d) => ({ ...d, reflections }));
-                  }}
-                />
-              </Field>
-              <Field label="Title">
-                <input
-                  value={r.title || ''}
-                  onChange={(e) => {
-                    const reflections = [...draft.reflections];
-                    reflections[i] = { ...r, title: e.target.value };
-                    setDraft((d) => ({ ...d, reflections }));
-                  }}
-                />
-              </Field>
-              <Field label="Excerpt">
-                <textarea
-                  value={r.excerpt || ''}
-                  onChange={(e) => {
-                    const reflections = [...draft.reflections];
-                    reflections[i] = { ...r, excerpt: e.target.value };
-                    setDraft((d) => ({ ...d, reflections }));
-                  }}
-                />
-              </Field>
-              <button
-                className="admin-btn danger"
-                type="button"
-                onClick={() =>
-                  setDraft((d) => ({
-                    ...d,
-                    reflections: d.reflections.filter((_, idx) => idx !== i),
-                  }))
-                }
-              >
-                Remove
-              </button>
-            </div>
-          ))}
+          <SortableList
+            items={draft.reflections || []}
+            onReorder={(reflections) => setDraft((d) => ({ ...d, reflections }))}
+            getKey={(r, i) => `${r.date || ''}-${r.title || i}`}
+            renderItem={(r, i, { DragHandle, moveUp, moveDown, canMoveUp, canMoveDown, isDragging }) => (
+              <div className={`admin-card admin-grid${isDragging ? ' is-dragging-card' : ''}`}>
+                <div className="admin-page-head admin-sortable__head">
+                  <div className="admin-sortable__title">
+                    <DragHandle label={`Drag ${r.title || `reflection ${i + 1}`}`} />
+                    <strong>{r.title || `Reflection ${i + 1}`}</strong>
+                  </div>
+                  <div className="admin-inline-actions">
+                    <button className="admin-btn ghost" type="button" disabled={!canMoveUp} onClick={moveUp}>
+                      ↑
+                    </button>
+                    <button className="admin-btn ghost" type="button" disabled={!canMoveDown} onClick={moveDown}>
+                      ↓
+                    </button>
+                    <button
+                      className="admin-btn danger"
+                      type="button"
+                      onClick={() =>
+                        setDraft((d) => ({
+                          ...d,
+                          reflections: d.reflections.filter((_, idx) => idx !== i),
+                        }))
+                      }
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+                <Field label="Date / label">
+                  <input
+                    value={r.date || ''}
+                    onChange={(e) => {
+                      const reflections = [...draft.reflections];
+                      reflections[i] = { ...r, date: e.target.value };
+                      setDraft((d) => ({ ...d, reflections }));
+                    }}
+                  />
+                </Field>
+                <Field label="Title">
+                  <input
+                    value={r.title || ''}
+                    onChange={(e) => {
+                      const reflections = [...draft.reflections];
+                      reflections[i] = { ...r, title: e.target.value };
+                      setDraft((d) => ({ ...d, reflections }));
+                    }}
+                  />
+                </Field>
+                <Field label="Excerpt">
+                  <textarea
+                    value={r.excerpt || ''}
+                    onChange={(e) => {
+                      const reflections = [...draft.reflections];
+                      reflections[i] = { ...r, excerpt: e.target.value };
+                      setDraft((d) => ({ ...d, reflections }));
+                    }}
+                  />
+                </Field>
+              </div>
+            )}
+          />
           <button
             className="admin-btn ghost"
             type="button"

@@ -1,12 +1,5 @@
 import { Field } from './fields';
-
-function moveItem(list, from, to) {
-  if (to < 0 || to >= list.length) return list;
-  const next = [...list];
-  const [item] = next.splice(from, 1);
-  next.splice(to, 0, item);
-  return next;
-}
+import SortableList from './SortableList';
 
 export default function NavEditor({ draft, setDraft }) {
   const nav = draft.nav || [];
@@ -25,8 +18,8 @@ export default function NavEditor({ draft, setDraft }) {
     <>
       <h2>Navigation</h2>
       <p className="hint">
-        Primary menu order matches the public site and footer. Use Move up / Move down (or ↑ ↓) to
-        reorder, then Save.
+        Primary menu order matches the public site and footer. Drag the handle to reorder (or use ↑
+        ↓), then Save. Esc cancels an in-progress drag.
       </p>
 
       <div className="admin-toolbar" style={{ position: 'static', background: 'transparent' }}>
@@ -61,11 +54,20 @@ export default function NavEditor({ draft, setDraft }) {
         <p className="hint">No menu links yet. Add Home, Pillars, and the rest of your routes.</p>
       ) : null}
 
-      <ol className="admin-nav-list">
-        {nav.map((item, i) => (
-          <li className="admin-card admin-nav-item" key={`${item.href}-${i}`}>
-            <div className="admin-nav-item__index" aria-hidden="true">
-              {i + 1}
+      <SortableList
+        items={nav}
+        onReorder={setNav}
+        listTag="ol"
+        itemTag="li"
+        listClassName="admin-nav-list"
+        getKey={(item, i) => `${item.href}-${i}`}
+        renderItem={(item, i, { DragHandle, moveUp, moveDown, canMoveUp, canMoveDown, isDragging }) => (
+          <div className={`admin-card admin-nav-item${isDragging ? ' is-dragging-card' : ''}`}>
+            <div className="admin-nav-item__lead">
+              <DragHandle label={`Drag ${item.label || 'nav item'}`} />
+              <div className="admin-nav-item__index" aria-hidden="true">
+                {i + 1}
+              </div>
             </div>
             <div className="admin-grid two" style={{ flex: 1, minWidth: 0 }}>
               <Field label="Label">
@@ -83,18 +85,18 @@ export default function NavEditor({ draft, setDraft }) {
               <button
                 className="admin-btn ghost"
                 type="button"
-                disabled={i === 0}
+                disabled={!canMoveUp}
                 aria-label={`Move ${item.label || 'item'} up`}
-                onClick={() => setNav(moveItem(nav, i, i - 1))}
+                onClick={moveUp}
               >
                 ↑ Up
               </button>
               <button
                 className="admin-btn ghost"
                 type="button"
-                disabled={i >= nav.length - 1}
+                disabled={!canMoveDown}
                 aria-label={`Move ${item.label || 'item'} down`}
-                onClick={() => setNav(moveItem(nav, i, i + 1))}
+                onClick={moveDown}
               >
                 ↓ Down
               </button>
@@ -106,9 +108,9 @@ export default function NavEditor({ draft, setDraft }) {
                 Remove
               </button>
             </div>
-          </li>
-        ))}
-      </ol>
+          </div>
+        )}
+      />
     </>
   );
 }
