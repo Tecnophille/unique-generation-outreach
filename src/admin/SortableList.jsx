@@ -41,6 +41,7 @@ export function DragHandle({ label = 'Drag to reorder', ...props }) {
 /**
  * Pointer-based sortable list (mouse + touch). Order only commits on drop;
  * Escape / cancelled pointer restores the prior visual order with no data write.
+ * Move/up listeners attach to the document so React re-renders cannot drop capture.
  */
 export default function SortableList({
   items = [],
@@ -55,9 +56,14 @@ export default function SortableList({
 }) {
   const itemRefs = useRef([]);
   const dragRef = useRef(null);
+  const itemsRef = useRef(items);
+  const onReorderRef = useRef(onReorder);
   const [dragIndex, setDragIndex] = useState(null);
   const [overIndex, setOverIndex] = useState(null);
   const [undo, setUndo] = useState(null);
+
+  itemsRef.current = items;
+  onReorderRef.current = onReorder;
 
   const clearUndoSoon = useCallback((snapshot) => {
     setUndo({ snapshot, at: Date.now() });
@@ -69,10 +75,10 @@ export default function SortableList({
     return () => window.clearTimeout(t);
   }, [undo]);
 
-  const resolveOverIndex = useCallback((clientY, fromIndex) => {
+  const resolveOverIndex = useCallback((clientY, fromIndex, length) => {
     const refs = itemRefs.current;
     let next = fromIndex;
-    for (let i = 0; i < refs.length; i += 1) {
+    for (let i = 0; i < length; i += 1) {
       const el = refs[i];
       if (!el) continue;
       const rect = el.getBoundingClientRect();
@@ -83,36 +89,40 @@ export default function SortableList({
       }
       next = i + 1;
     }
-    // When inserting after an index greater than from, account for removal.
     if (next > fromIndex) next -= 1;
-    return Math.max(0, Math.min(items.length - 1, next));
-  }, [items.length]);
+    return Math.max(0, Math.min(length - 1, next));
+  }, []);
+
+  const teardownListeners = useCallback(() => {
+    const state = dragRef.current;
+    if (!state?.cleanups) return;
+    state.cleanups.forEach((fn) => fn());
+    state.cleanups = [];
+  }, []);
 
   const endDrag = useCallback(
     (commit) => {
       const state = dragRef.current;
-      dragRef.current = null;
       if (!state) {
         setDragIndex(null);
         setOverIndex(null);
         return;
       }
-      const { from, over, pointerId, target } = state;
-      try {
-        target?.releasePointerCapture?.(pointerId);
-      } catch {
-        /* already released */
-      }
+      teardownListeners();
+      dragRef.current = null;
       setDragIndex(null);
       setOverIndex(null);
+
+      const { from, over } = state;
       if (!commit || over == null || over === from) return;
-      const snapshot = items;
-      const next = moveItem(items, from, over);
-      if (next === items) return;
-      onReorder?.(next);
+      const current = itemsRef.current;
+      const snapshot = current;
+      const next = moveItem(current, from, over);
+      if (next === current) return;
+      onReorderRef.current?.(next);
       clearUndoSoon(snapshot);
     },
-    [clearUndoSoon, items, onReorder],
+    [clearUndoSoon, teardownListeners],
   );
 
   useEffect(() => {
@@ -126,47 +136,63 @@ export default function SortableList({
     return () => window.removeEventListener('keydown', onKey);
   }, [endDrag]);
 
+  useEffect(() => () => teardownListeners(), [teardownListeners]);
+
   function onHandlePointerDown(index, e) {
     if (e.button != null && e.button !== 0) return;
-    // Ignore interactive descendants that aren't the handle itself.
     if (e.target.closest('input, textarea, select, a, button:not(.admin-drag-handle)')) return;
     e.preventDefault();
-    const target = e.currentTarget;
-    target.setPointerCapture?.(e.pointerId);
+
+    if (dragRef.current) endDrag(false);
+
+    const pointerId = e.pointerId;
+    const length = itemsRef.current.length;
+
+    const onMove = (ev) => {
+      if (ev.pointerId !== pointerId) return;
+      const state = dragRef.current;
+      if (!state) return;
+      const over = resolveOverIndex(ev.clientY, state.from, length);
+      state.over = over;
+      setOverIndex(over);
+    };
+
+    const onUp = (ev) => {
+      if (ev.pointerId !== pointerId) return;
+      endDrag(true);
+    };
+
+    const onCancel = (ev) => {
+      if (ev.pointerId !== pointerId) return;
+      endDrag(false);
+    };
+
+    const onBlur = () => endDrag(false);
+
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
+    document.addEventListener('pointercancel', onCancel);
+    window.addEventListener('blur', onBlur);
+
     dragRef.current = {
       from: index,
       over: index,
-      pointerId: e.pointerId,
-      target,
+      pointerId,
+      cleanups: [
+        () => document.removeEventListener('pointermove', onMove),
+        () => document.removeEventListener('pointerup', onUp),
+        () => document.removeEventListener('pointercancel', onCancel),
+        () => window.removeEventListener('blur', onBlur),
+      ],
     };
     setDragIndex(index);
     setOverIndex(index);
     setUndo(null);
   }
 
-  function onHandlePointerMove(e) {
-    const state = dragRef.current;
-    if (!state || state.pointerId !== e.pointerId) return;
-    const over = resolveOverIndex(e.clientY, state.from);
-    state.over = over;
-    setOverIndex(over);
-  }
-
-  function onHandlePointerUp(e) {
-    const state = dragRef.current;
-    if (!state || state.pointerId !== e.pointerId) return;
-    endDrag(true);
-  }
-
-  function onHandlePointerCancel(e) {
-    const state = dragRef.current;
-    if (!state || state.pointerId !== e.pointerId) return;
-    endDrag(false);
-  }
-
   function applyUndo() {
     if (!undo?.snapshot) return;
-    onReorder?.(undo.snapshot);
+    onReorderRef.current?.(undo.snapshot);
     setUndo(null);
   }
 
@@ -198,9 +224,6 @@ export default function SortableList({
             dragIndex != null && overIndex === index && dragIndex !== index && overIndex > dragIndex;
           const handleProps = {
             onPointerDown: (e) => onHandlePointerDown(index, e),
-            onPointerMove: onHandlePointerMove,
-            onPointerUp: onHandlePointerUp,
-            onPointerCancel: onHandlePointerCancel,
           };
           const controls = {
             index,
@@ -210,7 +233,9 @@ export default function SortableList({
             canMoveUp: index > 0,
             canMoveDown: index < items.length - 1,
             handleProps,
-            DragHandle: (props) => <DragHandle {...handleProps} {...props} />,
+            DragHandle: function ItemDragHandle(props) {
+              return <DragHandle {...handleProps} {...props} />;
+            },
           };
 
           return (
