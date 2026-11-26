@@ -86,7 +86,7 @@
   "pages": {
     "faq": {
       "cta": {
-        "href": "/contact",
+        "href": "/contact?topic=general-enquiries#enquiry",
         "label": "Send a message"
       },
       "intro": "Clear responses about who we are, how GHP works, and how you can serve or partner.",
@@ -136,6 +136,10 @@
         {
           "text": "A growing team stewarding programmes, volunteering, and partnership across cities.",
           "year": "Today"
+        },
+        {
+          "text": "Bold Voice TV and public platforms that amplify faith, leadership, and community stories across the mission.",
+          "year": "Bold Voices"
         }
       ],
       "storyTitle": "Who we are"

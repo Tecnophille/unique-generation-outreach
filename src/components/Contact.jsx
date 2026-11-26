@@ -1,7 +1,49 @@
-import { useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import { useContent } from '../cms/ContentContext';
 import { IconMail, IconPeople } from './Icons';
+
+export const CONTACT_TOPICS = [
+  'General enquiries',
+  'Volunteering',
+  'Gatherings',
+  'Partnership',
+  'Prayer',
+  'Other',
+];
+
+export function topicFromChannelTitle(title) {
+  const t = String(title || '').toLowerCase();
+  if (t.includes('volunteer')) return 'Volunteering';
+  if (t.includes('gather')) return 'Gatherings';
+  if (t.includes('partner')) return 'Partnership';
+  if (t.includes('pray')) return 'Prayer';
+  if (t.includes('general') || t.includes('enquir')) return 'General enquiries';
+  return 'General enquiries';
+}
+
+export function topicQueryValue(topic) {
+  return String(topic || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+export function topicFromQuery(value) {
+  const slug = String(value || '')
+    .toLowerCase()
+    .trim();
+  if (!slug) return '';
+  const match = CONTACT_TOPICS.find((t) => topicQueryValue(t) === slug);
+  if (match) return match;
+  if (slug.includes('volunteer')) return 'Volunteering';
+  if (slug.includes('gather')) return 'Gatherings';
+  if (slug.includes('partner')) return 'Partnership';
+  if (slug.includes('pray')) return 'Prayer';
+  if (slug.includes('general') || slug.includes('enquir')) return 'General enquiries';
+  return '';
+}
 
 function telHref(phone) {
   const digits = String(phone || '').replace(/[^\d+]/g, '');
@@ -11,6 +53,18 @@ function telHref(phone) {
 export default function Contact() {
   const { content } = useContent();
   const { contact } = content;
+  const [searchParams] = useSearchParams();
+  const enquiryRef = useRef(null);
+  const formIds = useId();
+
+  const [name, setName] = useState('');
+  const [enquiryEmail, setEnquiryEmail] = useState('');
+  const [topic, setTopic] = useState('General enquiries');
+  const [message, setMessage] = useState('');
+  const [enquiryStatus, setEnquiryStatus] = useState('');
+  const [enquiryError, setEnquiryError] = useState('');
+  const [enquiryBusy, setEnquiryBusy] = useState(false);
+
   const [email, setEmail] = useState('');
   const [formStatus, setFormStatus] = useState('');
   const [formError, setFormError] = useState('');
@@ -23,6 +77,54 @@ export default function Contact() {
   const emailLabel =
     contactEmail || contact.placeholders?.email || 'contact@uniquegenerationoutreach.org';
   const phoneLabel = contactPhone || contact.placeholders?.phone || 'Phone number coming soon';
+
+  useEffect(() => {
+    const fromQuery = topicFromQuery(searchParams.get('topic'));
+    if (fromQuery) setTopic(fromQuery);
+
+    if (window.location.hash === '#enquiry' && enquiryRef.current) {
+      enquiryRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [searchParams]);
+
+  async function submitEnquiry(e) {
+    e.preventDefault();
+    setEnquiryBusy(true);
+    setEnquiryStatus('');
+    setEnquiryError('');
+    try {
+      const chosenTopic = topic || 'General enquiries';
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: enquiryEmail.trim(),
+          subject: chosenTopic,
+          message: message.trim(),
+          source: 'enquiry',
+        }),
+      });
+      if (!res.ok) {
+        let detail = 'Could not send your message right now';
+        try {
+          const data = await res.json();
+          if (data?.error) detail = data.error;
+        } catch {
+          /* ignore */
+        }
+        throw new Error(detail);
+      }
+      setEnquiryStatus('Thank you — your message is with the Unique Generation Outreach team.');
+      setName('');
+      setEnquiryEmail('');
+      setMessage('');
+    } catch (err) {
+      setEnquiryError(err.message || 'Submit failed');
+    } finally {
+      setEnquiryBusy(false);
+    }
+  }
 
   async function submitNewsletter(e) {
     e.preventDefault();
@@ -53,7 +155,93 @@ export default function Contact() {
 
   return (
     <section className="section" id="contact">
-      <div className="wrap">
+      <div className="wrap contact-stack">
+        <motion.div
+          className="contact-enquiry"
+          id="enquiry"
+          ref={enquiryRef}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="contact-enquiry__intro">
+            <span className="label">Write to us</span>
+            <h2>Send a message</h2>
+            <p>
+              Share a question, volunteering interest, or gathering note. We read every message and
+              reply as soon as we can.
+            </p>
+          </div>
+          <form className="enquiry-form" onSubmit={submitEnquiry} noValidate={false}>
+            <div className="enquiry-form__row">
+              <div className="enquiry-form__field">
+                <label htmlFor={`${formIds}-name`}>Name</label>
+                <input
+                  id={`${formIds}-name`}
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  maxLength={120}
+                />
+              </div>
+              <div className="enquiry-form__field">
+                <label htmlFor={`${formIds}-email`}>Email</label>
+                <input
+                  id={`${formIds}-email`}
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  value={enquiryEmail}
+                  onChange={(e) => setEnquiryEmail(e.target.value)}
+                  required
+                  maxLength={180}
+                />
+              </div>
+            </div>
+            <div className="enquiry-form__field">
+              <label htmlFor={`${formIds}-topic`}>Topic (optional)</label>
+              <select
+                id={`${formIds}-topic`}
+                name="topic"
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+              >
+                {CONTACT_TOPICS.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="enquiry-form__field">
+              <label htmlFor={`${formIds}-message`}>Message</label>
+              <textarea
+                id={`${formIds}-message`}
+                name="message"
+                rows={5}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+                maxLength={5000}
+                placeholder="How can we walk with you?"
+              />
+            </div>
+            <div className="enquiry-form__actions">
+              <button type="submit" className="btn btn--solid" disabled={enquiryBusy}>
+                {enquiryBusy ? 'Sending…' : 'Send message'}
+              </button>
+              {enquiryStatus ? <p className="enquiry-form__status">{enquiryStatus}</p> : null}
+              {enquiryError ? (
+                <p className="enquiry-form__status enquiry-form__status--error">{enquiryError}</p>
+              ) : null}
+            </div>
+          </form>
+        </motion.div>
+
         <motion.div
           className="contact-panel"
           initial={{ opacity: 0, y: 24 }}
@@ -112,11 +300,11 @@ export default function Contact() {
               </div>
             ))}
             <form className="news-form" onSubmit={submitNewsletter}>
-              <label className="sr-only" htmlFor="email">
+              <label className="sr-only" htmlFor={`${formIds}-news-email`}>
                 Email
               </label>
               <input
-                id="email"
+                id={`${formIds}-news-email`}
                 type="email"
                 name="email"
                 placeholder="jane@email.com"

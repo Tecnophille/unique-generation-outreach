@@ -31,6 +31,12 @@ const NEWSLETTER_BODY_GOOD =
 
 const SAMPLE_DATE_RE = /^Sample\s*·\s*GHP$/i;
 
+/** Truncated production CMS label was “Bold Voic ” with an empty body. */
+export const BOLD_VOICES_YEAR = 'Bold Voices';
+export const BOLD_VOICES_TEXT =
+  'Bold Voice TV and public platforms that amplify faith, leadership, and community stories across the mission.';
+const BOLD_VOICES_TRUNCATED_RE = /^bold\s*voic\w*\s*$/i;
+
 const REFLECTION_DATE_BY_TITLE = [
   { match: /koinonia/i, date: 'GHP · Koinonia' },
   { match: /kavod/i, date: 'GHP · Kavod' },
@@ -96,6 +102,55 @@ function repairHomeReflections(list) {
   return { value: changed ? next : list, changed };
 }
 
+function repairAboutMilestones(list) {
+  if (!Array.isArray(list)) return { value: list, changed: false };
+  let changed = false;
+  const next = [];
+
+  for (const item of list) {
+    if (!item || typeof item !== 'object') {
+      changed = true;
+      continue;
+    }
+    let year = String(item.year || '').trim();
+    let text = String(item.text || '').trim();
+
+    if (BOLD_VOICES_TRUNCATED_RE.test(year)) {
+      if (year !== BOLD_VOICES_YEAR) {
+        year = BOLD_VOICES_YEAR;
+        changed = true;
+      }
+      if (!text) {
+        text = BOLD_VOICES_TEXT;
+        changed = true;
+      }
+    } else if (/^bold\s*voices$/i.test(year) && !text) {
+      year = BOLD_VOICES_YEAR;
+      text = BOLD_VOICES_TEXT;
+      changed = true;
+    }
+
+    if (!year && !text) {
+      changed = true;
+      continue;
+    }
+    if (!text) {
+      // Do not leave empty milestone cells on the public About page.
+      changed = true;
+      continue;
+    }
+
+    if (year !== item.year || text !== item.text) {
+      changed = true;
+      next.push({ ...item, year, text });
+    } else {
+      next.push(item);
+    }
+  }
+
+  return { value: changed ? next : list, changed };
+}
+
 /**
  * @returns {{ content: object, changed: boolean }}
  */
@@ -148,6 +203,15 @@ export function applyPublicContentRepairs(raw = {}) {
     pages.events = { ...pages.events, story: EVENTS_STORY_GOOD };
     changed = true;
   }
+
+  if (pages.about && Array.isArray(pages.about.milestones)) {
+    const milestonesFix = repairAboutMilestones(pages.about.milestones);
+    if (milestonesFix.changed) {
+      pages.about = { ...pages.about, milestones: milestonesFix.value };
+      changed = true;
+    }
+  }
+
   content.pages = pages;
 
   const reflectionsFix = repairHomeReflections(content.reflections);

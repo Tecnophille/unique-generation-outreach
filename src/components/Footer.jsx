@@ -63,7 +63,7 @@ export default function Footer() {
                 </li>
               )}
               <li>
-                <Link to="/contact">Volunteer with us</Link>
+                <Link to="/contact?topic=volunteering#enquiry">Volunteer with us</Link>
               </li>
             </ul>
           </div>
