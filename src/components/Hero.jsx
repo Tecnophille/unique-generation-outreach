@@ -2,10 +2,12 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useContent } from '../cms/ContentContext';
 import { IconCross, IconHands } from './Icons';
+import { useMotionPrefs } from './motion';
 
 export default function Hero() {
   const { content } = useContent();
   const hero = content.hero;
+  const { reduce, transition } = useMotionPrefs();
 
   return (
     <section className="hero" id="top" aria-label="Hero">
@@ -20,9 +22,9 @@ export default function Hero() {
       <div className="hero__content">
         <motion.div
           className="hero__badge"
-          initial={{ opacity: 0, y: 16 }}
+          initial={reduce ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ ...transition }}
         >
           <span className="hero__badge-dot" aria-hidden="true">
             ✦
@@ -30,25 +32,25 @@ export default function Hero() {
           {hero.badge}
         </motion.div>
         <motion.h1
-          initial={{ opacity: 0, y: 28 }}
+          initial={reduce ? false : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.85, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ ...transition, delay: reduce ? 0 : 0.08 }}
         >
           {hero.headline}
         </motion.h1>
         <motion.p
           className="hero__support"
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduce ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ ...transition, delay: reduce ? 0 : 0.2 }}
         >
           {hero.support}
         </motion.p>
         <motion.div
           className="hero__ctas"
-          initial={{ opacity: 0, y: 16 }}
+          initial={reduce ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.75, delay: 0.34, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ ...transition, delay: reduce ? 0 : 0.34 }}
         >
           <Link className="btn btn--primary" to={hero.primaryCta.href || '/pillars'}>
             {hero.primaryCta.label}

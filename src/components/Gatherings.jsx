@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useContent } from '../cms/ContentContext';
+import { mediaAlt } from '../cms/mediaAlt';
 import { IconCal } from './Icons';
+import { useMotionPrefs } from './motion';
 
 export default function Gatherings() {
   const { content } = useContent();
   const gatherings = content.gatherings || [];
+  const { reduce, transition, stagger } = useMotionPrefs();
 
   return (
     <section className="section" id="gatherings" style={{ background: 'var(--paper)' }}>
@@ -23,15 +26,15 @@ export default function Gatherings() {
             <motion.article
               key={g.name}
               className="gather-card"
-              initial={{ opacity: 0, y: 20 }}
+              initial={reduce ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.55, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ ...transition, delay: reduce ? 0 : i * stagger }}
             >
               <div className="gather-card__img">
                 <img
                   src={g.image}
-                  alt={`${g.name} gathering`}
+                  alt={mediaAlt(g, `${g.name || 'Gathering'} photo`)}
                   style={g.imagePosition ? { objectPosition: g.imagePosition } : undefined}
                 />
               </div>

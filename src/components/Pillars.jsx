@@ -2,10 +2,12 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useContent } from '../cms/ContentContext';
 import { PillarGlyph } from './Icons';
+import { useMotionPrefs } from './motion';
 
 export default function Pillars() {
   const { content } = useContent();
   const pillars = content.pillars || [];
+  const { reduce, transition, stagger } = useMotionPrefs();
 
   return (
     <section className="section" id="pillars">
@@ -23,10 +25,10 @@ export default function Pillars() {
             <motion.article
               key={item.title}
               className="pillar-card"
-              initial={{ opacity: 0, y: 18 }}
+              initial={reduce ? false : { opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.5, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ ...transition, delay: reduce ? 0 : i * stagger }}
             >
               <div className="pillar-card__icon" style={{ background: item.color }} aria-hidden="true">
                 <PillarGlyph name={item.icon} />
