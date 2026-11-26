@@ -14,9 +14,20 @@ export default function NotFoundPage() {
             The link may be outdated, or the page moved. Head home to continue exploring Unique
             Generation Outreach.
           </p>
-          <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div
+            style={{
+              marginTop: '1.5rem',
+              display: 'flex',
+              gap: '0.75rem',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
             <Link className="btn btn--primary" to="/">
               Back home
+            </Link>
+            <Link className="btn btn--outline" to="/gatherings">
+              Gatherings
             </Link>
             <Link className="btn btn--outline" to="/contact">
               Contact us

@@ -1,11 +1,11 @@
 import fs from 'fs';
 import { sql } from '../db/index.js';
 import { config } from '../config.js';
-import {
-  ensureNavDefaults,
-  ensureReflectionsImage,
-  ensureVideosHub,
-} from '../../src/cms/contentModel.js';
+import { preparePublicContent } from '../../src/cms/contentModel.js';
+import { applyPublicContentRepairs } from '../../src/cms/publicContentRepairs.js';
+
+/** Bump when new idempotent public-copy repairs must re-run against existing DB rows. */
+const PUBLIC_COPY_REPAIR_VERSION = 1;
 
 function toJsonb(value) {
   return typeof value === 'string' ? value : JSON.stringify(value);
@@ -29,10 +29,27 @@ function pathDir(filePath) {
   return filePath.replace(/\/[^/]+$/, '');
 }
 
+function needsPersistedRepair(payload) {
+  if (!payload || typeof payload !== 'object') return true;
+  if (payload.publicCopyRepairsV1 !== PUBLIC_COPY_REPAIR_VERSION) return true;
+  if (!payload.pages?.events) return true;
+  const hasStudioEvents = (payload.events || []).some(
+    (e) => (e?.status || 'published') === 'published',
+  );
+  const pageEvents = Array.isArray(payload.pages.events.events) ? payload.pages.events.events : [];
+  const gatheringEvents = payload.pages.gatherings?.events || [];
+  if (!hasStudioEvents && !pageEvents.length && gatheringEvents.length) return true;
+  if (applyPublicContentRepairs(payload).changed) return true;
+  return false;
+}
+
 export async function ensureContent() {
   const rows = await sql('select id from site_content where id = 1');
   if (rows.length) return getContent();
-  const seed = ensureReflectionsImage(ensureNavDefaults(ensureVideosHub(readSeed())));
+  const seed = {
+    ...preparePublicContent(readSeed()),
+    publicCopyRepairsV1: PUBLIC_COPY_REPAIR_VERSION,
+  };
   seed.updatedAt = new Date().toISOString();
   await sql(
     `insert into site_content (id, payload, updated_at) values (1, $1::jsonb, now())`,
@@ -65,14 +82,31 @@ export async function getContent() {
   const payload = normalizePayload(rows[0].payload);
   if (!payload || typeof payload !== 'object') return ensureContent();
   if (!payload.pages) payload.pages = {};
-  return ensureReflectionsImage(ensureNavDefaults(ensureVideosHub(payload)));
+
+  const prepared = {
+    ...preparePublicContent(payload),
+    publicCopyRepairsV1: PUBLIC_COPY_REPAIR_VERSION,
+  };
+
+  if (needsPersistedRepair(payload)) {
+    try {
+      await saveContent(prepared, null, 'Auto-repair: public copy, email typo, events hub');
+      console.log('[content] persisted public content repairs');
+    } catch (err) {
+      console.warn('[content] could not persist repairs:', err?.message || err);
+    }
+  }
+  return prepared;
 }
 
 export async function saveContent(payload, adminId = null, note = 'CMS save') {
   if (!payload || typeof payload !== 'object') {
     throw new Error('Invalid content payload');
   }
-  const next = { ...payload, updatedAt: new Date().toISOString() };
+  const next = {
+    ...preparePublicContent({ ...payload, updatedAt: new Date().toISOString() }),
+    publicCopyRepairsV1: PUBLIC_COPY_REPAIR_VERSION,
+  };
   await sql(
     `insert into site_content (id, payload, updated_at, updated_by)
      values (1, $1::jsonb, now(), $2)

@@ -20,7 +20,8 @@ export default function Contact() {
   const contactPhone = (contact.phone || '').trim();
   const mailHref = contactEmail ? `mailto:${contactEmail}` : '';
   const phoneHref = telHref(contactPhone);
-  const emailLabel = contactEmail || contact.placeholders?.email || 'Contact email coming soon';
+  const emailLabel =
+    contactEmail || contact.placeholders?.email || 'contact@uniquegenerationoutreach.org';
   const phoneLabel = contactPhone || contact.placeholders?.phone || 'Phone number coming soon';
 
   async function submitNewsletter(e) {

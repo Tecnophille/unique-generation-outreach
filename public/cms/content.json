@@ -147,7 +147,7 @@
       },
       "intro": "Volunteer, partner, pray, or ask about gatherings — tell us what is on your heart.",
       "label": "Contact",
-      "story": "Official email and phone will replace the placeholders below as soon as they are confirmed. Until then, use the form and the channels listed in the CMS contact fields.",
+      "story": "Email us, call when you can, or subscribe below — we read every note about volunteering, partnership, gatherings, and prayer.",
       "title": "We are listening",
       "channels": [
         {
@@ -285,7 +285,7 @@
       },
       "intro": "Reflections for Unique Generation Outreach — longer than a homepage teaser, written to sit with you through the week.",
       "label": "Reflections",
-      "story": "These reflections connect faith to ordinary courage: work, family, leadership, and community. Replace samples with official teachings anytime in the CMS.",
+      "story": "These reflections connect faith to ordinary courage: work, family, leadership, and community. Sit with one this week and let it shape how you serve.",
       "title": "Word for the journey",
       "articles": [
         {
@@ -306,6 +306,66 @@
       ],
       "heroImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465414710-about-worship.jpg",
       "storyTitle": "A space to listen"
+    },
+    "events": {
+      "label": "Events",
+      "title": "GHP gatherings & seasons",
+      "intro": "Dates, places, and stories from Unique Generation Outreach.",
+      "heroImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465423371-hero-hall.jpg",
+      "storyTitle": "Come be part of it",
+      "story": "GHP gatherings mark seasons of fellowship, honour, praise, and blessing. Explore the themes below, or ask us about the next date.",
+      "cta": {
+        "label": "Ask about the next gathering",
+        "href": "/contact"
+      },
+      "useSiteEvents": false,
+      "custom": true,
+      "status": "published",
+      "events": [
+        {
+          "name": "Koinonia",
+          "year": "2022",
+          "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465421180-ghp-koinonia.jpg",
+          "story": "Koinonia called us back to shared life — not attendance alone, but belonging. We learned again that the body thrives when no one walks alone.",
+          "theme": "Fellowship & belonging"
+        },
+        {
+          "name": "Kavod",
+          "year": "2024",
+          "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465420329-ghp-kavod.jpg",
+          "story": "Kavod lifted our eyes to honour — honouring God, honouring one another, and restoring dignity in how we speak, serve, and lead.",
+          "theme": "Honour & reverence"
+        },
+        {
+          "name": "Shabach",
+          "year": "2025",
+          "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465422212-ghp-shabach.jpg",
+          "story": "Shabach made room for joyful praise — celebration as warfare, gratitude as witness, and creativity as an offering.",
+          "theme": "Praise & celebration"
+        },
+        {
+          "name": "Berakah",
+          "year": "2026",
+          "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465419148-ghp-berakah.jpg",
+          "story": "Berakah looks ahead to blessing that multiplies — opportunities that overflow into families, cities, and the next generation.",
+          "theme": "Blessing & increase"
+        }
+      ]
+    },
+    "videos": {
+      "label": "Videos",
+      "title": "Watch with us",
+      "intro": "Messages, highlights, and stories on YouTube.",
+      "heroImage": "",
+      "storyTitle": "On the channel",
+      "story": "Messages, gathering highlights, and stories from our YouTube channel — watch with us whenever you need encouragement.",
+      "cta": {
+        "label": "Contact us",
+        "href": "/contact"
+      },
+      "useSiteVideos": true,
+      "status": "published",
+      "custom": true
     }
   },
   "contact": {
@@ -314,7 +374,7 @@
     "title": "Let’s stay in touch",
     "skyImage": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465423371-hero-hall.jpg",
     "newsletter": {
-      "body": "Subscribe to receive the latest updates when contact details are confirmed.",
+      "body": "Subscribe for news, reflections, and gathering updates from Unique Generation Outreach.",
       "features": [
         {
           "text": "Receive news and reflections as they are published.",
@@ -329,9 +389,10 @@
       "titleBefore": "Join our "
     },
     "placeholders": {
-      "email": "Contact email coming soon",
+      "email": "contact@uniquegenerationoutreach.org",
       "phone": "Phone number coming soon"
-    }
+    },
+    "email": "contact@uniquegenerationoutreach.org"
   },
   "pillars": [
     {
@@ -487,17 +548,17 @@
   ],
   "reflections": [
     {
-      "date": "Sample · GHP",
+      "date": "GHP · Koinonia",
       "title": "Koinonia — walking together",
       "excerpt": "Fellowship is more than gathering. It is choosing one another — sharing burdens, celebrating victories, and building a community where no one walks alone."
     },
     {
-      "date": "Sample · GHP",
+      "date": "GHP · Kavod",
       "title": "Kavod — honour that lifts",
       "excerpt": "True honour recognises the dignity placed in every person. When we lift others, we strengthen the fabric of our families and cities."
     },
     {
-      "date": "Sample · GHP",
+      "date": "GHP · Berakah",
       "title": "Berakah — living as a blessing",
       "excerpt": "Blessing is meant to move through us. Opportunity, service, and kindness become seeds of transformation for the next generation."
     }

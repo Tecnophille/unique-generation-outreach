@@ -7,19 +7,24 @@
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/robots.txt", "destination": "/api/robots" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/", "destination": "/api/spa?spaPath=/" },
+    { "source": "/((?!api/).+)", "destination": "/api/spa?spaPath=/$1" }
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "{migrations/**,public/cms/**,server/**}",
+      "includeFiles": "{migrations/**,public/cms/**,server/**,src/cms/**}",
       "maxDuration": 30
     },
     "api/sitemap.js": {
-      "includeFiles": "{migrations/**,public/cms/**,server/**}",
+      "includeFiles": "{migrations/**,public/cms/**,server/**,src/cms/**}",
       "maxDuration": 30
     },
     "api/robots.js": {
-      "includeFiles": "{migrations/**,public/cms/**,server/**}",
+      "includeFiles": "{migrations/**,public/cms/**,server/**,src/cms/**}",
+      "maxDuration": 30
+    },
+    "api/spa.js": {
+      "includeFiles": "{migrations/**,public/cms/**,server/**,src/cms/**,dist/index.html}",
       "maxDuration": 30
     }
   },

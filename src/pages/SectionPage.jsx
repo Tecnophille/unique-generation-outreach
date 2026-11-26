@@ -1,9 +1,10 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import SiteLayout from '../components/SiteLayout';
 import PageHero from '../components/PageHero';
 import Contact from '../components/Contact';
 import BootScreen from '../components/BootScreen';
 import { useContent } from '../cms/ContentContext';
+import NotFoundPage from './NotFoundPage';
 import {
   AboutUnique,
   PillarsUnique,
@@ -56,14 +57,7 @@ export default function SectionPage({ pageKey: pageKeyProp }) {
   }
 
   if (!pageKey || RESERVED.has(pageKey)) {
-    return (
-      <SiteLayout>
-        <div className="section wrap">
-          <h1>Page not found</h1>
-          <Link to="/">Back home</Link>
-        </div>
-      </SiteLayout>
-    );
+    return <NotFoundPage />;
   }
 
   const page = content.pages?.[pageKey];
@@ -75,14 +69,7 @@ export default function SectionPage({ pageKey: pageKeyProp }) {
     Date.parse(page.publishAt) <= Date.now();
   const isLive = status === 'published' || scheduledReady;
   if (!page || !isLive) {
-    return (
-      <SiteLayout>
-        <div className="section wrap">
-          <h1>Page not found</h1>
-          <Link to="/">Back home</Link>
-        </div>
-      </SiteLayout>
-    );
+    return <NotFoundPage />;
   }
 
   const View = VIEW_MAP[pageKey] || CustomPageUnique;

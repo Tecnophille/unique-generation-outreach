@@ -1,14 +1,31 @@
+import { applyPublicContentRepairs } from './publicContentRepairs.js';
+
 const VIDEOS_HUB_DEFAULT = {
   label: 'Videos',
   title: 'Watch with us',
   intro: 'Messages, highlights, and stories on YouTube.',
   heroImage: '',
   storyTitle: 'On the channel',
-  story: 'Videos managed from the CMS YouTube studio.',
+  story:
+    'Messages, gathering highlights, and stories from our YouTube channel — watch with us whenever you need encouragement.',
   cta: { label: 'Contact us', href: '/contact' },
   useSiteVideos: true,
   status: 'published',
   custom: true,
+};
+
+const EVENTS_HUB_DEFAULT = {
+  label: 'Events',
+  title: 'GHP gatherings & seasons',
+  intro: 'Dates, places, and stories from Unique Generation Outreach.',
+  heroImage: '',
+  storyTitle: 'Come be part of it',
+  story:
+    'GHP gatherings mark seasons of fellowship, honour, praise, and blessing. Explore the themes below, or ask us about the next date.',
+  cta: { label: 'Ask about the next gathering', href: '/contact' },
+  useSiteEvents: false,
+  custom: true,
+  status: 'published',
 };
 
 export function ensureVideosHub(content = {}) {
@@ -37,6 +54,39 @@ export function ensureVideosHub(content = {}) {
   return { ...content, pages, videoPlacementV2: true };
 }
 
+/** Publish /events using GHP gatherings data when the Events studio list is empty. */
+export function ensureEventsHub(content = {}) {
+  const pages = { ...(content.pages || {}) };
+  const gatheringEvents = Array.isArray(pages.gatherings?.events) ? pages.gatherings.events : [];
+  const studioEvents = Array.isArray(content.events) ? content.events : [];
+  const hasStudioEvents = studioEvents.some((e) => (e?.status || 'published') === 'published');
+
+  if (hasStudioEvents) {
+    pages.events = {
+      ...EVENTS_HUB_DEFAULT,
+      ...(pages.events || {}),
+      status: pages.events?.status || 'published',
+      useSiteEvents: true,
+      custom: true,
+    };
+    return { ...content, pages };
+  }
+
+  const existing = pages.events || {};
+  const pageEvents = Array.isArray(existing.events) ? existing.events : [];
+  pages.events = {
+    ...EVENTS_HUB_DEFAULT,
+    ...existing,
+    heroImage: existing.heroImage || pages.gatherings?.heroImage || '',
+    status: existing.status || 'published',
+    custom: true,
+    useSiteEvents: false,
+    events: pageEvents.length ? pageEvents : gatheringEvents,
+  };
+
+  return { ...content, pages };
+}
+
 /** Ensure Home sits before Pillars, and Videos is present — without clobbering custom order. */
 export function ensureNavDefaults(content = {}) {
   const nav = Array.isArray(content.nav) ? [...content.nav] : [];
@@ -63,6 +113,32 @@ export const DEFAULT_REFLECTIONS_IMAGE =
 export function ensureReflectionsImage(content = {}) {
   if (content.reflectionsImage) return content;
   return { ...content, reflectionsImage: DEFAULT_REFLECTIONS_IMAGE };
+}
+
+/** Normalize + ensure hubs + visitor-facing copy repairs (read path). */
+export function preparePublicContent(raw = {}) {
+  const hubs = ensureReflectionsImage(
+    ensureNavDefaults(ensureEventsHub(ensureVideosHub(raw))),
+  );
+  return applyPublicContentRepairs(hubs).content;
+}
+
+/**
+ * Same as preparePublicContent, but reports whether repairs changed payload
+ * so the server can persist production CMS fixes.
+ */
+export function preparePublicContentWithMeta(raw = {}) {
+  const hubs = ensureReflectionsImage(
+    ensureNavDefaults(ensureEventsHub(ensureVideosHub(raw))),
+  );
+  const { content, changed } = applyPublicContentRepairs(hubs);
+  const hubsChanged =
+    !raw.pages?.events ||
+    !raw.pages?.videos ||
+    !raw.videoPlacementV2 ||
+    !raw.reflectionsImage ||
+    !(Array.isArray(raw.nav) && raw.nav.some((n) => n?.href === '/' || n?.href === ''));
+  return { content, changed: changed || hubsChanged };
 }
 
 export function normalizeContent(raw = {}) {
@@ -121,7 +197,7 @@ export function normalizeContent(raw = {}) {
     pages: raw.pages || {},
     nav: Array.isArray(raw.nav) ? raw.nav : [],
   };
-  return ensureReflectionsImage(ensureNavDefaults(ensureVideosHub(base)));
+  return preparePublicContent(base);
 }
 
 export function uid(prefix = 'id') {

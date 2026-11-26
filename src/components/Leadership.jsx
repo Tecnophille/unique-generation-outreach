@@ -6,7 +6,6 @@ export default function Leadership() {
   const { content } = useContent();
   const leadership = content.leadership || [];
   const [convener, ...team] = leadership;
-  const hasPhotos = leadership.some((p) => p.photo || p.image);
 
   if (!convener) return null;
 
@@ -59,9 +58,6 @@ export default function Leadership() {
             </motion.article>
           ))}
         </div>
-        {!hasPhotos ? (
-          <p className="placeholder-note">Add team photos from the CMS Team directory.</p>
-        ) : null}
       </div>
     </section>
   );
