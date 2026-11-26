@@ -123,13 +123,15 @@ p {
 
 /*
   Hero, story, and CMS prose sit on the same .wrap left edge as grids/lists.
-  Cap line length on copy — do not shrink/center the container (that inset
-  “How we serve” relative to pillar rows and the page gutter).
+  Cap line length on copy — do not shrink/center the container (that insets
+  headings relative to lists and the shared page gutter).
 */
 .page-hero__content > :is(.page-hero__crumb, .label, h1, .page-hero__intro, p),
 .uniq-story__inner > :is(h2, p),
 .page-blocks__column > :is(h2, p, .uniq-heading, .page-blocks__prose, blockquote, .page-blocks__quote) {
   max-width: var(--prose);
+  margin-inline: 0;
+  text-align: start;
 }
 
 .section {
@@ -157,20 +159,36 @@ p {
 }
 
 .section-head {
-  text-align: center;
-  max-width: 40rem;
-  margin-inline: auto;
+  /* Full .wrap width — left edge matches PageHero / story / lists */
+  display: block;
+  text-align: start;
+  max-width: none;
+  width: 100%;
+  margin-inline: 0 !important;
   margin-bottom: 3rem;
 }
 
-.section-head h2 {
+.section-head .label,
+.section-head h2,
+.section-head p,
+.section-head .section-title,
+.section-head .section-lead {
+  display: block;
+  text-align: start;
+  max-width: var(--prose);
+  margin-inline: 0 !important;
+}
+
+.section-head h2,
+.section-head .section-title {
   font-size: clamp(2rem, 3.6vw, 2.5rem);
   font-weight: 500;
   letter-spacing: -0.02em;
   margin-bottom: 1rem;
 }
 
-.section-head p {
+.section-head p,
+.section-head .section-lead {
   color: var(--muted);
   font-size: 1.05rem;
   line-height: 1.65;
@@ -567,7 +585,8 @@ p {
 .pillar-card {
   display: flex;
   flex-direction: column;
-  background: var(--bg);
+  /* Paper (not page --bg) so the card’s left edge is visible on the wrap line */
+  background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 1.5rem 1.4rem 1.35rem;
@@ -1479,8 +1498,10 @@ p {
   position: relative;
   /* Taller frame = gentler cover crop on people photos */
   min-height: clamp(22rem, 54vh, 34rem);
-  display: grid;
-  align-items: end;
+  /* Flex (not grid): .wrap margin-inline:auto matches body sections exactly */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   color: #fff;
   overflow: hidden;
   padding-top: var(--page-hero-media-top);
@@ -1860,17 +1881,26 @@ p {
   border-top: 1px solid var(--line);
 }
 
+/*
+  Titles/leads share the .wrap left edge with PageHero / “How we serve”.
+  Index sits on a narrow gutter column that hangs into the page margin when
+  there is room; otherwise it stacks above the title (still left-aligned).
+*/
 .uniq-pillar {
   display: grid;
-  gap: 0.75rem;
+  grid-template-columns: 1fr;
+  gap: 0.35rem;
   padding-block: 1.75rem;
   border-bottom: 1px solid var(--line);
 }
 
-@media (min-width: 800px) {
+@media (min-width: 1360px) {
   .uniq-pillar {
-    grid-template-columns: 4rem 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 4rem minmax(0, 1fr);
+    column-gap: 1.25rem;
+    /* Hang index into the side margin so the title column starts on the wrap edge */
+    margin-inline-start: calc(-4rem - 1.25rem);
+    width: calc(100% + 4rem + 1.25rem);
   }
 }
 
@@ -1879,6 +1909,13 @@ p {
   font-weight: 600;
   color: var(--accent);
   letter-spacing: 0.08em;
+}
+
+@media (min-width: 1360px) {
+  .uniq-pillar__index {
+    text-align: end;
+    padding-top: 0.35rem;
+  }
 }
 
 .uniq-pillar h3 {

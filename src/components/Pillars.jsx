@@ -13,7 +13,7 @@ export default function Pillars() {
     <section className="section" id="pillars">
       <div className="wrap">
         <div className="section-head">
-          <span className="label label--center">Pillars</span>
+          <span className="label">Pillars</span>
           <h2>Moments of purpose that shape our journey</h2>
           <p>
             Each pillar guides how we serve — from unity and empowerment to gatherings that bring

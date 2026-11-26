@@ -16,7 +16,7 @@ export default function Leadership() {
     <section className="section" id="leadership" style={{ background: 'var(--paper)' }}>
       <div className="wrap">
         <div className="section-head">
-          <span className="label label--center">Leadership</span>
+          <span className="label">Leadership</span>
           <h2>People who steward the mission</h2>
           <p>
             Meet the Convener and the team who carry Unique Generation Outreach across
