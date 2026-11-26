@@ -1,6 +1,7 @@
 import { Field } from './fields';
 import MediaPicker from './MediaPicker';
 import EmptyState from './EmptyState';
+import SortableList from './SortableList';
 
 export default function TeamEditor({ draft, setDraft }) {
   const team = draft.leadership || [];
@@ -22,19 +23,11 @@ export default function TeamEditor({ draft, setDraft }) {
     setTeam(leadership);
   }
 
-  function move(i, dir) {
-    const j = i + dir;
-    if (j < 0 || j >= team.length) return;
-    const next = [...team];
-    [next[i], next[j]] = [next[j], next[i]];
-    setTeam(next);
-  }
-
   return (
     <>
       <h2>Team directory</h2>
       <p className="hint">
-        First person is featured as Convener. Upload photos, reorder with ↑ ↓, then Save.
+        First person is featured as Convener. Drag to reorder (or ↑ ↓), upload photos, then Save.
       </p>
       <button className="admin-btn primary" type="button" onClick={add}>
         Add person
@@ -48,94 +41,114 @@ export default function TeamEditor({ draft, setDraft }) {
           onAction={add}
         />
       ) : null}
-      {team.map((person, i) => (
-        <div className="admin-card admin-grid" key={i}>
-          <div className="admin-page-head">
-            <strong>
-              {i === 0 ? 'Featured · ' : ''}
-              {person.name || `Person ${i + 1}`}
-            </strong>
-            <div className="admin-inline-actions">
-              <button className="admin-btn ghost" type="button" onClick={() => move(i, -1)}>
-                ↑
-              </button>
-              <button className="admin-btn ghost" type="button" onClick={() => move(i, 1)}>
-                ↓
-              </button>
-              <button
-                className="admin-btn danger"
-                type="button"
-                onClick={() => setTeam(team.filter((_, idx) => idx !== i))}
-              >
-                Remove
-              </button>
-            </div>
-          </div>
-
-          <div className="admin-team-photo">
-            {person.photo ? (
-              <img className="admin-team-photo__preview" src={person.photo} alt="" />
-            ) : (
-              <div className="admin-team-photo__placeholder">No photo</div>
-            )}
-            <div className="admin-grid">
-              <Field label="Photo URL">
-                <input
-                  value={person.photo || ''}
-                  onChange={(e) => update(i, { photo: e.target.value })}
-                  placeholder="Upload below or paste URL"
-                />
-              </Field>
-              <MediaPicker
-                label="Upload / pick team photo"
-                onPick={(url) => update(i, { photo: url })}
-              />
-              {person.photo ? (
+      <SortableList
+        items={team}
+        onReorder={setTeam}
+        getKey={(person, i) => person.name ? `${person.name}-${i}` : `person-${i}`}
+        renderItem={(person, i, { DragHandle, moveUp, moveDown, canMoveUp, canMoveDown, isDragging }) => (
+          <div className={`admin-card admin-grid${isDragging ? ' is-dragging-card' : ''}`}>
+            <div className="admin-page-head admin-sortable__head">
+              <div className="admin-sortable__title">
+                <DragHandle label={`Drag ${person.name || `person ${i + 1}`}`} />
+                <strong>
+                  {i === 0 ? 'Featured · ' : ''}
+                  {person.name || `Person ${i + 1}`}
+                </strong>
+              </div>
+              <div className="admin-inline-actions">
                 <button
                   className="admin-btn ghost"
                   type="button"
-                  onClick={() => update(i, { photo: '' })}
+                  disabled={!canMoveUp}
+                  aria-label="Move up"
+                  onClick={moveUp}
                 >
-                  Remove photo
+                  ↑
                 </button>
-              ) : null}
+                <button
+                  className="admin-btn ghost"
+                  type="button"
+                  disabled={!canMoveDown}
+                  aria-label="Move down"
+                  onClick={moveDown}
+                >
+                  ↓
+                </button>
+                <button
+                  className="admin-btn danger"
+                  type="button"
+                  onClick={() => setTeam(team.filter((_, idx) => idx !== i))}
+                >
+                  Remove
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="admin-grid two">
-            <Field label="Name">
+            <div className="admin-team-photo">
+              {person.photo ? (
+                <img className="admin-team-photo__preview" src={person.photo} alt="" />
+              ) : (
+                <div className="admin-team-photo__placeholder">No photo</div>
+              )}
+              <div className="admin-grid">
+                <Field label="Photo URL">
+                  <input
+                    value={person.photo || ''}
+                    onChange={(e) => update(i, { photo: e.target.value })}
+                    placeholder="Upload below or paste URL"
+                  />
+                </Field>
+                <MediaPicker
+                  label="Upload / pick team photo"
+                  onPick={(url) => update(i, { photo: url })}
+                />
+                {person.photo ? (
+                  <button
+                    className="admin-btn ghost"
+                    type="button"
+                    onClick={() => update(i, { photo: '' })}
+                  >
+                    Remove photo
+                  </button>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="admin-grid two">
+              <Field label="Name">
+                <input
+                  value={person.name || ''}
+                  onChange={(e) => update(i, { name: e.target.value })}
+                />
+              </Field>
+              <Field label="Role">
+                <input
+                  value={person.role || ''}
+                  onChange={(e) => update(i, { role: e.target.value })}
+                />
+              </Field>
+            </div>
+            <Field label="Titles">
               <input
-                value={person.name || ''}
-                onChange={(e) => update(i, { name: e.target.value })}
+                value={person.titles || ''}
+                onChange={(e) => update(i, { titles: e.target.value })}
               />
             </Field>
-            <Field label="Role">
+            <Field label="Location">
               <input
-                value={person.role || ''}
-                onChange={(e) => update(i, { role: e.target.value })}
+                value={person.location || ''}
+                onChange={(e) => update(i, { location: e.target.value })}
+              />
+            </Field>
+            <Field label="Bio">
+              <textarea
+                value={person.bio || ''}
+                onChange={(e) => update(i, { bio: e.target.value })}
               />
             </Field>
           </div>
-          <Field label="Titles">
-            <input
-              value={person.titles || ''}
-              onChange={(e) => update(i, { titles: e.target.value })}
-            />
-          </Field>
-          <Field label="Location">
-            <input
-              value={person.location || ''}
-              onChange={(e) => update(i, { location: e.target.value })}
-            />
-          </Field>
-          <Field label="Bio">
-            <textarea
-              value={person.bio || ''}
-              onChange={(e) => update(i, { bio: e.target.value })}
-            />
-          </Field>
-        </div>
-      ))}
+        )}
+      />
     </>
   );
 }

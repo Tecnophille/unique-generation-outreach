@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Field, uid } from './fields';
 import MediaPicker from './MediaPicker';
 import EmptyState from './EmptyState';
+import SortableList from './SortableList';
 
 const emptyEvent = () => ({
   id: uid('ev'),
@@ -16,6 +17,132 @@ const emptyEvent = () => ({
   featured: false,
   status: 'published',
 });
+
+function EventCard({
+  ev,
+  i,
+  update,
+  setEvents,
+  events,
+  DragHandle,
+  moveUp,
+  moveDown,
+  canMoveUp,
+  canMoveDown,
+  isDragging,
+  showDrag,
+}) {
+  return (
+    <div className={`admin-card admin-grid${isDragging ? ' is-dragging-card' : ''}`}>
+      <div className="admin-page-head admin-sortable__head">
+        <div className="admin-sortable__title">
+          {showDrag && DragHandle ? <DragHandle label={`Drag ${ev.title || `event ${i + 1}`}`} /> : null}
+          <strong>{ev.title || `Event ${i + 1}`}</strong>
+        </div>
+        <div className="admin-inline-actions">
+          {showDrag ? (
+            <>
+              <button className="admin-btn ghost" type="button" disabled={!canMoveUp} onClick={moveUp}>
+                ↑
+              </button>
+              <button className="admin-btn ghost" type="button" disabled={!canMoveDown} onClick={moveDown}>
+                ↓
+              </button>
+            </>
+          ) : null}
+          <button
+            className="admin-btn ghost"
+            type="button"
+            onClick={() =>
+              setEvents([
+                {
+                  ...structuredClone(ev),
+                  id: uid('ev'),
+                  title: `${ev.title || 'Event'} (copy)`,
+                  status: 'draft',
+                  featured: false,
+                },
+                ...events,
+              ])
+            }
+          >
+            Duplicate
+          </button>
+          <button
+            className="admin-btn danger"
+            type="button"
+            onClick={() => setEvents(events.filter((_, idx) => idx !== i))}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+      <div className="admin-grid two">
+        <Field label="Title">
+          <input value={ev.title || ''} onChange={(e) => update(i, { title: e.target.value })} />
+        </Field>
+        <Field label="Category">
+          <input
+            value={ev.category || ''}
+            onChange={(e) => update(i, { category: e.target.value })}
+          />
+        </Field>
+      </div>
+      <div className="admin-grid two">
+        <Field label="Start / date">
+          <input value={ev.date || ''} onChange={(e) => update(i, { date: e.target.value })} />
+        </Field>
+        <Field label="End date">
+          <input
+            value={ev.endDate || ''}
+            onChange={(e) => update(i, { endDate: e.target.value })}
+          />
+        </Field>
+      </div>
+      <div className="admin-grid two">
+        <Field label="Location">
+          <input
+            value={ev.location || ''}
+            onChange={(e) => update(i, { location: e.target.value })}
+          />
+        </Field>
+        <Field label="Details link">
+          <input value={ev.link || ''} onChange={(e) => update(i, { link: e.target.value })} />
+        </Field>
+      </div>
+      <div className="admin-grid two">
+        <Field label="Status">
+          <select
+            value={ev.status || 'published'}
+            onChange={(e) => update(i, { status: e.target.value })}
+          >
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+          </select>
+        </Field>
+        <label className="admin-check" style={{ alignSelf: 'end' }}>
+          <input
+            type="checkbox"
+            checked={Boolean(ev.featured)}
+            onChange={(e) => update(i, { featured: e.target.checked })}
+          />
+          Featured
+        </label>
+      </div>
+      <Field label="Image URL">
+        <input value={ev.image || ''} onChange={(e) => update(i, { image: e.target.value })} />
+      </Field>
+      <MediaPicker onPick={(url) => update(i, { image: url })} />
+      {ev.image ? <img className="admin-thumb" src={ev.image} alt="" /> : null}
+      <Field label="Summary">
+        <textarea
+          value={ev.summary || ''}
+          onChange={(e) => update(i, { summary: e.target.value })}
+        />
+      </Field>
+    </div>
+  );
+}
 
 export default function EventsEditor({ draft, setDraft }) {
   const events = draft.events || [];
@@ -43,8 +170,8 @@ export default function EventsEditor({ draft, setDraft }) {
     <>
       <h2>Events studio</h2>
       <p className="hint">
-        Large-scale event calendar content. Featured items can surface on the homepage; publish
-        status controls the Events page.
+        Large-scale event calendar content. Drag to reorder when viewing All; featured items can
+        surface on the homepage.
       </p>
       <div className="admin-toolbar" style={{ position: 'static', background: 'transparent' }}>
         <button
@@ -112,103 +239,37 @@ export default function EventsEditor({ draft, setDraft }) {
           onAction={() => setFilter('all')}
         />
       ) : null}
-      {visible.map(({ ev, i }) => (
-        <div className="admin-card admin-grid" key={ev.id || i}>
-          <div className="admin-page-head">
-            <strong>{ev.title || `Event ${i + 1}`}</strong>
-            <div className="admin-inline-actions">
-              <button
-                className="admin-btn ghost"
-                type="button"
-                onClick={() =>
-                  setEvents([
-                    {
-                      ...structuredClone(ev),
-                      id: uid('ev'),
-                      title: `${ev.title || 'Event'} (copy)`,
-                      status: 'draft',
-                      featured: false,
-                    },
-                    ...events,
-                  ])
-                }
-              >
-                Duplicate
-              </button>
-              <button
-                className="admin-btn danger"
-                type="button"
-                onClick={() => setEvents(events.filter((_, idx) => idx !== i))}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-          <div className="admin-grid two">
-            <Field label="Title">
-              <input value={ev.title || ''} onChange={(e) => update(i, { title: e.target.value })} />
-            </Field>
-            <Field label="Category">
-              <input
-                value={ev.category || ''}
-                onChange={(e) => update(i, { category: e.target.value })}
-              />
-            </Field>
-          </div>
-          <div className="admin-grid two">
-            <Field label="Start / date">
-              <input value={ev.date || ''} onChange={(e) => update(i, { date: e.target.value })} />
-            </Field>
-            <Field label="End date">
-              <input
-                value={ev.endDate || ''}
-                onChange={(e) => update(i, { endDate: e.target.value })}
-              />
-            </Field>
-          </div>
-          <div className="admin-grid two">
-            <Field label="Location">
-              <input
-                value={ev.location || ''}
-                onChange={(e) => update(i, { location: e.target.value })}
-              />
-            </Field>
-            <Field label="Details link">
-              <input value={ev.link || ''} onChange={(e) => update(i, { link: e.target.value })} />
-            </Field>
-          </div>
-          <div className="admin-grid two">
-            <Field label="Status">
-              <select
-                value={ev.status || 'published'}
-                onChange={(e) => update(i, { status: e.target.value })}
-              >
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-              </select>
-            </Field>
-            <label className="admin-check" style={{ alignSelf: 'end' }}>
-              <input
-                type="checkbox"
-                checked={Boolean(ev.featured)}
-                onChange={(e) => update(i, { featured: e.target.checked })}
-              />
-              Featured
-            </label>
-          </div>
-          <Field label="Image URL">
-            <input value={ev.image || ''} onChange={(e) => update(i, { image: e.target.value })} />
-          </Field>
-          <MediaPicker onPick={(url) => update(i, { image: url })} />
-          {ev.image ? <img className="admin-thumb" src={ev.image} alt="" /> : null}
-          <Field label="Summary">
-            <textarea
-              value={ev.summary || ''}
-              onChange={(e) => update(i, { summary: e.target.value })}
+
+      {filter === 'all' ? (
+        <SortableList
+          items={events}
+          onReorder={setEvents}
+          getKey={(ev, i) => ev.id || `ev-${i}`}
+          renderItem={(ev, i, controls) => (
+            <EventCard
+              ev={ev}
+              i={i}
+              update={update}
+              setEvents={setEvents}
+              events={events}
+              showDrag
+              {...controls}
             />
-          </Field>
-        </div>
-      ))}
+          )}
+        />
+      ) : (
+        visible.map(({ ev, i }) => (
+          <EventCard
+            key={ev.id || i}
+            ev={ev}
+            i={i}
+            update={update}
+            setEvents={setEvents}
+            events={events}
+            showDrag={false}
+          />
+        ))
+      )}
     </>
   );
 }

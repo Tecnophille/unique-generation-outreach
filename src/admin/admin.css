@@ -680,11 +680,19 @@
   align-items: flex-start;
 }
 
+.admin-nav-item__lead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.55rem;
+  flex: 0 0 auto;
+}
+
 .admin-nav-item__index {
   flex: 0 0 1.75rem;
   width: 1.75rem;
   height: 1.75rem;
-  margin-top: 1.85rem;
   display: grid;
   place-items: center;
   border-radius: 999px;
@@ -1661,5 +1669,130 @@
   .admin-side,
   .admin-nav-backdrop {
     transition: none;
+  }
+
+  .admin-sortable__item.is-dragging,
+  .admin-card.is-dragging-card {
+    transition: none;
+  }
+}
+
+/* —— Sortable / drag-and-drop (CMS visual editor) —— */
+.admin-sortable {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.admin-sortable__list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-sortable__item {
+  position: relative;
+}
+
+.admin-sortable__item.is-dragging > .admin-card,
+.admin-card.is-dragging-card {
+  opacity: 0.55;
+  box-shadow: 0 8px 24px rgba(35, 31, 27, 0.12);
+  border-color: rgba(82, 95, 189, 0.45);
+}
+
+.admin-sortable__drop-line {
+  height: 3px;
+  margin: 0.15rem 0 0.55rem;
+  border-radius: 999px;
+  background: #525fbd;
+  box-shadow: 0 0 0 3px rgba(82, 95, 189, 0.18);
+  pointer-events: none;
+}
+
+.admin-sortable__head {
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.admin-sortable__title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.admin-sortable__title strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-drag-handle {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  padding: 0;
+  border: 1px solid rgba(35, 31, 27, 0.14);
+  border-radius: 10px;
+  background: #f7f4f0;
+  color: #615c57;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.admin-drag-handle:hover,
+.admin-drag-handle:focus-visible {
+  border-color: #525fbd;
+  color: #525fbd;
+  outline: none;
+}
+
+.admin-drag-handle:active {
+  cursor: grabbing;
+  background: #ebe6df;
+}
+
+.admin-sortable__undo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin: 0 0 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid rgba(82, 95, 189, 0.28);
+  border-radius: 10px;
+  background: rgba(82, 95, 189, 0.08);
+  color: #3d3a36;
+  font-size: 0.9rem;
+}
+
+.admin-sortable__hint {
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.85rem;
+}
+
+.admin-inline-actions .admin-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 560px) {
+  .admin-drag-handle {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  .admin-sortable__title {
+    flex: 1 1 auto;
+  }
+
+  .admin-sortable__head {
+    flex-wrap: wrap;
   }
 }
