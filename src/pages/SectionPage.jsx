@@ -26,6 +26,7 @@ const VIEW_MAP = {
   contact: ContactUnique,
   events: CustomPageUnique,
   videos: CustomPageUnique,
+  resources: CustomPageUnique,
 };
 
 const RESERVED = new Set(['admin', 'api', 'uploads']);

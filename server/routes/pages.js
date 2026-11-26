@@ -1,13 +1,16 @@
 import { Router } from 'express';
-import { authRequired } from '../middleware/auth.js';
+import { authRequired, optionalAuth } from '../middleware/auth.js';
+import { isLivePage } from '../lib/publicRoutes.js';
+import { toPublicContent } from '../lib/publicContent.js';
 import { getContent, saveContent } from '../services/contentService.js';
 
 const router = Router();
 
-router.get('/pages', async (_req, res, next) => {
+router.get('/pages', optionalAuth, async (req, res, next) => {
   try {
     const content = await getContent();
-    const pages = content.pages || {};
+    const scoped = req.admin ? content : toPublicContent(content);
+    const pages = scoped.pages || {};
     res.json(
       Object.entries(pages).map(([key, page]) => ({
         key,
@@ -21,11 +24,14 @@ router.get('/pages', async (_req, res, next) => {
   }
 });
 
-router.get('/pages/:pageKey', async (req, res, next) => {
+router.get('/pages/:pageKey', optionalAuth, async (req, res, next) => {
   try {
     const content = await getContent();
     const page = content.pages?.[req.params.pageKey];
     if (!page) return res.status(404).json({ error: 'Page not found' });
+    if (!req.admin && !isLivePage(page)) {
+      return res.status(404).json({ error: 'Page not found' });
+    }
     res.json({ key: req.params.pageKey, ...page });
   } catch (err) {
     next(err);

@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import express from 'express';
 import { createApiApp } from './app.js';
 import { config, root } from './config.js';
 import { dbMode } from './db/index.js';

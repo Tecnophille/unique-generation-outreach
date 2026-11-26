@@ -199,6 +199,16 @@ export function applyPublicContentRepairs(raw = {}) {
     pages.videos = { ...pages.videos, story: VIDEOS_STORY_GOOD };
     changed = true;
   }
+  if (
+    pages.videos?.cta?.label === 'Contact us' &&
+    (pages.videos?.cta?.href === '/contact' || !pages.videos?.cta?.href)
+  ) {
+    pages.videos = {
+      ...pages.videos,
+      cta: { label: 'Explore gatherings', href: '/gatherings' },
+    };
+    changed = true;
+  }
   if (pages.events?.story === EVENTS_STORY_BAD) {
     pages.events = { ...pages.events, story: EVENTS_STORY_GOOD };
     changed = true;

@@ -33,6 +33,7 @@ function needsPersistedRepair(payload) {
   if (!payload || typeof payload !== 'object') return true;
   if (payload.publicCopyRepairsV1 !== PUBLIC_COPY_REPAIR_VERSION) return true;
   if (!payload.pages?.events) return true;
+  if (!payload.pages?.resources) return true;
   const hasStudioEvents = (payload.events || []).some(
     (e) => (e?.status || 'published') === 'published',
   );

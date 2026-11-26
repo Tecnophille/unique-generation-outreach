@@ -1,9 +1,37 @@
 import { Link } from 'react-router-dom';
 import { useContent } from '../cms/ContentContext';
 
+const EXTRA_EXPLORE = [
+  { href: '/events', label: 'Events' },
+  { href: '/videos', label: 'Videos' },
+  { href: '/resources', label: 'Resources' },
+];
+
+function exploreLinks(nav = [], pages = {}) {
+  const seen = new Set();
+  const links = [];
+
+  function push(href, label) {
+    const path = String(href || '').split('?')[0].split('#')[0] || '/';
+    if (!path.startsWith('/') || seen.has(path)) return;
+    if (path !== '/' && !pages[path.slice(1)]) return;
+    seen.add(path);
+    links.push({ href: path, label: label || path.slice(1) });
+  }
+
+  push('/', 'Home');
+  for (const item of nav) {
+    if (item?.href) push(item.href, item.label);
+  }
+  for (const item of EXTRA_EXPLORE) {
+    push(item.href, item.label);
+  }
+  return links;
+}
+
 export default function Footer() {
   const { content } = useContent();
-  const { brand, nav, social, footer, contact } = content;
+  const { brand, nav, social, footer, contact, pages } = content;
   const socialLinks = [
     { key: 'facebook', label: 'Facebook' },
     { key: 'instagram', label: 'Instagram' },
@@ -13,6 +41,7 @@ export default function Footer() {
   const email = (contact?.email || '').trim();
   const phone = (contact?.phone || '').trim();
   const tel = phone.replace(/[^\d+]/g, '');
+  const explore = exploreLinks(nav, pages || {});
 
   return (
     <footer className="footer">
@@ -47,7 +76,7 @@ export default function Footer() {
             )}
           </div>
           <div>
-            <h4>Follow us</h4>
+            <h4>Connect</h4>
             <ul>
               {socialLinks.length ? (
                 socialLinks.map((s) => (
@@ -59,35 +88,21 @@ export default function Footer() {
                 ))
               ) : (
                 <li>
-                  <Link to="/contact">Connect with us</Link>
+                  <Link to="/contact">Get in touch</Link>
                 </li>
               )}
               <li>
                 <Link to="/contact?topic=volunteering#enquiry">Volunteer with us</Link>
+              </li>
+              <li>
+                <Link to="/contact">Contact</Link>
               </li>
             </ul>
           </div>
           <div>
             <h4>Explore</h4>
             <ul>
-              <li>
-                <Link to="/pillars">Pillars</Link>
-              </li>
-              <li>
-                <Link to="/gatherings">Gatherings</Link>
-              </li>
-              <li>
-                <Link to="/events">Events</Link>
-              </li>
-              <li>
-                <Link to="/videos">Videos</Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4>Pages</h4>
-            <ul>
-              {(nav || []).map((item) => (
+              {explore.map((item) => (
                 <li key={item.href}>
                   <Link to={item.href}>{item.label}</Link>
                 </li>

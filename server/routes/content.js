@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { authRequired } from '../middleware/auth.js';
+import { authRequired, optionalAuth } from '../middleware/auth.js';
+import { toPublicContent } from '../lib/publicContent.js';
 import {
   getContent,
   getRevision,
@@ -10,11 +11,13 @@ import {
 
 const router = Router();
 
-router.get('/content', async (_req, res, next) => {
+router.get('/content', optionalAuth, async (req, res, next) => {
   try {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
-    res.json(await getContent());
+    const full = await getContent();
+    // Authenticated CMS keeps drafts/scheduled; public callers get published-only.
+    res.json(req.admin ? full : toPublicContent(full));
   } catch (err) {
     next(err);
   }

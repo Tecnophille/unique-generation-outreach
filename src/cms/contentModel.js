@@ -8,8 +8,22 @@ const VIDEOS_HUB_DEFAULT = {
   storyTitle: 'On the channel',
   story:
     'Messages, gathering highlights, and stories from our YouTube channel — watch with us whenever you need encouragement.',
-  cta: { label: 'Contact us', href: '/contact' },
+  cta: { label: 'Explore gatherings', href: '/gatherings' },
   useSiteVideos: true,
+  status: 'published',
+  custom: true,
+};
+
+const RESOURCES_HUB_DEFAULT = {
+  label: 'Resources',
+  title: 'Resources & downloads',
+  intro: 'Guides and materials from Unique Generation Outreach.',
+  heroImage: '',
+  storyTitle: 'Take something with you',
+  story:
+    'Practical guides and downloads for volunteering, gatherings, and walking out the mission in daily life. New materials appear here as they are ready.',
+  cta: { label: 'Get in touch', href: '/contact' },
+  useSiteResources: true,
   status: 'published',
   custom: true,
 };
@@ -52,6 +66,23 @@ export function ensureVideosHub(content = {}) {
   }
 
   return { ...content, pages, videoPlacementV2: true };
+}
+
+/** Ensure /resources exists and lists the Resources studio library. */
+export function ensureResourcesHub(content = {}) {
+  const pages = { ...(content.pages || {}) };
+  if (!pages.resources) {
+    pages.resources = { ...RESOURCES_HUB_DEFAULT };
+  } else {
+    pages.resources = {
+      ...RESOURCES_HUB_DEFAULT,
+      ...pages.resources,
+      useSiteResources: pages.resources.useSiteResources !== false,
+      status: pages.resources.status || 'published',
+      custom: true,
+    };
+  }
+  return { ...content, pages };
 }
 
 /** Publish /events using GHP gatherings data when the Events studio list is empty. */
@@ -118,7 +149,7 @@ export function ensureReflectionsImage(content = {}) {
 /** Normalize + ensure hubs + visitor-facing copy repairs (read path). */
 export function preparePublicContent(raw = {}) {
   const hubs = ensureReflectionsImage(
-    ensureNavDefaults(ensureEventsHub(ensureVideosHub(raw))),
+    ensureNavDefaults(ensureResourcesHub(ensureEventsHub(ensureVideosHub(raw)))),
   );
   return applyPublicContentRepairs(hubs).content;
 }
@@ -129,12 +160,13 @@ export function preparePublicContent(raw = {}) {
  */
 export function preparePublicContentWithMeta(raw = {}) {
   const hubs = ensureReflectionsImage(
-    ensureNavDefaults(ensureEventsHub(ensureVideosHub(raw))),
+    ensureNavDefaults(ensureResourcesHub(ensureEventsHub(ensureVideosHub(raw)))),
   );
   const { content, changed } = applyPublicContentRepairs(hubs);
   const hubsChanged =
     !raw.pages?.events ||
     !raw.pages?.videos ||
+    !raw.pages?.resources ||
     !raw.videoPlacementV2 ||
     !raw.reflectionsImage ||
     !(Array.isArray(raw.nav) && raw.nav.some((n) => n?.href === '/' || n?.href === ''));

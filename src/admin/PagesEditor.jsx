@@ -264,7 +264,7 @@ export default function PagesEditor({ draft, setDraft }) {
           storyTitle: 'On the channel',
           story:
             'Messages, gathering highlights, and stories from our YouTube channel — watch with us whenever you need encouragement.',
-          cta: { label: 'Contact us', href: '/contact' },
+          cta: { label: 'Explore gatherings', href: '/gatherings' },
           useSiteVideos: true,
           custom: true,
         },
