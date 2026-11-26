@@ -17,10 +17,10 @@
   );
 
   --font: 'General Sans', 'GeneralSans-Regular', 'Segoe UI', sans-serif;
-  /* Shared layout tokens — keep page hero + body reading columns on one edge */
+  /* Shared layout tokens — one horizontal content edge site-wide */
   --gutter: 1.25rem; /* half of the 2.5rem horizontal inset around .wrap */
   --max: 1180px;
-  --prose: 44rem; /* narrow reading column (story, CMS blocks, page hero copy) */
+  --prose: 44rem; /* readable line length for copy (left-aligned inside .wrap) */
   --radius: 8px;
   --radius-lg: 20px;
   --radius-media: 12px;
@@ -121,14 +121,15 @@ p {
   margin-inline: auto;
 }
 
-/* Same horizontal edge for inner-page hero copy and body reading columns */
-.wrap.page-hero__content,
-.wrap.uniq-story__inner,
-.wrap.page-blocks__column {
-  width: min(100% - (2 * var(--gutter)), var(--prose));
+/*
+  Hero, story, and CMS prose sit on the same .wrap left edge as grids/lists.
+  Cap line length on copy — do not shrink/center the container (that inset
+  “How we serve” relative to pillar rows and the page gutter).
+*/
+.page-hero__content > :is(.page-hero__crumb, .label, h1, .page-hero__intro, p),
+.uniq-story__inner > :is(h2, p),
+.page-blocks__column > :is(h2, p, .uniq-heading, .page-blocks__prose, blockquote, .page-blocks__quote) {
   max-width: var(--prose);
-  margin-inline: auto;
-  box-sizing: border-box;
 }
 
 .section {
@@ -1562,7 +1563,6 @@ p {
   font-size: clamp(1.02rem, 1.6vw, 1.12rem);
   line-height: 1.65;
   margin: 0;
-  max-width: 38rem;
 }
 
 .back-to-top {
@@ -1737,10 +1737,6 @@ p {
   margin-bottom: 1.65rem;
   letter-spacing: -0.03em;
   text-wrap: balance;
-}
-
-.uniq-story__inner {
-  max-width: var(--prose);
 }
 
 .uniq-story__inner h2 {
@@ -2293,7 +2289,7 @@ p {
   background: #1c1916;
 }
 
-/* CMS page / homepage blocks — same centered column as StoryBlock (.wrap + max-width) */
+/* CMS page / homepage blocks — same .wrap left edge as StoryBlock / PageHero */
 .page-blocks {
   width: 100%;
   box-sizing: border-box;
