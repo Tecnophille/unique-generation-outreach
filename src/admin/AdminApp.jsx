@@ -517,7 +517,17 @@ export default function AdminApp() {
   }, [navQuery]);
 
   if (checking || loading) return <BootScreen label="Loading CMS" />;
-  if (!authed) return <Login onSuccess={() => setAuthed(true)} />;
+  if (!authed) {
+    return (
+      <Login
+        onSuccess={() => {
+          setAuthed(true);
+          // Re-fetch full CMS document now that the session cookie is set.
+          refresh();
+        }}
+      />
+    );
+  }
   if (!draft) return <BootScreen label="No content loaded" />;
 
   return (
@@ -751,7 +761,10 @@ export default function AdminApp() {
                     }
                   />
                 </Field>
-                <Field label="Public phone" hint="Shown with a tap-to-call link">
+                <Field
+                  label="Public phone"
+                  hint="Shown with a tap-to-call link. TODO: confirm the official +234 number before publishing (do not invent one)."
+                >
                   <input
                     type="tel"
                     inputMode="tel"

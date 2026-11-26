@@ -372,10 +372,25 @@
       "storyTitle": "On the channel",
       "story": "Messages, gathering highlights, and stories from our YouTube channel — watch with us whenever you need encouragement.",
       "cta": {
-        "label": "Contact us",
-        "href": "/contact"
+        "label": "Explore gatherings",
+        "href": "/gatherings"
       },
       "useSiteVideos": true,
+      "status": "published",
+      "custom": true
+    },
+    "resources": {
+      "label": "Resources",
+      "title": "Resources & downloads",
+      "intro": "Guides and materials from Unique Generation Outreach.",
+      "heroImage": "",
+      "storyTitle": "Take something with you",
+      "story": "Practical guides and downloads for volunteering, gatherings, and walking out the mission in daily life. New materials appear here as they are ready.",
+      "cta": {
+        "label": "Get in touch",
+        "href": "/contact"
+      },
+      "useSiteResources": true,
       "status": "published",
       "custom": true
     }

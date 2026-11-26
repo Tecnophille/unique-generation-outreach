@@ -13,6 +13,7 @@ const ROUTE_TITLES = {
   '/faq': 'FAQ',
   '/events': 'Events',
   '/videos': 'Videos',
+  '/resources': 'Resources',
   '/admin': 'CMS',
 };
 

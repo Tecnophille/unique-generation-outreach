@@ -1248,7 +1248,7 @@ p {
 
 @media (min-width: 800px) {
   .footer__grid {
-    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    grid-template-columns: 1.35fr 1fr 1.15fr;
   }
 }
 
