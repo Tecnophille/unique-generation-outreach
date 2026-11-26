@@ -82,6 +82,7 @@ export default function SectionPage({ pageKey: pageKeyProp }) {
           title={page.title || pageKey}
           intro={page.intro}
           image={page.heroImage}
+          imagePosition={page.heroImagePosition}
         />
         <div className="page-shell__body">
           <View page={page} pageKey={pageKey} />

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ease } from './motion';
 
-export default function PageHero({ label, title, intro, image }) {
+export default function PageHero({ label, title, intro, image, imagePosition }) {
   const reduce = useReducedMotion();
 
   return (
@@ -12,6 +12,7 @@ export default function PageHero({ label, title, intro, image }) {
           <motion.img
             src={image}
             alt=""
+            style={imagePosition ? { objectPosition: imagePosition } : undefined}
             initial={reduce ? false : { opacity: 0.55, scale: 1.06 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: reduce ? 0 : 1.15, ease }}

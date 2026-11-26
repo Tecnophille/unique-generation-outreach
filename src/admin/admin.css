@@ -810,6 +810,7 @@
   width: 100%;
   max-height: 9rem;
   object-fit: cover;
+  object-position: center top;
   border-radius: 8px;
   margin-top: 0.35rem;
 }
@@ -1311,6 +1312,7 @@
   height: 7rem;
   border-radius: 999px;
   object-fit: cover;
+  object-position: center top;
   border: 1px solid rgba(35, 31, 27, 0.1);
   background: #f3f0ec;
 }

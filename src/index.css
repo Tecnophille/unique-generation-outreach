@@ -22,6 +22,9 @@
   --radius-lg: 20px;
   --radius-media: 12px;
   --radius-pill: 999px;
+  /* Prefer faces/heads when cover-cropping portrait uploads into landscape frames */
+  --media-position: center top;
+  --hero-media-position: center 42%;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-offset: 5.5rem;
   --fab-size: 2.5rem;
@@ -418,6 +421,8 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Keep faces below the sticky nav instead of clipping at the top edge */
+  object-position: var(--hero-media-position);
 }
 
 .hero__overlay {
@@ -523,6 +528,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--media-position);
 }
 
 /* —— Pillars (Sacraments cards) —— */
@@ -609,7 +615,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: var(--media-position);
   transition: transform 0.7s var(--ease);
 }
 
@@ -711,6 +717,7 @@ p {
   width: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
+  object-position: var(--media-position);
   display: block;
 }
 
@@ -803,6 +810,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--media-position);
   display: block;
 }
 
@@ -1097,6 +1105,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--media-position);
   z-index: -2;
 }
 
@@ -1449,6 +1458,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--hero-media-position);
   transform: scale(1.02);
 }
 
@@ -1796,6 +1806,7 @@ p {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+  object-position: var(--media-position);
   border-radius: var(--radius-media);
 }
 
@@ -1873,7 +1884,8 @@ p {
 .uniq-event__media {
   border-radius: var(--radius-media);
   overflow: hidden;
-  aspect-ratio: 3 / 2;
+  /* Taller than 3/2 so portrait uploads keep more of the head/shoulders */
+  aspect-ratio: 4 / 3;
   background: var(--bg-soft);
 }
 
@@ -1881,8 +1893,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Bias upward so portrait crops (e.g. Koinonia) keep faces in frame */
-  object-position: center top;
+  object-position: var(--media-position);
 }
 
 .uniq-event__body {
@@ -2054,6 +2065,7 @@ p {
   height: 2.5rem;
   border-radius: 999px;
   object-fit: cover;
+  object-position: var(--media-position);
 }
 
 .social-proof__card footer strong {
@@ -2251,6 +2263,7 @@ p {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
+  object-position: var(--media-position);
   border-radius: var(--radius-media);
 }
 

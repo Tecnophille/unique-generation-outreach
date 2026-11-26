@@ -1,4 +1,4 @@
-import { Field } from './fields';
+import { Field, ImageFocusField } from './fields';
 import MediaPicker from './MediaPicker';
 import EmptyState from './EmptyState';
 import SortableList from './SortableList';
@@ -13,7 +13,7 @@ export default function TeamEditor({ draft, setDraft }) {
   function add() {
     setTeam([
       ...team,
-      { name: '', role: '', titles: '', location: '', bio: '', photo: '' },
+      { name: '', role: '', titles: '', location: '', bio: '', photo: '', photoPosition: 'center top' },
     ]);
   }
 
@@ -86,7 +86,16 @@ export default function TeamEditor({ draft, setDraft }) {
 
             <div className="admin-team-photo">
               {person.photo ? (
-                <img className="admin-team-photo__preview" src={person.photo} alt="" />
+                <img
+                  className="admin-team-photo__preview"
+                  src={person.photo}
+                  alt=""
+                  style={
+                    person.photoPosition
+                      ? { objectPosition: person.photoPosition }
+                      : undefined
+                  }
+                />
               ) : (
                 <div className="admin-team-photo__placeholder">No photo</div>
               )}
@@ -101,6 +110,10 @@ export default function TeamEditor({ draft, setDraft }) {
                 <MediaPicker
                   label="Upload / pick team photo"
                   onPick={(url) => update(i, { photo: url })}
+                />
+                <ImageFocusField
+                  value={person.photoPosition}
+                  onChange={(photoPosition) => update(i, { photoPosition })}
                 />
                 {person.photo ? (
                   <button

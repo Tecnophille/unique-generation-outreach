@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import MediaPicker from './MediaPicker';
 import BlocksEditor from './BlocksEditor';
-import { Field, ListToolbar } from './fields';
+import { Field, ImageFocusField, ListToolbar } from './fields';
 
 const CORE_PAGES = new Set([
   'about',
@@ -50,6 +50,11 @@ function CommonFields({ page, patchPage }) {
       </Field>
       <MediaPicker onPick={(url) => patchPage({ heroImage: url })} label="Upload / pick banner image" />
       {page.heroImage ? <img className="admin-thumb" src={page.heroImage} alt="" /> : null}
+      <ImageFocusField
+        value={page.heroImagePosition}
+        onChange={(heroImagePosition) => patchPage({ heroImagePosition })}
+        hint="Banners sit under the sticky nav — Upper third often keeps faces visible."
+      />
       <Field label="Story title">
         <input
           value={page.storyTitle || ''}
@@ -661,17 +666,14 @@ export default function PagesEditor({ draft, setDraft }) {
                     patchPage({ events });
                   }}
                 />
-                <Field label="Image focus (CSS object-position)">
-                  <input
-                    placeholder="center 18%"
-                    value={ev.imagePosition || ''}
-                    onChange={(e) => {
-                      const events = [...(page.events || [])];
-                      events[i] = { ...ev, imagePosition: e.target.value };
-                      patchPage({ events });
-                    }}
-                  />
-                </Field>
+                <ImageFocusField
+                  value={ev.imagePosition}
+                  onChange={(imagePosition) => {
+                    const events = [...(page.events || [])];
+                    events[i] = { ...ev, imagePosition };
+                    patchPage({ events });
+                  }}
+                />
                 <Field label="Story">
                   <textarea
                     value={ev.story || ''}

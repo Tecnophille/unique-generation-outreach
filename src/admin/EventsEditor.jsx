@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Field, uid } from './fields';
+import { Field, ImageFocusField, uid } from './fields';
 import MediaPicker from './MediaPicker';
 import EmptyState from './EmptyState';
 import SortableList from './SortableList';
@@ -12,6 +12,7 @@ const emptyEvent = () => ({
   location: '',
   category: 'Gathering',
   image: '',
+  imagePosition: 'center top',
   summary: '',
   link: '',
   featured: false,
@@ -133,7 +134,18 @@ function EventCard({
         <input value={ev.image || ''} onChange={(e) => update(i, { image: e.target.value })} />
       </Field>
       <MediaPicker onPick={(url) => update(i, { image: url })} />
-      {ev.image ? <img className="admin-thumb" src={ev.image} alt="" /> : null}
+      {ev.image ? (
+        <img
+          className="admin-thumb"
+          src={ev.image}
+          alt=""
+          style={ev.imagePosition ? { objectPosition: ev.imagePosition } : undefined}
+        />
+      ) : null}
+      <ImageFocusField
+        value={ev.imagePosition}
+        onChange={(imagePosition) => update(i, { imagePosition })}
+      />
       <Field label="Summary">
         <textarea
           value={ev.summary || ''}
