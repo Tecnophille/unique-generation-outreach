@@ -32,14 +32,15 @@ export default function BackToTop() {
       aria-label="Return to top"
       title="Return to top"
       onClick={() => {
+        const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const behavior = prefersReduce ? 'auto' : 'smooth';
         const html = document.documentElement;
         const previous = html.style.scrollBehavior;
-        // Explicit smooth only for this intentional control.
-        html.style.scrollBehavior = 'smooth';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        html.style.scrollBehavior = behavior;
+        window.scrollTo({ top: 0, behavior });
         window.setTimeout(() => {
           html.style.scrollBehavior = previous;
-        }, 600);
+        }, prefersReduce ? 0 : 600);
       }}
     >
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">

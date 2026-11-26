@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContent } from '../../cms/ContentContext';
+import { mediaAlt, slugifyAnchor } from '../../cms/mediaAlt';
 import TeamAvatar from '../../components/TeamAvatar';
+import ExpandableText from '../../components/ExpandableText';
+import YouTubeEmbed, { youtubeId } from '../../components/YouTubeEmbed';
 import { topicFromChannelTitle, topicQueryValue } from '../../components/Contact';
 import { InView, Stagger, StaggerItem } from '../../components/motion';
 
@@ -96,7 +100,7 @@ export function AboutUnique({ page, pageKey = 'about' }) {
             <Stagger className="uniq-gallery">
               {(page.gallery || []).map((g) => (
                 <StaggerItem as="figure" key={g.src}>
-                  <img src={g.src} alt={g.caption || ''} />
+                  <img src={g.src} alt={mediaAlt(g, 'Mission gallery photo')} />
                   {g.caption ? <figcaption>{g.caption}</figcaption> : null}
                 </StaggerItem>
               ))}
@@ -165,7 +169,7 @@ export function GatheringsUnique({ page, pageKey = 'gatherings', includePageVide
               <div className="uniq-event__media">
                 <img
                   src={ev.image}
-                  alt=""
+                  alt={mediaAlt(ev, `${ev.name || 'Gathering'} photo`)}
                   style={
                     ev.imagePosition
                       ? { objectPosition: ev.imagePosition }
@@ -195,6 +199,49 @@ export function GatheringsUnique({ page, pageKey = 'gatherings', includePageVide
   );
 }
 
+function ReflectionArticleCard({ article }) {
+  const paras = String(article.body || '')
+    .split(/\n\n+/)
+    .filter(Boolean);
+  const teaser = paras[0] || '';
+  const rest = paras.slice(1);
+  const needsExpand = rest.length > 0 || teaser.length > 240;
+  const [open, setOpen] = useState(false);
+  const anchor = slugifyAnchor(article.title) || 'reflection';
+  const panelId = `${anchor}-body`;
+
+  return (
+    <StaggerItem as="article" id={anchor} className="uniq-article">
+      <div className="reflection__date">{article.date}</div>
+      <h3>
+        <a className="uniq-article__anchor" href={`#${anchor}`}>
+          {article.title}
+        </a>
+      </h3>
+      {open || !needsExpand ? (
+        <div id={panelId}>
+          {paras.map((p) => (
+            <p key={p.slice(0, 28)}>{p}</p>
+          ))}
+        </div>
+      ) : (
+        <p id={panelId}>{teaser.length > 240 ? `${teaser.slice(0, 240).replace(/\s+\S*$/, '').trimEnd()}…` : teaser}</p>
+      )}
+      {needsExpand ? (
+        <button
+          type="button"
+          className="expandable__toggle"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? 'Show less' : 'Read more'}
+        </button>
+      ) : null}
+    </StaggerItem>
+  );
+}
+
 export function ReflectionsUnique({ page, pageKey = 'reflections' }) {
   return (
     <>
@@ -203,16 +250,7 @@ export function ReflectionsUnique({ page, pageKey = 'reflections' }) {
       <section className="section section--tight">
         <Stagger className="wrap uniq-articles">
           {(page.articles || []).map((a) => (
-            <StaggerItem as="article" key={a.title} className="uniq-article">
-              <div className="reflection__date">{a.date}</div>
-              <h3>{a.title}</h3>
-              {String(a.body || '')
-                .split(/\n\n+/)
-                .filter(Boolean)
-                .map((p) => (
-                  <p key={p.slice(0, 28)}>{p}</p>
-                ))}
-            </StaggerItem>
+            <ReflectionArticleCard key={a.title} article={a} />
           ))}
         </Stagger>
         {page.cta ? (
@@ -261,7 +299,7 @@ export function LeadershipUnique({ page, pageKey = 'leadership' }) {
                 <div className="leader__role">{convener.role}</div>
                 <h3>{convener.name}</h3>
                 <p className="leader__titles">{convener.titles}</p>
-                <p>{convener.bio}</p>
+                <ExpandableText text={convener.bio} limit={280} />
               </div>
             </InView>
           ) : null}
@@ -274,7 +312,7 @@ export function LeadershipUnique({ page, pageKey = 'leadership' }) {
                   <h3>{person.name}</h3>
                   <p className="leader__titles">{person.titles}</p>
                   {person.location ? <p className="leader__location">{person.location}</p> : null}
-                  <p>{person.bio}</p>
+                  <ExpandableText text={person.bio} limit={160} />
                 </div>
               </StaggerItem>
             ))}
@@ -352,13 +390,6 @@ export function ContactUnique({ page, pageKey = 'contact' }) {
   );
 }
 
-function youtubeId(url) {
-  const m = String(url || '').match(
-    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|v=)([\w-]{11})/,
-  );
-  return m?.[1] || '';
-}
-
 export function resolvePageVideos(page, content, pageKey) {
   const includeSite = pageKey === 'videos' || page?.useSiteVideos === true;
   const pageVideos = (page?.videos || []).filter((v) => youtubeId(v?.url));
@@ -416,24 +447,13 @@ function VideosBlock({ videos, heading = 'Videos', showEmpty = false }) {
     <>
       <SectionHeading>{heading}</SectionHeading>
       <Stagger className={`uniq-videos${single ? ' uniq-videos--single' : ''}`}>
-        {list.map((v) => {
-          const id = youtubeId(v.url);
-          return (
-            <StaggerItem as="article" key={v.id || v.url} className="uniq-video">
-              <div className="uniq-video__frame">
-                <iframe
-                  title={v.title || 'YouTube video'}
-                  src={`https://www.youtube.com/embed/${id}`}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-              {v.title ? <h3>{v.title}</h3> : null}
-              {v.description ? <p>{v.description}</p> : null}
-            </StaggerItem>
-          );
-        })}
+        {list.map((v) => (
+          <StaggerItem as="article" key={v.id || v.url} className="uniq-video">
+            <YouTubeEmbed url={v.url} title={v.title} />
+            {v.title ? <h3>{v.title}</h3> : null}
+            {v.description ? <p>{v.description}</p> : null}
+          </StaggerItem>
+        ))}
       </Stagger>
     </>
   );
@@ -454,7 +474,7 @@ function GalleryBlock({ gallery, heading }) {
       <Stagger className="uniq-gallery">
         {items.map((g) => (
           <StaggerItem as="figure" key={g.src}>
-            <img src={g.src} alt={g.caption || ''} />
+            <img src={g.src} alt={mediaAlt(g, 'Gallery photo')} />
             {g.caption ? <figcaption>{g.caption}</figcaption> : null}
           </StaggerItem>
         ))}
@@ -502,7 +522,7 @@ function SiteEventsBlock() {
                 <div className="uniq-event__media">
                   <img
                     src={ev.image}
-                    alt=""
+                    alt={mediaAlt(ev, `${ev.title || 'Event'} photo`)}
                     style={
                       ev.imagePosition ? { objectPosition: ev.imagePosition } : undefined
                     }
@@ -612,7 +632,7 @@ export function PageBlocks({ blocks }) {
             <Stagger className="uniq-gallery">
               {items.map((g) => (
                 <StaggerItem as="figure" key={g.src}>
-                  <img src={g.src} alt={g.caption || ''} />
+                  <img src={g.src} alt={mediaAlt(g, 'Gallery photo')} />
                   {g.caption ? <figcaption>{g.caption}</figcaption> : null}
                 </StaggerItem>
               ))}
@@ -628,21 +648,12 @@ export function PageBlocks({ blocks }) {
         }
 
         if (block.type === 'video') {
-          const id = youtubeId(block.url);
           return (
             <section key={block.id} className="page-blocks__section">
               <BlockSlot block={block}>
                 {block.title ? <h2 className="uniq-heading">{block.title}</h2> : null}
                 <article className="uniq-video">
-                  <div className="uniq-video__frame">
-                    <iframe
-                      title={block.title || 'YouTube video'}
-                      src={`https://www.youtube.com/embed/${id}`}
-                      loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
+                  <YouTubeEmbed url={block.url} title={block.title} />
                 </article>
               </BlockSlot>
             </section>
@@ -735,7 +746,7 @@ function SiteResourcesBlock() {
         <Stagger className="uniq-resources">
           {resources.map((r) => (
             <StaggerItem as="article" key={r.id || r.title} className="uniq-resource">
-              {r.cover ? <img src={r.cover} alt="" /> : null}
+              {r.cover ? <img src={r.cover} alt={mediaAlt(r, `${r.title || 'Resource'} cover`)} /> : null}
               <div>
                 {r.category ? <span className="tag">{r.category}</span> : null}
                 <h3>{r.title}</h3>

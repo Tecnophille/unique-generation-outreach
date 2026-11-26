@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion';
 import { useContent } from '../cms/ContentContext';
+import ExpandableText from './ExpandableText';
 import TeamAvatar from './TeamAvatar';
+import { useMotionPrefs } from './motion';
 
 export default function Leadership() {
   const { content } = useContent();
   const leadership = content.leadership || [];
   const [convener, ...team] = leadership;
+  const { reduce, transition, stagger } = useMotionPrefs();
 
   if (!convener) return null;
 
@@ -23,17 +26,17 @@ export default function Leadership() {
 
         <motion.article
           className="leader leader-featured"
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduce ? false : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          transition={transition}
         >
           <TeamAvatar person={convener} large />
           <div>
             <div className="leader__role">{convener.role}</div>
             <h3>{convener.name}</h3>
             <p className="leader__titles">{convener.titles}</p>
-            <p>{convener.bio}</p>
+            <ExpandableText text={convener.bio} limit={280} />
           </div>
         </motion.article>
 
@@ -42,10 +45,10 @@ export default function Leadership() {
             <motion.article
               key={person.name}
               className="leader team-card"
-              initial={{ opacity: 0, y: 16 }}
+              initial={reduce ? false : { opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.5, delay: (i % 3) * 0.05, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ ...transition, delay: reduce ? 0 : (i % 3) * stagger }}
             >
               <TeamAvatar person={person} />
               <div>
@@ -53,7 +56,7 @@ export default function Leadership() {
                 <h3>{person.name}</h3>
                 <p className="leader__titles">{person.titles}</p>
                 {person.location ? <p className="leader__location">{person.location}</p> : null}
-                <p>{person.bio}</p>
+                <ExpandableText text={person.bio} limit={140} />
               </div>
             </motion.article>
           ))}

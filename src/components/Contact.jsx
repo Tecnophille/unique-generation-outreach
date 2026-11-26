@@ -2,7 +2,9 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { useContent } from '../cms/ContentContext';
+import { mediaAlt } from '../cms/mediaAlt';
 import { IconMail, IconPeople } from './Icons';
+import { useMotionPrefs } from './motion';
 
 export const CONTACT_TOPICS = [
   'General enquiries',
@@ -56,6 +58,7 @@ export default function Contact() {
   const [searchParams] = useSearchParams();
   const enquiryRef = useRef(null);
   const formIds = useId();
+  const { reduce, transition } = useMotionPrefs();
 
   const [name, setName] = useState('');
   const [enquiryEmail, setEnquiryEmail] = useState('');
@@ -83,7 +86,11 @@ export default function Contact() {
     if (fromQuery) setTopic(fromQuery);
 
     if (window.location.hash === '#enquiry' && enquiryRef.current) {
-      enquiryRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      enquiryRef.current.scrollIntoView({
+        behavior: prefersReduce ? 'auto' : 'smooth',
+        block: 'start',
+      });
     }
   }, [searchParams]);
 
@@ -160,10 +167,10 @@ export default function Contact() {
           className="contact-enquiry"
           id="enquiry"
           ref={enquiryRef}
-          initial={{ opacity: 0, y: 24 }}
+          initial={reduce ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={transition}
         >
           <div className="contact-enquiry__intro">
             <span className="label">Write to us</span>
@@ -244,13 +251,18 @@ export default function Contact() {
 
         <motion.div
           className="contact-panel"
-          initial={{ opacity: 0, y: 24 }}
+          initial={reduce ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={transition}
         >
           <div className="contact-cta">
-            {contact.skyImage ? <img src={contact.skyImage} alt="" /> : null}
+            {contact.skyImage ? (
+              <img
+                src={contact.skyImage}
+                alt={mediaAlt(contact, 'Unique Generation Outreach community')}
+              />
+            ) : null}
             <h2>{contact.title}</h2>
             <p>{contact.body}</p>
             {mailHref ? (

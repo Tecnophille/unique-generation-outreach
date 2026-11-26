@@ -1,4 +1,5 @@
 import { useContent } from '../cms/ContentContext';
+import { mediaAlt } from '../cms/mediaAlt';
 import { InView, Stagger, StaggerItem } from './motion';
 
 export function TestimonialsStrip() {
@@ -16,7 +17,9 @@ export function TestimonialsStrip() {
             <StaggerItem as="article" key={t.id || t.name} className="social-proof__card">
               <p>“{t.quote}”</p>
               <footer>
-                {t.image ? <img src={t.image} alt="" /> : null}
+                {t.image ? (
+                  <img src={t.image} alt={mediaAlt(t, t.name ? `Portrait of ${t.name}` : 'Community voice')} />
+                ) : null}
                 <div>
                   <strong>{t.name}</strong>
                   {t.role ? <span>{t.role}</span> : null}
@@ -89,7 +92,7 @@ export function FeaturedEventsStrip() {
                 <div className="uniq-event__media">
                   <img
                     src={ev.image}
-                    alt=""
+                    alt={mediaAlt(ev, `${ev.title || 'Event'} photo`)}
                     style={
                       ev.imagePosition ? { objectPosition: ev.imagePosition } : undefined
                     }
