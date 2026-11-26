@@ -53,7 +53,7 @@ function CommonFields({ page, patchPage }) {
       <ImageFocusField
         value={page.heroImagePosition}
         onChange={(heroImagePosition) => patchPage({ heroImagePosition })}
-        hint="Banners sit under the sticky nav — Upper third often keeps faces visible."
+        hint="Banners now start below the nav. Use Faces (top) for people photos."
       />
       <Field label="Story title">
         <input

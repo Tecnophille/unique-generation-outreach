@@ -24,7 +24,8 @@
   --radius-pill: 999px;
   /* Prefer faces/heads when cover-cropping portrait uploads into landscape frames */
   --media-position: center top;
-  --hero-media-position: center 42%;
+  /* Page banners: anchor to the top of the photo (faces). Media sits below the sticky nav. */
+  --hero-media-position: center top;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-offset: 5.5rem;
   --fab-size: 2.5rem;
@@ -421,8 +422,8 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Keep faces below the sticky nav instead of clipping at the top edge */
-  object-position: var(--hero-media-position);
+  /* Home hero stays full-bleed; bias slightly below top so faces clear the nav */
+  object-position: center 28%;
 }
 
 .hero__overlay {
@@ -1434,24 +1435,27 @@ p {
 }
 
 .page-hero {
+  /* Match sticky .nav height (~logo + padding) so no dark gap under the header */
+  --page-hero-media-top: 4.6rem;
   position: relative;
-  min-height: clamp(20rem, 48vh, 28rem);
+  /* Taller frame = gentler cover crop on people photos */
+  min-height: clamp(22rem, 54vh, 34rem);
   display: grid;
   align-items: end;
   color: #fff;
   overflow: hidden;
-  padding-top: 5.5rem;
-}
-
-.page-hero--plain .page-hero__overlay {
-  background:
-    radial-gradient(ellipse 70% 80% at 85% 15%, rgba(82, 95, 189, 0.35), transparent 55%),
-    linear-gradient(160deg, #1c2438 0%, #2a3148 45%, #1a1f2c 100%);
+  padding-top: var(--page-hero-media-top);
+  /* Fills any hairline under the sticky nav (photo starts below it) */
+  background: #16141f;
 }
 
 .page-hero__media {
   position: absolute;
-  inset: 0;
+  /* Start below sticky nav so cover-cropping cannot hide heads under the header */
+  top: var(--page-hero-media-top);
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .page-hero__media img {
@@ -1459,18 +1463,28 @@ p {
   height: 100%;
   object-fit: cover;
   object-position: var(--hero-media-position);
-  transform: scale(1.02);
+  /* No scale zoom — scale(1.02) was clipping faces further */
 }
 
 .page-hero__overlay {
   position: absolute;
-  inset: 0;
+  top: var(--page-hero-media-top);
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: linear-gradient(
     180deg,
-    rgba(20, 18, 16, 0.38) 0%,
-    rgba(20, 18, 16, 0.58) 55%,
+    rgba(20, 18, 16, 0.32) 0%,
+    rgba(20, 18, 16, 0.55) 55%,
     rgba(20, 18, 16, 0.72) 100%
   );
+}
+
+.page-hero--plain .page-hero__overlay {
+  top: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 85% 15%, rgba(82, 95, 189, 0.35), transparent 55%),
+    linear-gradient(160deg, #1c2438 0%, #2a3148 45%, #1a1f2c 100%);
 }
 
 .page-hero__content {

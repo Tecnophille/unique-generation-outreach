@@ -151,6 +151,109 @@ function repairAboutMilestones(list) {
   return { value: changed ? next : list, changed };
 }
 
+/** Positions that tend to clip heads on people cover photos. */
+const HEAD_CLIP_POSITIONS = new Set([
+  '',
+  'center',
+  'center center',
+  '50% 50%',
+  'center 35%',
+  'center 28%',
+  'center 22%',
+  'center 42%',
+  'center bottom',
+  'center 65%',
+]);
+
+function normalizeMediaPosition(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw || HEAD_CLIP_POSITIONS.has(raw)) return 'center top';
+  return value;
+}
+
+function withNormalizedPosition(item, key = 'imagePosition') {
+  if (!item || typeof item !== 'object') return { value: item, changed: false };
+  const current = String(item[key] || '').trim();
+  const next = normalizeMediaPosition(current);
+  if (next === current) return { value: item, changed: false };
+  return { value: { ...item, [key]: next }, changed: true };
+}
+
+function repairImageFocus(content) {
+  let changed = false;
+  const next = { ...content };
+  const pages = { ...(next.pages || {}) };
+
+  for (const key of Object.keys(pages)) {
+    const page = pages[key];
+    if (!page || typeof page !== 'object') continue;
+    let pageNext = page;
+
+    const heroFix = withNormalizedPosition(pageNext, 'heroImagePosition');
+    if (heroFix.changed) {
+      pageNext = heroFix.value;
+      changed = true;
+    }
+
+    if (Array.isArray(pageNext.events)) {
+      let eventsChanged = false;
+      const events = pageNext.events.map((ev) => {
+        const fix = withNormalizedPosition(ev, 'imagePosition');
+        if (fix.changed) eventsChanged = true;
+        return fix.value;
+      });
+      if (eventsChanged) {
+        pageNext = { ...pageNext, events };
+        changed = true;
+      }
+    }
+
+    if (pageNext !== page) pages[key] = pageNext;
+  }
+  next.pages = pages;
+
+  if (Array.isArray(next.gatherings)) {
+    let gChanged = false;
+    const gatherings = next.gatherings.map((g) => {
+      const fix = withNormalizedPosition(g, 'imagePosition');
+      if (fix.changed) gChanged = true;
+      return fix.value;
+    });
+    if (gChanged) {
+      next.gatherings = gatherings;
+      changed = true;
+    }
+  }
+
+  if (Array.isArray(next.leadership)) {
+    let lChanged = false;
+    const leadership = next.leadership.map((person) => {
+      const fix = withNormalizedPosition(person, 'photoPosition');
+      if (fix.changed) lChanged = true;
+      return fix.value;
+    });
+    if (lChanged) {
+      next.leadership = leadership;
+      changed = true;
+    }
+  }
+
+  if (Array.isArray(next.events)) {
+    let eChanged = false;
+    const events = next.events.map((ev) => {
+      const fix = withNormalizedPosition(ev, 'imagePosition');
+      if (fix.changed) eChanged = true;
+      return fix.value;
+    });
+    if (eChanged) {
+      next.events = events;
+      changed = true;
+    }
+  }
+
+  return { value: changed ? next : content, changed };
+}
+
 /**
  * @returns {{ content: object, changed: boolean }}
  */
@@ -227,6 +330,12 @@ export function applyPublicContentRepairs(raw = {}) {
   const reflectionsFix = repairHomeReflections(content.reflections);
   if (reflectionsFix.changed) {
     content.reflections = reflectionsFix.value;
+    changed = true;
+  }
+
+  const focusFix = repairImageFocus(content);
+  if (focusFix.changed) {
+    content = focusFix.value;
     changed = true;
   }
 

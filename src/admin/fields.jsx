@@ -25,9 +25,9 @@ export function ListToolbar({ onAdd, addLabel, children }) {
 
 /** Presets for CSS object-position — keeps faces in frame when cover-cropping. */
 export const IMAGE_FOCUS_OPTIONS = [
-  { value: 'center top', label: 'Faces (top) — default' },
+  { value: 'center top', label: 'Faces (top) — recommended' },
+  { value: 'center 20%', label: 'Near top' },
   { value: 'center center', label: 'Center' },
-  { value: 'center 35%', label: 'Upper third' },
   { value: 'center 65%', label: 'Lower third' },
   { value: 'center bottom', label: 'Bottom' },
 ];
@@ -38,7 +38,7 @@ export function ImageFocusField({ value, onChange, hint }) {
   return (
     <Field
       label="Image focus"
-      hint={hint || 'If heads are cropped, choose Faces (top) or Upper third.'}
+      hint={hint || 'If heads are cropped, choose Faces (top). Avoid Center for portraits.'}
     >
       <select value={known ? current : 'custom'} onChange={(e) => {
         if (e.target.value === 'custom') return;

@@ -80,7 +80,7 @@ export default function HomepageEditor({ draft, setDraft }) {
             onChange={(imagePosition) =>
               setDraft((d) => ({ ...d, hero: { ...d.hero, imagePosition } }))
             }
-            hint="Home hero is tall — Upper third usually keeps faces clear of the nav."
+            hint="For people in the home hero, prefer Faces (top) or Near top."
           />
           <div className="admin-grid two">
             <Field label="Primary CTA label">
