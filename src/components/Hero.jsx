@@ -10,7 +10,11 @@ export default function Hero() {
   return (
     <section className="hero" id="top" aria-label="Hero">
       <div className="hero__media" aria-hidden="true">
-        <img src={hero.image} alt="" />
+        <img
+          src={hero.image}
+          alt=""
+          style={hero.imagePosition ? { objectPosition: hero.imagePosition } : undefined}
+        />
         <div className="hero__overlay" />
       </div>
       <div className="hero__content">

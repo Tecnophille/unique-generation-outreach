@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Field } from './fields';
+import { Field, ImageFocusField } from './fields';
 import MediaPicker from './MediaPicker';
 import BlocksEditor from './BlocksEditor';
 import SortableList from './SortableList';
@@ -75,6 +75,13 @@ export default function HomepageEditor({ draft, setDraft }) {
             onPick={(url) => setDraft((d) => ({ ...d, hero: { ...d.hero, image: url } }))}
           />
           {draft.hero?.image ? <img className="admin-thumb" src={draft.hero.image} alt="" /> : null}
+          <ImageFocusField
+            value={draft.hero?.imagePosition}
+            onChange={(imagePosition) =>
+              setDraft((d) => ({ ...d, hero: { ...d.hero, imagePosition } }))
+            }
+            hint="Home hero is tall — Upper third usually keeps faces clear of the nav."
+          />
           <div className="admin-grid two">
             <Field label="Primary CTA label">
               <input
@@ -329,17 +336,14 @@ export default function HomepageEditor({ draft, setDraft }) {
                     setDraft((d) => ({ ...d, gatherings }));
                   }}
                 />
-                <Field label="Image focus (CSS object-position)">
-                  <input
-                    placeholder="center 18%"
-                    value={g.imagePosition || ''}
-                    onChange={(e) => {
-                      const gatherings = [...draft.gatherings];
-                      gatherings[i] = { ...g, imagePosition: e.target.value };
-                      setDraft((d) => ({ ...d, gatherings }));
-                    }}
-                  />
-                </Field>
+                <ImageFocusField
+                  value={g.imagePosition}
+                  onChange={(imagePosition) => {
+                    const gatherings = [...draft.gatherings];
+                    gatherings[i] = { ...g, imagePosition };
+                    setDraft((d) => ({ ...d, gatherings }));
+                  }}
+                />
               </div>
             )}
           />

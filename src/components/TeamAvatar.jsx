@@ -6,7 +6,15 @@ export default function TeamAvatar({ person, large = false }) {
   if (photo) {
     return (
       <div className={`${className} avatar--photo`}>
-        <img src={photo} alt={person.name || ''} />
+        <img
+          src={photo}
+          alt={person.name || ''}
+          style={
+            person?.photoPosition || person?.imagePosition
+              ? { objectPosition: person.photoPosition || person.imagePosition }
+              : undefined
+          }
+        />
       </div>
     );
   }

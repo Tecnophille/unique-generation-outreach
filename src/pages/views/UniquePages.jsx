@@ -500,7 +500,13 @@ function SiteEventsBlock() {
             <StaggerItem as="article" key={ev.id || ev.title} className="uniq-event">
               {ev.image ? (
                 <div className="uniq-event__media">
-                  <img src={ev.image} alt="" />
+                  <img
+                    src={ev.image}
+                    alt=""
+                    style={
+                      ev.imagePosition ? { objectPosition: ev.imagePosition } : undefined
+                    }
+                  />
                 </div>
               ) : null}
               <div className="uniq-event__body">
