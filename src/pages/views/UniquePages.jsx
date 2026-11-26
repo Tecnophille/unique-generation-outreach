@@ -8,7 +8,7 @@ import YouTubeEmbed, { youtubeId } from '../../components/YouTubeEmbed';
 import { topicFromChannelTitle, topicQueryValue } from '../../components/Contact';
 import { InView, Stagger, StaggerItem } from '../../components/motion';
 
-/** Same centered reading column as the page story (44rem). */
+/** Same centered reading column as the page story / page hero (--prose). */
 function ContentColumn({ children, className = '', amount = 0.35, as: Comp = InView }) {
   const classes = ['wrap', 'page-blocks__column', className].filter(Boolean).join(' ');
   if (Comp === 'div') {

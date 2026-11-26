@@ -17,7 +17,10 @@
   );
 
   --font: 'General Sans', 'GeneralSans-Regular', 'Segoe UI', sans-serif;
+  /* Shared layout tokens — keep page hero + body reading columns on one edge */
+  --gutter: 1.25rem; /* half of the 2.5rem horizontal inset around .wrap */
   --max: 1180px;
+  --prose: 44rem; /* narrow reading column (story, CMS blocks, page hero copy) */
   --radius: 8px;
   --radius-lg: 20px;
   --radius-media: 12px;
@@ -114,8 +117,18 @@ p {
 }
 
 .wrap {
-  width: min(100% - 2.5rem, var(--max));
+  width: min(100% - (2 * var(--gutter)), var(--max));
   margin-inline: auto;
+}
+
+/* Same horizontal edge for inner-page hero copy and body reading columns */
+.wrap.page-hero__content,
+.wrap.uniq-story__inner,
+.wrap.page-blocks__column {
+  width: min(100% - (2 * var(--gutter)), var(--prose));
+  max-width: var(--prose);
+  margin-inline: auto;
+  box-sizing: border-box;
 }
 
 .section {
@@ -435,7 +448,7 @@ p {
 .hero__content {
   position: relative;
   z-index: 2;
-  width: min(100% - 2.5rem, 46rem);
+  width: min(100% - (2 * var(--gutter)), 46rem);
   padding-block: 7rem 5rem;
 }
 
@@ -1516,7 +1529,6 @@ p {
   position: relative;
   z-index: 2;
   padding-block: 2.75rem 3.25rem;
-  max-width: 46rem;
 }
 
 .page-hero__crumb {
@@ -1626,7 +1638,7 @@ p {
 }
 
 .page-extras__body {
-  max-width: 44rem;
+  max-width: var(--prose);
   display: grid;
   gap: 1rem;
   margin-bottom: 2rem;
@@ -1728,16 +1740,7 @@ p {
 }
 
 .uniq-story__inner {
-  max-width: 44rem;
-}
-
-/* Narrow reading column: same width for story + all CMS blocks */
-.wrap.uniq-story__inner,
-.wrap.page-blocks__column {
-  width: min(100% - 2.5rem, 44rem);
-  max-width: 44rem;
-  margin-inline: auto;
-  box-sizing: border-box;
+  max-width: var(--prose);
 }
 
 .uniq-story__inner h2 {
@@ -1896,7 +1899,7 @@ p {
 .uniq-pillar p {
   margin: 0;
   color: var(--muted);
-  max-width: 44rem;
+  max-width: var(--prose);
 }
 
 .uniq-events {
@@ -2038,7 +2041,7 @@ p {
   }
 
   .uniq-videos--single {
-    grid-template-columns: minmax(0, 44rem);
+    grid-template-columns: minmax(0, var(--prose));
   }
 }
 
