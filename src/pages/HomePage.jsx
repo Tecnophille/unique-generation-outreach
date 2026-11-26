@@ -22,24 +22,9 @@ export default function HomePage() {
       <Hero />
       <About />
       <Pillars />
-      <div className="wrap section-cta" style={{ paddingBottom: '0.5rem' }}>
-        <Link className="btn btn--outline" to="/pillars">
-          Explore all pillars
-        </Link>
-      </div>
       <Gatherings />
-      <div className="wrap section-cta" style={{ paddingBottom: '0.5rem' }}>
-        <Link className="btn btn--outline" to="/gatherings">
-          Read full GHP stories
-        </Link>
-      </div>
       <FeaturedEventsStrip />
       <Reflections />
-      <div className="wrap section-cta" style={{ paddingBottom: '0.5rem' }}>
-        <Link className="btn btn--outline" to="/reflections">
-          Read full reflections
-        </Link>
-      </div>
       <TestimonialsStrip />
       <PartnersStrip />
       <PageBlocks blocks={content?.homeBlocks} />

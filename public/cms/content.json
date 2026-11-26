@@ -228,6 +228,7 @@
           "name": "Koinonia",
           "year": "2022",
           "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465421180-ghp-koinonia.jpg",
+          "imagePosition": "center top",
           "story": "Koinonia called us back to shared life — not attendance alone, but belonging. We learned again that the body thrives when no one walks alone.",
           "theme": "Fellowship & belonging"
         },
@@ -235,6 +236,7 @@
           "name": "Kavod",
           "year": "2024",
           "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465420329-ghp-kavod.jpg",
+          "imagePosition": "center 35%",
           "story": "Kavod lifted our eyes to honour — honouring God, honouring one another, and restoring dignity in how we speak, serve, and lead.",
           "theme": "Honour & reverence"
         },
@@ -242,6 +244,7 @@
           "name": "Shabach",
           "year": "2025",
           "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465422212-ghp-shabach.jpg",
+          "imagePosition": "center 28%",
           "story": "Shabach made room for joyful praise — celebration as warfare, gratitude as witness, and creativity as an offering.",
           "theme": "Praise & celebration"
         },
@@ -249,6 +252,7 @@
           "name": "Berakah",
           "year": "2026",
           "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465419148-ghp-berakah.jpg",
+          "imagePosition": "center 22%",
           "story": "Berakah looks ahead to blessing that multiplies — opportunities that overflow into families, cities, and the next generation.",
           "theme": "Blessing & increase"
         }
@@ -330,6 +334,7 @@
           "name": "Koinonia",
           "year": "2022",
           "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465421180-ghp-koinonia.jpg",
+          "imagePosition": "center top",
           "story": "Koinonia called us back to shared life — not attendance alone, but belonging. We learned again that the body thrives when no one walks alone.",
           "theme": "Fellowship & belonging"
         },
@@ -337,6 +342,7 @@
           "name": "Kavod",
           "year": "2024",
           "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465420329-ghp-kavod.jpg",
+          "imagePosition": "center 35%",
           "story": "Kavod lifted our eyes to honour — honouring God, honouring one another, and restoring dignity in how we speak, serve, and lead.",
           "theme": "Honour & reverence"
         },
@@ -344,6 +350,7 @@
           "name": "Shabach",
           "year": "2025",
           "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465422212-ghp-shabach.jpg",
+          "imagePosition": "center 28%",
           "story": "Shabach made room for joyful praise — celebration as warfare, gratitude as witness, and creativity as an offering.",
           "theme": "Praise & celebration"
         },
@@ -351,6 +358,7 @@
           "name": "Berakah",
           "year": "2026",
           "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465419148-ghp-berakah.jpg",
+          "imagePosition": "center 22%",
           "story": "Berakah looks ahead to blessing that multiplies — opportunities that overflow into families, cities, and the next generation.",
           "theme": "Blessing & increase"
         }
@@ -443,6 +451,7 @@
       "name": "Koinonia",
       "year": "2022",
       "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465421180-ghp-koinonia.jpg",
+      "imagePosition": "center top",
       "theme": "Fellowship & belonging"
     },
     {
@@ -450,6 +459,7 @@
       "name": "Kavod",
       "year": "2024",
       "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465420329-ghp-kavod.jpg",
+      "imagePosition": "center 35%",
       "theme": "Honour & reverence in community life"
     },
     {
@@ -457,6 +467,7 @@
       "name": "Shabach",
       "year": "2025",
       "image": "https://qbiizpnbhqezyflfehze.supabase.co/storage/v1/object/public/ugo-media/uploads/1795465422212-ghp-shabach.jpg",
+      "imagePosition": "center 28%",
       "theme": "Praise, celebration, and shared joy"
     }
   ],

@@ -40,6 +40,11 @@ export default function Pillars() {
             </motion.article>
           ))}
         </div>
+        <div className="section-cta section-cta--flush">
+          <Link className="btn btn--outline" to="/pillars">
+            Explore all pillars
+          </Link>
+        </div>
       </div>
     </section>
   );

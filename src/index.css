@@ -23,6 +23,7 @@
   --radius-pill: 999px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-offset: 5.5rem;
+  --fab-size: 2.5rem;
 }
 
 *,
@@ -588,6 +589,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
   transition: transform 0.7s var(--ease);
 }
 
@@ -635,8 +637,16 @@ p {
 
 .section-cta {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  margin-top: 2.5rem;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 2rem;
+  padding-top: 0.25rem;
+}
+
+.section-cta--flush {
+  margin-top: 1.75rem;
 }
 
 /* —— Reflections (Faith split) —— */
@@ -701,17 +711,7 @@ p {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 1.4rem 1.35rem 1.25rem;
-}
-
-.reflection-card__tab {
-  position: absolute;
-  top: 0;
-  left: 1.1rem;
-  width: 0.55rem;
-  height: 1.35rem;
-  background: var(--accent);
-  border-radius: 0 0 3px 3px;
+  padding: 1.25rem 1.35rem 1.2rem;
 }
 
 .reflection-card__date {
@@ -720,8 +720,7 @@ p {
   gap: 0.35rem;
   font-size: 0.82rem;
   color: var(--muted);
-  margin-bottom: 0.65rem;
-  margin-top: 0.35rem;
+  margin-bottom: 0.55rem;
 }
 
 .reflection-card h3 {
@@ -1486,12 +1485,13 @@ p {
 }
 
 .back-to-top {
+  /* Park in the viewport corner / page margin so it clears card content */
   position: fixed;
-  right: max(1rem, calc((100vw - var(--max)) / 2));
-  bottom: 1.35rem;
-  z-index: 40;
-  width: 2.75rem;
-  height: 2.75rem;
+  right: max(1rem, calc((100vw - var(--max)) / 2 - var(--fab-size) - 0.75rem));
+  bottom: 1.25rem;
+  z-index: 35;
+  width: var(--fab-size);
+  height: var(--fab-size);
   display: grid;
   place-items: center;
   border-radius: 999px;
@@ -1522,10 +1522,24 @@ p {
   outline: none;
 }
 
+/* When margins are too narrow for an outside park, keep content clear of the FAB */
+@media (max-width: 1280px) {
+  .reflection-cards,
+  .uniq-events {
+    padding-inline-end: calc(var(--fab-size) + 1.25rem);
+  }
+}
+
 @media (max-width: 640px) {
   .back-to-top {
     right: 1rem;
     bottom: 1rem;
+  }
+
+  .reflection-cards,
+  .uniq-events {
+    padding-inline-end: 0;
+    padding-bottom: calc(var(--fab-size) + 1.5rem);
   }
 }
 
@@ -1815,19 +1829,19 @@ p {
 
 .uniq-events {
   display: grid;
-  gap: 2rem;
+  gap: 2.25rem;
 }
 
 .uniq-event {
   display: grid;
-  gap: 1.25rem;
-  align-items: center;
+  gap: 1.15rem;
+  align-items: start;
 }
 
 @media (min-width: 900px) {
   .uniq-event {
-    grid-template-columns: 1.05fr 1.2fr;
-    gap: 2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
   }
   .uniq-event:nth-child(even) .uniq-event__media {
     order: 2;
@@ -1837,20 +1851,30 @@ p {
 .uniq-event__media {
   border-radius: var(--radius);
   overflow: hidden;
-  min-height: 14rem;
+  aspect-ratio: 3 / 2;
+  background: var(--bg-soft);
 }
 
 .uniq-event__media img {
   width: 100%;
   height: 100%;
-  min-height: 14rem;
   object-fit: cover;
+  /* Bias upward so portrait crops (e.g. Koinonia) keep faces in frame */
+  object-position: center top;
+}
+
+.uniq-event__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  padding-block: 0.15rem;
 }
 
 .uniq-event__theme {
   color: var(--accent) !important;
   font-weight: 560;
-  margin: 0.35rem 0 0.75rem !important;
+  margin: 0.35rem 0 0.65rem !important;
 }
 
 .uniq-event h3 {
@@ -1862,6 +1886,10 @@ p {
   color: var(--ink-soft);
   margin: 0;
   line-height: 1.65;
+}
+
+.uniq-event__body > p + p {
+  margin-top: 0.65rem;
 }
 
 .uniq-articles {

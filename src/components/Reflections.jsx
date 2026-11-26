@@ -47,7 +47,6 @@ export default function Reflections() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.55, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="reflection-card__tab" aria-hidden="true" />
               <div className="reflection-card__date">
                 <IconCal />
                 {r.date}
