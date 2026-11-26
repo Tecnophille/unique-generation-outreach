@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { config } from '../config.js';
 import { dbMode, sql } from '../db/index.js';
+import { rateLimitBackend } from '../middleware/rateLimit.js';
 
 const router = Router();
 const startedAt = Date.now();
@@ -15,6 +16,7 @@ router.get('/health', async (_req, res, next) => {
       vercel: config.onVercel,
       db: dbMode(),
       storage: config.useSupabaseStorage ? 'supabase' : 'local',
+      rateLimit: rateLimitBackend(),
       uptimeSec: Math.round((Date.now() - startedAt) / 1000),
       time: new Date().toISOString(),
     });

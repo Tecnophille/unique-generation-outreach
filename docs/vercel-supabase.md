@@ -55,9 +55,14 @@ npm run migrate
 | `CORS_ORIGIN` | same as `SITE_URL` |
 | `COOKIE_SECURE` | `1` |
 | `TRUST_PROXY` | `1` |
+| `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` *(optional)* | Shared rate limits across serverless instances (login / contact / upload). Same role: `KV_REST_API_URL` + `KV_REST_API_TOKEN` (Vercel KV). |
 
 4. Deploy. First request to `/api/health` should show `"db":"supabase"`.
 5. Open `/admin`, sign in, confirm Dashboard + media uploads.
+
+### Rate limiting on Vercel
+
+Without Redis/KV env vars, limits use an in-memory `Map` **per function instance**. That still blocks noisy clients on a warm instance (login 8 / contact 5 / upload 20 per 15 minutes) but does not share counters across cold starts. Prefer Upstash Redis REST or Vercel KV when you want a global cap — no code change required once the env pair is set (`X-RateLimit-Policy: redis-rest`).
 
 ### CLI (optional)
 
