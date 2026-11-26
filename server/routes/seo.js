@@ -20,6 +20,7 @@ router.get('/sitemap', async (req, res, next) => {
   try {
     const base = (config.siteUrl || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
     const content = await getContent();
+    // Published canonical pages only (excludes drafts, dead hubs, redirect sources).
     const paths = listLivePublicPaths(content);
 
     const urls = paths
@@ -28,6 +29,7 @@ router.get('/sitemap', async (req, res, next) => {
 
     res
       .type('application/xml')
+      .setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=600')
       .send(
         `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
       );

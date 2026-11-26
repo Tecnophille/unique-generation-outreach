@@ -46,9 +46,11 @@ export function createApiApp() {
     }),
   );
 
-  app.use('/api/login', rateLimit({ windowMs: 15 * 60_000, max: 20, prefix: 'login' }));
-  app.use('/api/contact', rateLimit({ windowMs: 15 * 60_000, max: 10, prefix: 'contact' }));
-  app.use('/api/upload', rateLimit({ windowMs: 15 * 60_000, max: 30, prefix: 'upload' }));
+  // Tighter auth/contact caps — memory backend is per-instance on Vercel;
+  // set UPSTASH_REDIS_REST_* or KV_REST_API_* for a shared store.
+  app.use('/api/login', rateLimit({ windowMs: 15 * 60_000, max: 8, prefix: 'login' }));
+  app.use('/api/contact', rateLimit({ windowMs: 15 * 60_000, max: 5, prefix: 'contact' }));
+  app.use('/api/upload', rateLimit({ windowMs: 15 * 60_000, max: 20, prefix: 'upload' }));
 
   app.use('/api', healthRoutes);
   app.use('/api', authRoutes);

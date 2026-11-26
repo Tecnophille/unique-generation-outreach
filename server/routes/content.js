@@ -13,11 +13,18 @@ const router = Router();
 
 router.get('/content', optionalAuth, async (req, res, next) => {
   try {
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
-    res.setHeader('Pragma', 'no-cache');
     const full = await getContent();
     // Authenticated CMS keeps drafts/scheduled; public callers get published-only.
-    res.json(req.admin ? full : toPublicContent(full));
+    if (req.admin) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.json(full);
+      return;
+    }
+    // Short public TTL + SWR — CMS freshness still wins within ~30–90s without
+    // defeating CDN/browser caching for anonymous traffic.
+    res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+    res.json(toPublicContent(full));
   } catch (err) {
     next(err);
   }
