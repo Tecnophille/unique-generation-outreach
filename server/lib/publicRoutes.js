@@ -10,6 +10,8 @@ export const CORE_PUBLIC_PATHS = [
   '/faq',
   '/contact',
   '/videos',
+  '/events',
+  '/resources',
 ];
 
 export function normalizePublicPath(pathname) {
