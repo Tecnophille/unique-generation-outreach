@@ -20,6 +20,7 @@
   --max: 1180px;
   --radius: 8px;
   --radius-lg: 20px;
+  --radius-media: 12px;
   --radius-pill: 999px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-offset: 5.5rem;
@@ -53,6 +54,25 @@ body {
 img {
   max-width: 100%;
   display: block;
+  /* Soft corners on content photos; full-bleed / circular marks override below */
+  border-radius: var(--radius-media);
+}
+
+.hero__media img,
+.page-hero__media img,
+.contact-cta img {
+  border-radius: 0;
+}
+
+.avatar img,
+.avatar--photo img,
+.social-proof__card footer img {
+  border-radius: 50%;
+}
+
+/* Wide nav mark: don't soft-clip the transparent logo canvas */
+.nav__logo {
+  border-radius: 0;
 }
 
 a {
@@ -494,7 +514,7 @@ p {
 
 .about__gallery figure {
   margin: 0;
-  border-radius: var(--radius);
+  border-radius: var(--radius-media);
   overflow: hidden;
   aspect-ratio: 4 / 3;
 }
@@ -579,7 +599,7 @@ p {
 }
 
 .gather-card__img {
-  border-radius: var(--radius);
+  border-radius: var(--radius-media);
   overflow: hidden;
   aspect-ratio: 4 / 3;
   margin-bottom: 1rem;
@@ -681,7 +701,7 @@ p {
 
 .reflections__media {
   margin: 0;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-media);
   overflow: hidden;
   background: var(--bg-soft);
   max-width: 28rem;
@@ -1768,13 +1788,15 @@ p {
 
 .uniq-gallery figure {
   margin: 0;
+  border-radius: var(--radius-media);
+  overflow: hidden;
 }
 
 .uniq-gallery img {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  border-radius: var(--radius);
+  border-radius: var(--radius-media);
 }
 
 .uniq-gallery figcaption {
@@ -1849,7 +1871,7 @@ p {
 }
 
 .uniq-event__media {
-  border-radius: var(--radius);
+  border-radius: var(--radius-media);
   overflow: hidden;
   aspect-ratio: 3 / 2;
   background: var(--bg-soft);
@@ -1946,7 +1968,7 @@ p {
   position: relative;
   width: 100%;
   padding-top: 56.25%;
-  border-radius: var(--radius);
+  border-radius: var(--radius-media);
   overflow: hidden;
   background: #1c1916;
 }
@@ -2124,7 +2146,7 @@ p {
   width: 100%;
   height: auto;
   border: 0;
-  border-radius: var(--radius);
+  border-radius: var(--radius-media);
 }
 
 .uniq-embed iframe {
@@ -2229,7 +2251,11 @@ p {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
-  border-radius: var(--radius);
+  border-radius: var(--radius-media);
+}
+
+.page-blocks__prose img {
+  border-radius: var(--radius-media);
 }
 
 .uniq-resource h3 {
